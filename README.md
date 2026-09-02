@@ -10,4 +10,4 @@ If that URL 404s, a repo owner must enable Pages at
 https://github.com/AgentLab-dev/live-a-life-web/settings/pages
 — Source = Deploy from a branch, Branch = `main`, folder = `/` (root).
 
-This copy is the Vite `dist` of Live a Life Level -1. Open on a phone. No login. Tap **Play**, then tap the ground to walk.
+This copy is the Vite `dist` of Live a Life Level 0. Open on a phone. No login. Tap **Play**, then tap the ground to walk the city.
