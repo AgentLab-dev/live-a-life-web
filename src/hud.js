@@ -12,6 +12,12 @@ export function gameMarkup() {
       <div class="hud-top">
         <p id="place-name">Sunny Plaza</p>
       </div>
+      <div id="dpad" class="dpad" aria-label="Walk">
+        <button type="button" class="dpad-btn dpad-up" data-dir="up" aria-label="Walk up" tabindex="-1">▲</button>
+        <button type="button" class="dpad-btn dpad-left" data-dir="left" aria-label="Walk left" tabindex="-1">◀</button>
+        <button type="button" class="dpad-btn dpad-right" data-dir="right" aria-label="Walk right" tabindex="-1">▶</button>
+        <button type="button" class="dpad-btn dpad-down" data-dir="down" aria-label="Walk down" tabindex="-1">▼</button>
+      </div>
       <div id="hud-actions" class="hud-actions"></div>
       <div id="panel" class="panel" hidden></div>
     </div>

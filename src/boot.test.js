@@ -16,4 +16,14 @@ describe("Play boot", () => {
     expect(draw).not.toMatch(/WebGLRenderer|three\.module/i);
     expect(start).toContain("startGame");
   });
+
+  it("keeps a phone D-pad and keyboard walk after Play", () => {
+    const hud = readFileSync(new URL("./hud.js", import.meta.url), "utf8");
+    const start = readFileSync(new URL("./start.js", import.meta.url), "utf8");
+    expect(hud).toContain('id="dpad"');
+    expect(hud).toContain('data-dir="up"');
+    expect(start).toContain("keydown");
+    expect(start).toContain("dirFromKey");
+    expect(start).toContain("walkTarget");
+  });
 });

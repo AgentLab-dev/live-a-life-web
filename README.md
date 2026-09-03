@@ -10,7 +10,7 @@ If that URL 404s, a repo owner must enable Pages at
 https://github.com/AgentLab-dev/live-a-life-web/settings/pages
 — Source = Deploy from a branch, Branch = `main`, folder = `/` (root).
 
-This is a Vite 2D canvas game. Open on a phone. No login. Tap **Play**, then tap the ground to walk the city.
+This is a Vite 2D canvas game. Open on a phone or computer. No login. Tap **Play**, then walk: tap the ground, hold arrow keys / WASD, or use the on-screen D-pad on a phone.
 
 ## What is here
 

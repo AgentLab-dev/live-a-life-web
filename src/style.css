@@ -203,6 +203,75 @@ h1 {
   position: absolute;
 }
 
+.dpad {
+  display: none;
+  width: 132px;
+  height: 132px;
+  left: calc(10px + env(safe-area-inset-left));
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  place-items: center;
+  gap: 4px;
+  z-index: 3;
+  touch-action: none;
+  pointer-events: auto;
+  position: absolute;
+}
+
+.dpad-btn {
+  color: #3d2a1a;
+  background: #fff8e6eb;
+  border: 0;
+  border-radius: 14px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font: 700 16px Fredoka, sans-serif;
+  box-shadow: 0 3px #c45c26;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dpad-btn.held,
+.dpad-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px #c45c26;
+  background: #ffe7b8;
+}
+
+.dpad-up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.dpad-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.dpad-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.dpad-down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+@media (max-width: 820px), (hover: none), (pointer: coarse) {
+  .dpad {
+    display: grid;
+  }
+
+  .hud-actions {
+    left: calc(148px + env(safe-area-inset-left));
+    padding: 0 10px;
+  }
+}
+
 .hud-btn.primary {
   background: #2d6cdf;
   box-shadow: 0 5px #1d4e9e;
