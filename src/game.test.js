@@ -354,6 +354,32 @@ describe("park crossings", () => {
       expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
     );
   });
+
+  it("walks back to the house door after a park crossing", () => {
+    let player = {
+      room: "town",
+      x: 840,
+      y: 1720,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      stickers: defaultStickers(),
+    };
+    player = walkFrames(player, (now) => heldWalkTarget(now, "up"), 80);
+    expect(player.y).toBeLessThan(1560);
+    player = walkFrames(player, { x: 480, y: 720 }, 160);
+    expect(isBlocked("town", player.x, player.y, { parkGateOpen: true })).toBe(false);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    const inside = enterRoom(player, "living");
+    expect(inside.room).toBe("living");
+    expect(visibleActions({ ...inside, x: 500, y: 400, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["go-outside", "open-closet", "to-kitchen", "to-bedroom"]),
+    );
+  });
 });
 
 describe("save and sit", () => {

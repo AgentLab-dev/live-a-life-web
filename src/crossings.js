@@ -15,7 +15,7 @@ export const STONE_RADIUS = 26;
 export const GATE = { x: 890, y: 1668, w: 80, h: 36, latch: { x: 930, y: 1694 } };
 
 export const FENCES = [
-  { x: 740, y: 1678, w: 110, h: 14 },
+  { x: 680, y: 1678, w: 70, h: 14 },
   { x: 1010, y: 1678, w: 170, h: 14 },
 ];
 
