@@ -1,0 +1,135 @@
+import { describe, expect, it } from "vitest";
+import { canWorkHere, setJob, startWork } from "./jobs.js";
+import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
+import { createPeople, listenTo, nearbyPerson, stepPeople } from "./people.js";
+import { loadSave, sanitizeSave, spawnPlayer, writeSave } from "./save.js";
+import {
+  canEnter,
+  enterRoom,
+  isBlocked,
+  placeName,
+  spawnFor,
+  startFurniture,
+  visibleActions,
+} from "./world.js";
+
+describe("Level -1 house looks", () => {
+  it("keeps paint, door name, closet colors, and outfit", () => {
+    let state = spawnPlayer(sanitizeSave({}));
+    state = setHouseColor(state, "mint");
+    state = setDoorLabel(state, "  Maple Nest  ");
+    state = setSkin(state, "cocoa");
+    state = setHair(state, "night");
+    state = setOutfit(state, "hat", "beanie");
+    expect(state.houseColor).toBe("mint");
+    expect(state.doorLabel).toBe("Maple Nest");
+    expect(state.skin).toBe("cocoa");
+    expect(state.hair).toBe("night");
+    expect(state.outfit.hat).toBe("beanie");
+  });
+
+  it("falls back to Home when the door label is blank", () => {
+    expect(sanitizeDoorLabel("   ")).toBe("Home");
+    expect(sanitizeDoorLabel("A very long door plaque name")).toBe("A very long door");
+  });
+});
+
+describe("Level 0 rooms and city", () => {
+  it("lets the house open onto the city shops", () => {
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(canEnter("town", "bakery")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(placeName("town")).toBe("Sunny Plaza");
+    expect(placeName("cafe")).toBe("Honey Cafe");
+  });
+
+  it("keeps indoor room buttons available from anywhere", () => {
+    const living = { room: "living", x: 500, y: 400, pose: "idle", actionBeatMs: 0, job: "none" };
+    const ids = visibleActions(living).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["go-outside", "open-closet", "to-kitchen", "to-bedroom"]));
+  });
+
+  it("shows kitchen and bedroom actions from the far side of the room", () => {
+    const kitchen = { room: "kitchen", x: 800, y: 500, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(kitchen).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["to-living-from-kitchen", "eat"]),
+    );
+    const bedroom = { room: "bedroom", x: 120, y: 500, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(bedroom).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["to-living-from-bedroom", "sleep"]),
+    );
+  });
+
+  it("walks the player out of the house onto the street", () => {
+    const inside = enterRoom({ room: "living", pose: "walk", actionBeatMs: 200 }, "town");
+    expect(inside.room).toBe("town");
+    expect(spawnFor("living", "town").y).toBeGreaterThan(700);
+  });
+
+  it("blocks the house walls but not the front door", () => {
+    expect(isBlocked("town", 400, 420)).toBe(true);
+    expect(isBlocked("town", 480, 660)).toBe(false);
+  });
+});
+
+describe("pretend work and people", () => {
+  it("lets a baker knead only in the bakery", () => {
+    const baker = setJob({ room: "bakery", job: "none" }, "baker");
+    expect(canWorkHere(baker)).toBe(true);
+    expect(startWork(baker).pose).toBe("work");
+    expect(canWorkHere({ ...baker, room: "town" })).toBe(false);
+  });
+
+  it("keeps money fields off pretend jobs", () => {
+    const next = setJob({ job: "none", money: 12, coins: 3 }, "park");
+    expect(next.job).toBe("park");
+    expect(next.money).toBeUndefined();
+    expect(next.coins).toBeUndefined();
+  });
+
+  it("shows knead and stamp only for the matching job", () => {
+    const baker = { room: "bakery", x: 200, y: 400, pose: "idle", actionBeatMs: 0, job: "baker" };
+    expect(visibleActions(baker).some((action) => action.id === "bakery-work")).toBe(true);
+    const visitor = { ...baker, job: "none" };
+    expect(visibleActions(visitor).some((action) => action.id === "bakery-work")).toBe(false);
+  });
+
+  it("walks computer people and keeps canned lines", () => {
+    let people = createPeople();
+    expect(people.map((person) => person.name)).toEqual(["Mina", "Theo", "Pip", "Nia", "Otto", "Bee"]);
+    people = stepPeople(people, 500);
+    people = listenTo(people, "mina");
+    expect(people.find((person) => person.id === "mina").bubbleMs).toBe(2200);
+    expect(people.find((person) => person.id === "mina").line).toMatch(/rolls/i);
+  });
+
+  it("finds a nearby person to listen to", () => {
+    const people = createPeople();
+    const mina = people[0];
+    expect(nearbyPerson(people, mina.x, mina.y)?.id).toBe("mina");
+    expect(nearbyPerson(people, 0, 0)).toBeNull();
+  });
+});
+
+describe("save and sit", () => {
+  it("round-trips looks and job without scores", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, { houseColor: "sky", doorLabel: "Nest", skin: "honey", hair: "blonde", outfit: { hat: "cap" }, job: "librarian" });
+    const loaded = loadSave(api);
+    expect(loaded.houseColor).toBe("sky");
+    expect(loaded.job).toBe("librarian");
+    expect(loaded.doorLabel).toBe("Nest");
+  });
+
+  it("starts sit eat sleep without timers", () => {
+    const sitting = startFurniture({ x: 1, y: 1 }, "sofa");
+    expect(sitting.pose).toBe("sit");
+    expect(sitting.actionBeatMs).toBe(1100);
+    expect(sitting.hunger).toBeUndefined();
+  });
+});
