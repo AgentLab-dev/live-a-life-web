@@ -1,4 +1,16 @@
 import { describe, expect, it } from "vitest";
+import {
+  blockedByWater,
+  cheerCrossing,
+  closeParkGate,
+  defaultStickers,
+  newSticker,
+  onBridge,
+  onStone,
+  openParkGate,
+  sharePicnic,
+  takePicnic,
+} from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { createPeople, listenTo, nearbyPerson, stepPeople } from "./people.js";
@@ -99,7 +111,7 @@ describe("pretend work and people", () => {
 
   it("walks computer people and keeps canned lines", () => {
     let people = createPeople();
-    expect(people.map((person) => person.name)).toEqual(["Mina", "Theo", "Pip", "Nia", "Otto", "Bee"]);
+    expect(people.map((person) => person.name)).toEqual(["Mina", "Theo", "Pip", "Nia", "Otto", "Bee", "Willow"]);
     people = stepPeople(people, 500);
     people = listenTo(people, "mina");
     expect(people.find((person) => person.id === "mina").bubbleMs).toBe(2200);
@@ -154,6 +166,219 @@ describe("movement controls", () => {
     expect(up.y).toBeLessThan(start.y);
     expect(down.y).toBeGreaterThan(start.y);
     expect(right.pose).toBe("walk");
+  });
+});
+
+describe("park crossings", () => {
+  const extrasClosed = { parkGateOpen: false };
+  const extrasOpen = { parkGateOpen: true };
+
+  it("blocks creek water but not stones or the garden bridge", () => {
+    expect(blockedByWater(1100, 1610)).toBe(true);
+    expect(isBlocked("town", 1100, 1610)).toBe(true);
+    expect(onStone(1400, 1612)).toBe(true);
+    expect(isBlocked("town", 1400, 1612)).toBe(false);
+    expect(onBridge(840, 1610)).toBe(true);
+    expect(isBlocked("town", 840, 1610)).toBe(false);
+  });
+
+  it("blocks the closed park gate and lets the kid through when open", () => {
+    expect(isBlocked("town", 930, 1686, extrasClosed)).toBe(true);
+    expect(isBlocked("town", 930, 1686, extrasOpen)).toBe(false);
+    const opened = openParkGate({ parkGateOpen: false, stickers: defaultStickers() });
+    expect(opened.parkGateOpen).toBe(true);
+    expect(opened.stickers.gate).toBe(true);
+    expect(opened.score).toBeUndefined();
+    expect(closeParkGate(opened).parkGateOpen).toBe(false);
+  });
+
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  it("walks the garden bridge with held controls and earns a sticker", () => {
+    const start = {
+      room: "town",
+      x: 840,
+      y: 1520,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      stickers: defaultStickers(),
+    };
+    const down = heldWalkTarget(start, "down");
+    const player = walkFrames(start, (now) => heldWalkTarget(now, "down"));
+    expect(down.y).toBeGreaterThan(start.y);
+    expect(player.y).toBeGreaterThan(1664);
+    expect(player.stickers.bridge).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(start.stickers, player.stickers)).toBe("bridge");
+  });
+
+  it("hops stepping stones and earns a sticker without a fail state", () => {
+    let player = {
+      room: "town",
+      x: 1310,
+      y: 1548,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      stickers: defaultStickers(),
+    };
+    for (const stone of [
+      { x: 1310, y: 1576 },
+      { x: 1354, y: 1598 },
+      { x: 1400, y: 1612 },
+      { x: 1446, y: 1634 },
+      { x: 1490, y: 1656 },
+      { x: 1490, y: 1690 },
+    ]) {
+      player = walkFrames(player, stone, 24);
+    }
+    expect(player.y).toBeGreaterThan(1664);
+    expect(player.stickers.stones).toBe(true);
+    expect(player.timer).toBeUndefined();
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets tap-to-walk stop at water instead of punishing", () => {
+    const start = {
+      room: "town",
+      x: 1100,
+      y: 1500,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      stickers: defaultStickers(),
+    };
+    const next = stepToward(start, { x: 1100, y: 1700 }, 80);
+    expect(next.y).toBeLessThan(1560);
+    expect(next.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1100, 1610)).toBe(true);
+  });
+
+  it("keeps arrow and WASD walking while a gate is closed", () => {
+    const start = {
+      room: "town",
+      x: 930,
+      y: 1724,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: false,
+      stickers: defaultStickers(),
+    };
+    const up = walkFrames(start, (now) => heldWalkTarget(now, "up"), 20);
+    const left = stepToward(start, heldWalkTarget(start, "left"), 200);
+    const right = stepToward(start, heldWalkTarget(start, "right"), 200);
+    expect(up.y).toBeGreaterThan(1700);
+    expect(up.y).toBeLessThan(start.y);
+    expect(left.x).toBeLessThan(start.x);
+    expect(right.x).toBeGreaterThan(start.x);
+    expect(dirFromKey("ArrowUp", "ArrowUp")).toBe("up");
+    expect(dirFromKey("KeyW", "w")).toBe("up");
+  });
+
+  it("takes and shares a picnic without money or a timer", () => {
+    const baker = takePicnic({ room: "bakery", carry: "", stickers: defaultStickers(), money: 4 });
+    expect(baker.carry).toBe("picnic");
+    expect(baker.money).toBeUndefined();
+    expect(visibleActions({ ...baker, x: 200, y: 400, pose: "idle", actionBeatMs: 0, job: "none" }).some((action) => action.id === "take-picnic")).toBe(false);
+    const shared = sharePicnic({ ...baker, room: "town", x: 1180, y: 1860 });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("eat");
+    expect(shared.stickers.picnic).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+  });
+
+  it("cheers with a nearby neighbor after a crossing", () => {
+    const people = createPeople();
+    const willow = people.find((person) => person.id === "willow");
+    const next = cheerCrossing(people, "stones", willow.x, willow.y);
+    expect(next.find((person) => person.id === "willow").line).toMatch(/hop/i);
+    expect(next.find((person) => person.id === "willow").bubbleMs).toBe(2400);
+  });
+
+  it("persists stickers, the open gate, and a carried picnic", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      parkGateOpen: true,
+      carry: "picnic",
+      stickers: { gate: true, bridge: true, stones: false, picnic: true, cheer: true, score: 99 },
+      money: 12,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.parkGateOpen).toBe(true);
+    expect(loaded.carry).toBe("picnic");
+    expect(loaded.stickers).toEqual({
+      gate: true,
+      bridge: true,
+      stones: false,
+      picnic: true,
+      cheer: true,
+    });
+    expect(loaded.stickers.score).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.parkGateOpen).toBe(true);
+    expect(player.carry).toBe("picnic");
+  });
+
+  it("shows crossing actions without hiding house or shop buttons", () => {
+    const atGate = {
+      room: "town",
+      x: 930,
+      y: 1694,
+      pose: "idle",
+      actionBeatMs: 0,
+      job: "none",
+      parkGateOpen: false,
+      carry: "",
+    };
+    const ids = visibleActions(atGate).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["open-gate", "stickers"]));
+    expect(ids).not.toContain("close-gate");
+    expect(ids).not.toContain("share-picnic");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+  });
+
+  it("walks back to the house door after a park crossing", () => {
+    let player = {
+      room: "town",
+      x: 840,
+      y: 1720,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      stickers: defaultStickers(),
+    };
+    player = walkFrames(player, (now) => heldWalkTarget(now, "up"), 80);
+    expect(player.y).toBeLessThan(1560);
+    player = walkFrames(player, { x: 480, y: 720 }, 160);
+    expect(isBlocked("town", player.x, player.y, { parkGateOpen: true })).toBe(false);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    const inside = enterRoom(player, "living");
+    expect(inside.room).toBe("living");
+    expect(visibleActions({ ...inside, x: 500, y: 400, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["go-outside", "open-closet", "to-kitchen", "to-bedroom"]),
+    );
   });
 });
 

@@ -11,6 +11,7 @@ import {
   normalizeOutfit,
   sanitizeDoorLabel,
 } from "./looks.js";
+import { defaultStickers, sanitizeCarry, sanitizeStickers } from "./crossings.js";
 import { DEFAULT_JOB, JOBS } from "./jobs.js";
 
 export const SAVE_KEY = "live-a-life-v1";
@@ -23,6 +24,9 @@ export function defaultSave() {
     hair: DEFAULT_HAIR,
     outfit: { ...DEFAULT_OUTFIT },
     job: DEFAULT_JOB,
+    parkGateOpen: false,
+    carry: "",
+    stickers: defaultStickers(),
   };
 }
 
@@ -44,6 +48,9 @@ export function sanitizeSave(raw) {
     hair: HAIRS.some((item) => item.id === raw.hair) ? raw.hair : fallback.hair,
     outfit: sanitizeOutfit(raw.outfit),
     job: JOBS.some((item) => item.id === raw.job) ? raw.job : fallback.job,
+    parkGateOpen: raw.parkGateOpen === true,
+    carry: sanitizeCarry(raw.carry),
+    stickers: sanitizeStickers(raw.stickers),
   };
 }
 
@@ -71,5 +78,8 @@ export function spawnPlayer(save) {
     x: 560,
     y: 920,
     facing: 1,
+    lastPath: "",
+    lastBank: "",
+    onStone: false,
   };
 }

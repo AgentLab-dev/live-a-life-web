@@ -77,12 +77,26 @@ export const TOWN_PEOPLE = [
     path: [
       { x: 980, y: 900 },
       { x: 1720, y: 900 },
-      { x: 1720, y: 1540 },
-      { x: 980, y: 1540 },
+      { x: 1720, y: 1520 },
+      { x: 980, y: 1520 },
     ],
     skin: "porcelain",
     hair: "blonde",
     top: "#5b8def",
+  },
+  {
+    id: "willow",
+    name: "Willow",
+    job: "walker",
+    line: "Sunny stones feel nice on toes.",
+    path: [
+      { x: 1260, y: 1496 },
+      { x: 1500, y: 1496 },
+      { x: 1400, y: 1488 },
+    ],
+    skin: "peach",
+    hair: "copper",
+    top: "#7dcea0",
   },
 ];
 

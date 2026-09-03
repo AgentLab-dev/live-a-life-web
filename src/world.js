@@ -1,3 +1,5 @@
+import { applyCrossingProgress, blockedByCrossing, PICNIC_SPOT } from "./crossings.js";
+
 export const TOWN = {
   width: 2560,
   height: 2280,
@@ -61,6 +63,11 @@ export const ACTIONS = {
     { id: "park-sit", label: "Sit", x: 1020, y: 1880, furniture: "sofa" },
     { id: "play-park", label: "Play", x: 1280, y: 1940, furniture: "play" },
     { id: "park-work", label: "Water flowers", x: 1680, y: 1960 },
+    { id: "open-gate", label: "Open gate", x: 930, y: 1694 },
+    { id: "close-gate", label: "Close gate", x: 930, y: 1694 },
+    { id: "take-picnic", label: "Take picnic", x: 500, y: 1020 },
+    { id: "share-picnic", label: "Share picnic", x: PICNIC_SPOT.x, y: PICNIC_SPOT.y },
+    { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
     { id: "go-outside", label: "Go outside", x: 490, y: 660, anywhere: true },
@@ -84,6 +91,7 @@ export const ACTIONS = {
   bakery: [
     { id: "leave-bakery", label: "Go outside", x: 70, y: 340, anywhere: true },
     { id: "bakery-work", label: "Knead dough", x: 560, y: 400, anywhere: true },
+    { id: "take-picnic", label: "Take picnic", x: 560, y: 400, anywhere: true },
   ],
   library: [
     { id: "leave-library", label: "Go outside", x: 70, y: 340, anywhere: true },
@@ -141,9 +149,16 @@ export function blockedByBuildings(x, y) {
   });
 }
 
-export function isBlocked(room, x, y) {
+export function isBlocked(room, x, y, extras = {}) {
   if (room === "town") {
-    return x < 40 || y < 90 || x > TOWN.width - 40 || y > TOWN.height - 40 || blockedByBuildings(x, y);
+    return (
+      x < 40 ||
+      y < 90 ||
+      x > TOWN.width - 40 ||
+      y > TOWN.height - 40 ||
+      blockedByBuildings(x, y) ||
+      blockedByCrossing(x, y, extras)
+    );
   }
   return x < 50 || y < 110 || x > ROOM.width - 50 || y > ROOM.height - 50;
 }
@@ -166,16 +181,19 @@ export function stepToward(player, target, dt, speed = 195) {
   const facing = dx === 0 ? player.facing : dx > 0 ? 1 : -1;
   let x = player.x;
   let y = player.y;
-  if (!isBlocked(player.room, nextX, player.y)) x = nextX;
-  if (!isBlocked(player.room, x, nextY)) y = nextY;
+  const extras = { parkGateOpen: player.parkGateOpen };
+  if (!isBlocked(player.room, nextX, player.y, extras)) x = nextX;
+  if (!isBlocked(player.room, x, nextY, extras)) y = nextY;
   const moving = Math.hypot(x - player.x, y - player.y) > 0.4;
-  return {
+  const moved = {
     ...player,
     x,
     y,
     facing,
     pose: moving ? "walk" : "idle",
   };
+  if (player.room !== "town") return moved;
+  return applyCrossingProgress(player, moved);
 }
 
 export function startFurniture(player, furniture) {
@@ -203,6 +221,10 @@ export function visibleActions(player) {
     if (action.id === "bakery-work" && player.job !== "baker") return false;
     if (action.id === "library-work" && player.job !== "librarian") return false;
     if (action.id === "park-work" && player.job !== "park") return false;
+    if (action.id === "open-gate" && player.parkGateOpen) return false;
+    if (action.id === "close-gate" && !player.parkGateOpen) return false;
+    if (action.id === "take-picnic" && player.carry === "picnic") return false;
+    if (action.id === "share-picnic" && player.carry !== "picnic") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });
@@ -224,5 +246,6 @@ export function beatLabel(pose) {
   if (pose === "look") return "Looking";
   if (pose === "play") return "Playing";
   if (pose === "work") return "Helping";
+  if (pose === "hop") return "Hopping";
   return "";
 }

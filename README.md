@@ -16,6 +16,7 @@ This is a Vite 2D canvas game. Open on a phone or computer. No login. Tap **Play
 
 - Level -1 house: paint the house, name the door, sit / eat / sleep, avatar colors, closet
 - Level 0 city around the house: plaza, park, mural, computer people with canned lines, cafe / bakery / library, pretend jobs
+- Park crossings: a friendly gate, garden bridge, stepping stones over a little creek, picnic delivery, sticker keepsakes, and neighbor cheers
 - Drawn in the original 2D kid-and-house style. No 3D, no chat, no money, no cars, no multiplayer
 
 ## Local

@@ -1,10 +1,11 @@
 import { createHold, dirFromKey, heldWalkTarget, isTypingTarget } from "./controls.js";
+import { cheerCrossing, closeParkGate, markCheer, newSticker, openParkGate, sharePicnic, takePicnic } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
 import { createPeople, listenTo, stepPeople } from "./people.js";
 import { drawKid, drawRoom, kidLook } from "./draw.js";
 import { beatLabel, enterRoom, moveToAction, spawnFor, startFurniture, stepToward, tickAction } from "./world.js";
-import { closetSheet, doorSheet, gameMarkup, hudKey, jobSheet, paintSheet, renderHud } from "./hud.js";
+import { closetSheet, doorSheet, gameMarkup, hudKey, jobSheet, paintSheet, renderHud, stickerSheet } from "./hud.js";
 import { loadSave, spawnPlayer, writeSave } from "./save.js";
 
 export function startGame(root) {
@@ -53,6 +54,7 @@ export function startGame(root) {
     if (kind === "door") panel.innerHTML = doorSheet(player.doorLabel);
     if (kind === "closet") panel.innerHTML = closetSheet(player);
     if (kind === "jobs") panel.innerHTML = jobSheet(player.job);
+    if (kind === "stickers") panel.innerHTML = stickerSheet(player.stickers);
   }
 
   function closeSheet() {
@@ -91,6 +93,29 @@ export function startGame(root) {
     if (id === "name-door") openSheet("door");
     if (id === "open-closet") openSheet("closet");
     if (id === "jobs") openSheet("jobs");
+    if (id === "stickers") openSheet("stickers");
+    if (id === "open-gate") {
+      const before = player.stickers;
+      player = openParkGate(player);
+      noteCheer(before, player.stickers);
+      persist();
+    }
+    if (id === "close-gate") {
+      player = closeParkGate(player);
+      persist();
+    }
+    if (id === "take-picnic") {
+      player = takePicnic(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-picnic") {
+      const before = player.stickers;
+      player = sharePicnic(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
     if (id === "sit" || id === "cafe-sit" || id === "park-sit") doFurniture(id, "sofa");
     if (id === "eat") doFurniture(id, "table");
     if (id === "sleep") doFurniture(id, "bed");
@@ -101,6 +126,13 @@ export function startGame(root) {
       walkTarget = null;
     }
     if (id.startsWith("listen:")) people = listenTo(people, id.slice(7));
+  }
+
+  function noteCheer(before, after) {
+    const kind = newSticker(before, after);
+    if (!kind || kind === "cheer") return;
+    people = cheerCrossing(people, kind, player.x, player.y);
+    player = markCheer(player);
   }
 
   function refreshHud() {
@@ -258,12 +290,17 @@ export function startGame(root) {
     player = tickAction(player, dt);
     people = stepPeople(people, dt);
     const held = hold.current();
+    const before = player.stickers;
     if (held && player.actionBeatMs <= 0 && !sheet) {
       walkTarget = null;
       player = stepToward(player, heldWalkTarget(player, held), dt);
     } else if (walkTarget && player.actionBeatMs <= 0 && !sheet) {
       player = stepToward(player, walkTarget, dt);
       if (player.pose === "idle") walkTarget = null;
+    }
+    if (newSticker(before, player.stickers)) {
+      noteCheer(before, player.stickers);
+      persist();
     }
     camera.x += (player.x - camera.x) * 0.14;
     camera.y += (player.y - camera.y) * 0.14;
