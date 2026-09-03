@@ -3,6 +3,7 @@ import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { createPeople, listenTo, nearbyPerson, stepPeople } from "./people.js";
 import { loadSave, sanitizeSave, spawnPlayer, writeSave } from "./save.js";
+import { createHold, dirFromKey, heldWalkTarget, isTypingTarget } from "./controls.js";
 import {
   canEnter,
   enterRoom,
@@ -10,6 +11,7 @@ import {
   placeName,
   spawnFor,
   startFurniture,
+  stepToward,
   visibleActions,
 } from "./world.js";
 
@@ -109,6 +111,49 @@ describe("pretend work and people", () => {
     const mina = people[0];
     expect(nearbyPerson(people, mina.x, mina.y)?.id).toBe("mina");
     expect(nearbyPerson(people, 0, 0)).toBeNull();
+  });
+});
+
+describe("movement controls", () => {
+  it("maps arrow keys and WASD to four ways", () => {
+    expect(dirFromKey("ArrowUp", "ArrowUp")).toBe("up");
+    expect(dirFromKey("ArrowDown", "ArrowDown")).toBe("down");
+    expect(dirFromKey("ArrowLeft", "ArrowLeft")).toBe("left");
+    expect(dirFromKey("ArrowRight", "ArrowRight")).toBe("right");
+    expect(dirFromKey("KeyW", "w")).toBe("up");
+    expect(dirFromKey("KeyA", "a")).toBe("left");
+    expect(dirFromKey("KeyS", "s")).toBe("down");
+    expect(dirFromKey("KeyD", "d")).toBe("right");
+    expect(dirFromKey("KeyQ", "q")).toBeNull();
+  });
+
+  it("does not steal keys from the door name field", () => {
+    expect(isTypingTarget({ tagName: "INPUT", id: "door-input" })).toBe(true);
+    expect(isTypingTarget({ tagName: "BUTTON", dataset: { action: "paint-house" } })).toBe(false);
+  });
+
+  it("holds one four-way direction at a time, last press wins", () => {
+    const hold = createHold();
+    hold.press("left");
+    hold.press("up");
+    expect(hold.current()).toBe("up");
+    hold.release("up");
+    expect(hold.current()).toBe("left");
+    hold.clear();
+    expect(hold.current()).toBeNull();
+  });
+
+  it("walks the kid the held way without a tap target", () => {
+    const start = { room: "living", x: 400, y: 400, pose: "idle", facing: 1, actionBeatMs: 0 };
+    const right = stepToward(start, heldWalkTarget(start, "right"), 200);
+    const left = stepToward(start, heldWalkTarget(start, "left"), 200);
+    const up = stepToward(start, heldWalkTarget(start, "up"), 200);
+    const down = stepToward(start, heldWalkTarget(start, "down"), 200);
+    expect(right.x).toBeGreaterThan(start.x);
+    expect(left.x).toBeLessThan(start.x);
+    expect(up.y).toBeLessThan(start.y);
+    expect(down.y).toBeGreaterThan(start.y);
+    expect(right.pose).toBe("walk");
   });
 });
 

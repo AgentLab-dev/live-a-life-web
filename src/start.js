@@ -1,3 +1,4 @@
+import { createHold, dirFromKey, heldWalkTarget, isTypingTarget } from "./controls.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
 import { createPeople, listenTo, stepPeople } from "./people.js";
@@ -10,6 +11,7 @@ export function startGame(root) {
   let player = spawnPlayer(loadSave());
   let people = createPeople();
   let walkTarget = null;
+  const hold = createHold();
   let last = performance.now();
   const camera = { x: player.x, y: player.y };
   let sheet = null;
@@ -44,6 +46,7 @@ export function startGame(root) {
   }
 
   function openSheet(kind) {
+    hold.clear();
     sheet = kind;
     panel.hidden = false;
     if (kind === "paint") panel.innerHTML = paintSheet(player.houseColor);
@@ -194,6 +197,57 @@ export function startGame(root) {
     { passive: false },
   );
 
+  const dpad = game.querySelector("#dpad");
+  function setPadHeld(button, on) {
+    if (button) button.classList.toggle("held", on);
+  }
+  function pressPad(event) {
+    const button = event.target.closest("[data-dir]");
+    if (!button || !dpad.contains(button)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    hold.press(button.dataset.dir);
+    setPadHeld(button, true);
+    if (event.pointerId != null && button.setPointerCapture) {
+      try {
+        button.setPointerCapture(event.pointerId);
+      } catch {
+        // Capture is optional; pointerup still releases the hold.
+      }
+    }
+  }
+  function releasePad(event) {
+    const button = event.target.closest("[data-dir]");
+    if (!button || !dpad.contains(button)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    hold.release(button.dataset.dir);
+    setPadHeld(button, false);
+  }
+  dpad.addEventListener("pointerdown", pressPad);
+  dpad.addEventListener("pointerup", releasePad);
+  dpad.addEventListener("pointercancel", releasePad);
+  dpad.addEventListener("lostpointercapture", releasePad);
+  dpad.addEventListener("contextmenu", (event) => event.preventDefault());
+
+  function onKeyDown(event) {
+    if (isTypingTarget(event.target)) return;
+    const dir = dirFromKey(event.code, event.key);
+    if (!dir) return;
+    event.preventDefault();
+    if (event.repeat) return;
+    hold.press(dir);
+  }
+  function onKeyUp(event) {
+    const dir = dirFromKey(event.code, event.key);
+    if (!dir) return;
+    if (isTypingTarget(event.target)) return;
+    hold.release(dir);
+  }
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("keyup", onKeyUp);
+  window.addEventListener("blur", () => hold.clear());
+
   window.addEventListener("resize", resize);
   resize();
   refreshHud();
@@ -203,7 +257,11 @@ export function startGame(root) {
     last = now;
     player = tickAction(player, dt);
     people = stepPeople(people, dt);
-    if (walkTarget && player.actionBeatMs <= 0 && !sheet) {
+    const held = hold.current();
+    if (held && player.actionBeatMs <= 0 && !sheet) {
+      walkTarget = null;
+      player = stepToward(player, heldWalkTarget(player, held), dt);
+    } else if (walkTarget && player.actionBeatMs <= 0 && !sheet) {
       player = stepToward(player, walkTarget, dt);
       if (player.pose === "idle") walkTarget = null;
     }
