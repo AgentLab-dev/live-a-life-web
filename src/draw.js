@@ -1,3 +1,4 @@
+import { BRIDGE, CREEK, FENCES, GATE, PICNIC_SPOT, STONES } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
 import { HOUSE, PARK, ROOM, TOWN } from "./world.js";
@@ -47,8 +48,15 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
   const sleeping = pose === "sleep";
   const playing = pose === "play";
   const working = pose === "work";
-  const bounce = walking ? Math.abs(Math.sin(time * 11)) * 3.2 : playing ? Math.abs(Math.sin(time * 8)) * 8 : 0;
-  const swing = walking ? Math.sin(time * 11) : working ? Math.sin(time * 10) : 0;
+  const hopping = pose === "hop" || look.onStone;
+  const bounce = hopping
+    ? Math.abs(Math.sin(time * 14)) * 6
+    : walking
+      ? Math.abs(Math.sin(time * 11)) * 3.2
+      : playing
+        ? Math.abs(Math.sin(time * 8)) * 8
+        : 0;
+  const swing = walking || hopping ? Math.sin(time * 11) : working ? Math.sin(time * 10) : 0;
 
   ctx.save();
   ctx.translate(x, y);
@@ -170,6 +178,20 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.font = "700 14px Fredoka, sans-serif";
     ctx.fillText("z", 22, -28);
     ctx.fillText("z", 30, -38);
+  }
+  if (look.carry === "picnic" && !sleeping) {
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, 16, 10, 16, 12, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f4b942";
+    oval(ctx, 24, 10, 8, 4);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, 21, 12, 2.4, 2.4);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, 27, 12, 2.4, 2.4);
+    ctx.fill();
   }
   ctx.restore();
 }
@@ -358,6 +380,109 @@ function drawBanner(ctx, x, y, color) {
   ctx.fill();
 }
 
+function drawCreek(ctx, time) {
+  ctx.fillStyle = "#6ec6e8";
+  roundRect(ctx, CREEK.x, CREEK.y, CREEK.w, CREEK.h, 28);
+  ctx.fill();
+  ctx.fillStyle = "#8fd3ea";
+  ctx.globalAlpha = 0.45 + Math.sin(time * 2.2) * 0.1;
+  oval(ctx, CREEK.x + 180, CREEK.y + 48, 70, 18);
+  ctx.fill();
+  oval(ctx, CREEK.x + 620, CREEK.y + 40, 80, 16);
+  ctx.fill();
+  oval(ctx, CREEK.x + 940, CREEK.y + 56, 60, 14);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#2d5a27";
+  ctx.font = "700 16px Fredoka, sans-serif";
+  ctx.fillText("Little creek", CREEK.x + 24, CREEK.y - 10);
+}
+
+function drawStones(ctx) {
+  for (const stone of STONES) {
+    ctx.fillStyle = "#c9b08a";
+    oval(ctx, stone.x, stone.y + 4, 22, 10);
+    ctx.fill();
+    ctx.fillStyle = "#e8d5b5";
+    oval(ctx, stone.x, stone.y, 20, 9);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Stepping stones", STONES[0].x - 36, STONES[0].y - 22);
+}
+
+function drawBridge(ctx) {
+  ctx.fillStyle = "#b08968";
+  roundRect(ctx, BRIDGE.x, BRIDGE.y + 10, BRIDGE.w, BRIDGE.h - 20, 8);
+  ctx.fill();
+  ctx.fillStyle = "#d4a373";
+  for (let i = 0; i < 6; i += 1) {
+    roundRect(ctx, BRIDGE.x + 8, BRIDGE.y + 16 + i * 18, BRIDGE.w - 16, 12, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#8d6e4c";
+  roundRect(ctx, BRIDGE.x, BRIDGE.y + 6, 12, BRIDGE.h - 12, 4);
+  ctx.fill();
+  roundRect(ctx, BRIDGE.x + BRIDGE.w - 12, BRIDGE.y + 6, 12, BRIDGE.h - 12, 4);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Garden bridge", BRIDGE.x + 18, BRIDGE.y + 4);
+}
+
+function drawGate(ctx, open) {
+  for (const fence of FENCES) {
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, fence.x, fence.y, fence.w, fence.h, 4);
+    ctx.fill();
+    ctx.fillStyle = "#8d6e4c";
+    for (let x = fence.x + 8; x < fence.x + fence.w; x += 18) {
+      roundRect(ctx, x, fence.y - 10, 6, 28, 2);
+      ctx.fill();
+    }
+  }
+  ctx.fillStyle = "#8d6e4c";
+  roundRect(ctx, GATE.x, GATE.y - 16, 8, 40, 3);
+  ctx.fill();
+  roundRect(ctx, GATE.x + GATE.w - 8, GATE.y - 16, 8, 40, 3);
+  ctx.fill();
+  ctx.fillStyle = "#d4a373";
+  if (open) {
+    roundRect(ctx, GATE.x + GATE.w + 4, GATE.y - 8, 14, GATE.w - 8, 4);
+    ctx.fill();
+  } else {
+    roundRect(ctx, GATE.x + 6, GATE.y, GATE.w - 12, GATE.h, 4);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#2d5a27";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText(open ? "Gate open" : "Park gate", GATE.x - 8, GATE.y - 22);
+}
+
+function drawPicnic(ctx, carried) {
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, PICNIC_SPOT.x - 54, PICNIC_SPOT.y - 8, 108, 50, 16);
+  ctx.fill();
+  ctx.fillStyle = "#e74c3c";
+  ctx.globalAlpha = 0.35;
+  for (let i = 0; i < 4; i += 1) {
+    ctx.fillRect(PICNIC_SPOT.x - 54 + i * 27, PICNIC_SPOT.y - 8, 13, 50);
+  }
+  ctx.globalAlpha = 1;
+  if (!carried) {
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, PICNIC_SPOT.x - 14, PICNIC_SPOT.y + 6, 28, 16, 4);
+    ctx.fill();
+    ctx.fillStyle = "#f4b942";
+    oval(ctx, PICNIC_SPOT.x, PICNIC_SPOT.y + 6, 14, 6);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Picnic", PICNIC_SPOT.x - 22, PICNIC_SPOT.y - 14);
+}
+
 function drawPark(ctx, time) {
   ctx.fillStyle = "#8fd36a";
   roundRect(ctx, PARK.x, PARK.y, PARK.w, PARK.h, 28);
@@ -422,6 +547,19 @@ export function drawTown(ctx, player, time) {
   ctx.fill();
 
   drawPark(ctx, time);
+  drawCreek(ctx, time);
+  drawStones(ctx);
+  drawBridge(ctx);
+  drawGate(ctx, player.parkGateOpen);
+  drawPicnic(ctx, player.carry === "picnic");
+  if (player.carry !== "picnic") {
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, 488, 1006, 24, 14, 4);
+    ctx.fill();
+    ctx.fillStyle = "#f4b942";
+    oval(ctx, 500, 1006, 12, 5);
+    ctx.fill();
+  }
   drawHouse(ctx, player);
   drawNeighbor(ctx, 860, 300, 300, 300, "#f08080", "#8b3a3a", "Next door");
   drawNeighbor(ctx, 1260, 300, 300, 300, "#7dcea0", "#2d6a4f", "Friends");
@@ -683,5 +821,7 @@ export function kidLook(player) {
     hair: player.hair,
     outfit: player.outfit,
     jobLook: jobLook(player.job).look,
+    carry: player.carry,
+    onStone: player.onStone,
   };
 }

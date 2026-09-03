@@ -1,3 +1,4 @@
+import { earnedStickerCount, stickerList } from "./crossings.js";
 import { HAIRS, HOUSE_COLORS, OUTFIT_SLOTS, SKINS, escapeAttr, pieceLabel } from "./looks.js";
 import { JOBS } from "./jobs.js";
 import { nearbyPerson } from "./people.js";
@@ -11,6 +12,7 @@ export function gameMarkup() {
       <p id="beat-caption" class="beat-caption" hidden></p>
       <div class="hud-top">
         <p id="place-name">Sunny Plaza</p>
+        <div id="sticker-row" class="sticker-row" aria-label="Stickers"></div>
       </div>
       <div id="dpad" class="dpad" aria-label="Walk">
         <button type="button" class="dpad-btn dpad-up" data-dir="up" aria-label="Walk up" tabindex="-1">▲</button>
@@ -27,7 +29,19 @@ export function gameMarkup() {
 export function renderHud(root, player, people = []) {
   const place = root.querySelector("#place-name");
   const actions = root.querySelector("#hud-actions");
+  const stickers = root.querySelector("#sticker-row");
   if (place) place.textContent = placeName(player.room);
+  if (stickers) {
+    const items = stickerList(player.stickers);
+    const held = player.carry === "picnic" ? `<span class="carry-chip">Picnic</span>` : "";
+    stickers.innerHTML =
+      items
+        .map(
+          (item) =>
+            `<span class="sticker-dot ${item.earned ? "earned" : ""}" title="${item.name}" aria-label="${item.name}"></span>`,
+        )
+        .join("") + held;
+  }
   const buttons = visibleActions(player).map((action) => ({ id: action.id, label: action.label }));
   const idle = player.pose !== "walk" && player.actionBeatMs <= 0;
   if (player.room === "town" && idle) {
@@ -113,6 +127,28 @@ export function closetSheet(player) {
   `;
 }
 
+export function stickerSheet(stickers) {
+  const items = stickerList(stickers);
+  const got = earnedStickerCount(stickers);
+  return `
+    <div class="sheet">
+      <h2>My stickers</h2>
+      <p>Soft keepsakes from town crossings. No points. No races.</p>
+      <div class="sticker-list">${items
+        .map(
+          (item) => `
+        <div class="sticker-card ${item.earned ? "earned" : ""}">
+          <strong>${item.name}</strong>
+          <p>${item.earned ? item.hint : "Still waiting, whenever you like."}</p>
+        </div>`,
+        )
+        .join("")}</div>
+      <p class="fine">${got} of ${items.length} stickers on this device.</p>
+      <button type="button" class="hud-btn" data-close>Done</button>
+    </div>
+  `;
+}
+
 export function jobSheet(job) {
   return `
     <div class="sheet">
@@ -131,5 +167,9 @@ export function hudKey(player, people) {
     .map((action) => action.id)
     .join(",");
   const listen = player.room === "town" ? nearbyPerson(people, player.x, player.y)?.id ?? "" : "";
-  return `${player.room}:${player.pose}:${player.actionBeatMs > 0}:${player.job}:${actionIds}:${listen}`;
+  const marks = stickerList(player.stickers)
+    .filter((item) => item.earned)
+    .map((item) => item.id)
+    .join("");
+  return `${player.room}:${player.pose}:${player.actionBeatMs > 0}:${player.job}:${player.parkGateOpen}:${player.carry}:${marks}:${actionIds}:${listen}`;
 }

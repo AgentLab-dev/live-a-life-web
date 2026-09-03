@@ -26,4 +26,17 @@ describe("Play boot", () => {
     expect(start).toContain("dirFromKey");
     expect(start).toContain("walkTarget");
   });
+
+  it("keeps crossing stickers and picnic actions after Play", () => {
+    const hud = readFileSync(new URL("./hud.js", import.meta.url), "utf8");
+    const start = readFileSync(new URL("./start.js", import.meta.url), "utf8");
+    const world = readFileSync(new URL("./world.js", import.meta.url), "utf8");
+    expect(hud).toContain('id="sticker-row"');
+    expect(hud).toContain("stickerSheet");
+    expect(start).toContain("openParkGate");
+    expect(start).toContain("takePicnic");
+    expect(start).toContain("cheerCrossing");
+    expect(world).toContain("open-gate");
+    expect(world).toContain("share-picnic");
+  });
 });
