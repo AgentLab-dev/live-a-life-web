@@ -1,4 +1,4 @@
-import { earnedStickerCount, stickerList } from "./crossings.js";
+import { carryLabel, earnedStickerCount, stickerList } from "./crossings.js";
 import { HAIRS, HOUSE_COLORS, OUTFIT_SLOTS, SKINS, escapeAttr, pieceLabel } from "./looks.js";
 import { JOBS } from "./jobs.js";
 import { nearbyPerson } from "./people.js";
@@ -33,7 +33,8 @@ export function renderHud(root, player, people = []) {
   if (place) place.textContent = placeName(player.room);
   if (stickers) {
     const items = stickerList(player.stickers);
-    const held = player.carry === "picnic" ? `<span class="carry-chip">Picnic</span>` : "";
+    const heldLabel = carryLabel(player.carry);
+    const held = heldLabel ? `<span class="carry-chip">${heldLabel}</span>` : "";
     stickers.innerHTML =
       items
         .map(
@@ -171,5 +172,5 @@ export function hudKey(player, people) {
     .filter((item) => item.earned)
     .map((item) => item.id)
     .join("");
-  return `${player.room}:${player.pose}:${player.actionBeatMs > 0}:${player.job}:${player.parkGateOpen}:${player.carry}:${marks}:${actionIds}:${listen}`;
+  return `${player.room}:${player.pose}:${player.actionBeatMs > 0}:${player.job}:${player.parkGateOpen}:${player.bookCartOut}:${player.carry}:${marks}:${actionIds}:${listen}`;
 }

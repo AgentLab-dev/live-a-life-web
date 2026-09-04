@@ -1,4 +1,4 @@
-import { applyCrossingProgress, blockedByCrossing, PICNIC_SPOT } from "./crossings.js";
+import { applyCrossingProgress, blockedByCrossing, BOOK_SPOT, CART, CART_ASIDE, PICNIC_SPOT } from "./crossings.js";
 
 export const TOWN = {
   width: 2560,
@@ -67,6 +67,10 @@ export const ACTIONS = {
     { id: "close-gate", label: "Close gate", x: 930, y: 1694 },
     { id: "take-picnic", label: "Take picnic", x: 500, y: 1020 },
     { id: "share-picnic", label: "Share picnic", x: PICNIC_SPOT.x, y: PICNIC_SPOT.y },
+    { id: "push-cart", label: "Push cart", x: CART.x + CART.w / 2, y: CART.y + CART.h / 2 },
+    { id: "nudge-cart", label: "Nudge cart back", x: CART_ASIDE.x + CART_ASIDE.w / 2, y: CART_ASIDE.y + CART_ASIDE.h / 2 },
+    { id: "take-book", label: "Take a book", x: 460, y: 1400 },
+    { id: "share-book", label: "Share book", x: BOOK_SPOT.x, y: BOOK_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -96,6 +100,7 @@ export const ACTIONS = {
   library: [
     { id: "leave-library", label: "Go outside", x: 70, y: 340, anywhere: true },
     { id: "library-work", label: "Stamp a book", x: 560, y: 400, anywhere: true },
+    { id: "take-book", label: "Take a book", x: 560, y: 400, anywhere: true },
   ],
 };
 
@@ -181,7 +186,7 @@ export function stepToward(player, target, dt, speed = 195) {
   const facing = dx === 0 ? player.facing : dx > 0 ? 1 : -1;
   let x = player.x;
   let y = player.y;
-  const extras = { parkGateOpen: player.parkGateOpen };
+  const extras = { parkGateOpen: player.parkGateOpen, bookCartOut: player.bookCartOut };
   if (!isBlocked(player.room, nextX, player.y, extras)) x = nextX;
   if (!isBlocked(player.room, x, nextY, extras)) y = nextY;
   const moving = Math.hypot(x - player.x, y - player.y) > 0.4;
@@ -223,8 +228,12 @@ export function visibleActions(player) {
     if (action.id === "park-work" && player.job !== "park") return false;
     if (action.id === "open-gate" && player.parkGateOpen) return false;
     if (action.id === "close-gate" && !player.parkGateOpen) return false;
-    if (action.id === "take-picnic" && player.carry === "picnic") return false;
+    if (action.id === "take-picnic" && player.carry) return false;
     if (action.id === "share-picnic" && player.carry !== "picnic") return false;
+    if (action.id === "push-cart" && player.bookCartOut === false) return false;
+    if (action.id === "nudge-cart" && player.bookCartOut !== false) return false;
+    if (action.id === "take-book" && player.carry) return false;
+    if (action.id === "share-book" && player.carry !== "book") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });

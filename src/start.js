@@ -1,5 +1,17 @@
 import { createHold, dirFromKey, heldWalkTarget, isTypingTarget } from "./controls.js";
-import { cheerCrossing, closeParkGate, markCheer, newSticker, openParkGate, sharePicnic, takePicnic } from "./crossings.js";
+import {
+  cheerCrossing,
+  closeParkGate,
+  markCheer,
+  newSticker,
+  nudgeBookCart,
+  openParkGate,
+  pushBookCart,
+  shareBook,
+  sharePicnic,
+  takeBook,
+  takePicnic,
+} from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
 import { createPeople, listenTo, stepPeople } from "./people.js";
@@ -112,6 +124,28 @@ export function startGame(root) {
     if (id === "share-picnic") {
       const before = player.stickers;
       player = sharePicnic(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "push-cart") {
+      const before = player.stickers;
+      player = pushBookCart(player);
+      noteCheer(before, player.stickers);
+      persist();
+    }
+    if (id === "nudge-cart") {
+      player = nudgeBookCart(player);
+      persist();
+    }
+    if (id === "take-book") {
+      player = takeBook(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-book") {
+      const before = player.stickers;
+      player = shareBook(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

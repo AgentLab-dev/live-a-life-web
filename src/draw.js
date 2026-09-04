@@ -1,4 +1,25 @@
-import { BRIDGE, CREEK, FENCES, GATE, PICNIC_SPOT, STONES } from "./crossings.js";
+import {
+  BOOK_SPOT,
+  BRIDGE,
+  CART,
+  CART_ASIDE,
+  CREEK,
+  FENCES,
+  FLOWER_BED,
+  FLOWER_PADS,
+  GATE,
+  HEDGE_ARCH,
+  HEDGES,
+  HOPSCOTCH,
+  HOPSCOTCH_ZONE,
+  PICNIC_SPOT,
+  PLANK,
+  PUDDLE,
+  RIBBON_GAP,
+  STONES,
+  STREAMER_POSTS,
+  STREAMER_WALLS,
+} from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
 import { HOUSE, PARK, ROOM, TOWN } from "./world.js";
@@ -48,7 +69,7 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
   const sleeping = pose === "sleep";
   const playing = pose === "play";
   const working = pose === "work";
-  const hopping = pose === "hop" || look.onStone;
+  const hopping = pose === "hop" || look.onStone || look.onHop;
   const bounce = hopping
     ? Math.abs(Math.sin(time * 14)) * 6
     : walking
@@ -192,6 +213,16 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fillStyle = "#3f9b4a";
     oval(ctx, 27, 12, 2.4, 2.4);
     ctx.fill();
+  }
+  if (look.carry === "book" && !sleeping) {
+    ctx.fillStyle = "#6b4f8a";
+    roundRect(ctx, 16, 8, 14, 16, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f4f1ea";
+    roundRect(ctx, 18, 11, 10, 3, 1);
+    ctx.fill();
+    ctx.fillStyle = "#c39bd3";
+    ctx.fillRect(16, 8, 3, 16);
   }
   ctx.restore();
 }
@@ -460,6 +491,175 @@ function drawGate(ctx, open) {
   ctx.fillText(open ? "Gate open" : "Park gate", GATE.x - 8, GATE.y - 22);
 }
 
+function drawHedgeArch(ctx) {
+  for (const hedge of HEDGES) {
+    ctx.fillStyle = "#2f8a40";
+    roundRect(ctx, hedge.x, hedge.y, hedge.w, hedge.h, 8);
+    ctx.fill();
+    ctx.fillStyle = "#4fb85a";
+    oval(ctx, hedge.x + 18, hedge.y + 4, 16, 12);
+    ctx.fill();
+    oval(ctx, hedge.x + hedge.w - 18, hedge.y + 4, 16, 12);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#2f8a40";
+  oval(ctx, HEDGE_ARCH.x + 18, HEDGE_ARCH.y + 18, 22, 26);
+  ctx.fill();
+  oval(ctx, HEDGE_ARCH.x + HEDGE_ARCH.w - 18, HEDGE_ARCH.y + 18, 22, 26);
+  ctx.fill();
+  ctx.fillStyle = "#3f9b4a";
+  oval(ctx, HEDGE_ARCH.x + HEDGE_ARCH.w / 2, HEDGE_ARCH.y + 6, 40, 14);
+  ctx.fill();
+  ctx.fillStyle = "#2d5a27";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Hedge arch", HEDGE_ARCH.x + 18, HEDGE_ARCH.y - 8);
+}
+
+function drawFlowerPads(ctx) {
+  ctx.fillStyle = "#7a5a32";
+  roundRect(ctx, FLOWER_BED.x, FLOWER_BED.y, FLOWER_BED.w, FLOWER_BED.h, 16);
+  ctx.fill();
+  ctx.fillStyle = "#3f9b4a";
+  ctx.globalAlpha = 0.45;
+  roundRect(ctx, FLOWER_BED.x + 8, FLOWER_BED.y + 8, FLOWER_BED.w - 16, FLOWER_BED.h - 16, 12);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  const blooms = ["#f4a4c4", "#f4b942", "#e74c3c", "#c39bd3"];
+  FLOWER_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#c9b08a";
+    oval(ctx, pad.x, pad.y + 3, 20, 9);
+    ctx.fill();
+    ctx.fillStyle = blooms[index % blooms.length];
+    oval(ctx, pad.x, pad.y, 16, 8);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x, pad.y - 1, 5, 4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Flower pads", FLOWER_BED.x + 16, FLOWER_BED.y - 8);
+}
+
+function drawBookCart(ctx, inWay) {
+  const cart = inWay === false ? CART_ASIDE : CART;
+  ctx.fillStyle = "#8d6e4c";
+  roundRect(ctx, cart.x, cart.y + 18, cart.w, 22, 5);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  oval(ctx, cart.x + 10, cart.y + cart.h - 4, 7, 7);
+  ctx.fill();
+  oval(ctx, cart.x + cart.w - 10, cart.y + cart.h - 4, 7, 7);
+  ctx.fill();
+  ctx.fillStyle = "#6b4f8a";
+  roundRect(ctx, cart.x + 8, cart.y + 4, 12, 16, 2);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, cart.x + 22, cart.y + 2, 12, 18, 2);
+  ctx.fill();
+  ctx.fillStyle = "#3f9b4a";
+  roundRect(ctx, cart.x + 34, cart.y + 6, 10, 14, 2);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText(inWay === false ? "Cart aside" : "Book cart", cart.x - 8, cart.y - 8);
+}
+
+function drawHopscotch(ctx) {
+  ctx.fillStyle = "#d8c3a5";
+  roundRect(ctx, HOPSCOTCH_ZONE.x, HOPSCOTCH_ZONE.y, HOPSCOTCH_ZONE.w, HOPSCOTCH_ZONE.h, 12);
+  ctx.fill();
+  const chalk = ["#5b8def", "#e74c3c", "#f4b942", "#3f9b4a"];
+  HOPSCOTCH.forEach((square, index) => {
+    ctx.fillStyle = chalk[index % chalk.length];
+    ctx.globalAlpha = 0.55;
+    roundRect(ctx, square.x, square.y, square.w, square.h, 8);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#fff8e7";
+    ctx.font = "700 16px Fredoka, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(String(index + 1), square.x + square.w / 2, square.y + 30);
+  });
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Hopscotch", HOPSCOTCH_ZONE.x + 8, HOPSCOTCH_ZONE.y - 8);
+}
+
+function drawStreamers(ctx, time) {
+  for (const post of STREAMER_POSTS) {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, post.x + 6, post.y, 8, post.h, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#6d5a4a";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(STREAMER_POSTS[0].x + 10, STREAMER_POSTS[0].y + 8);
+  ctx.lineTo(STREAMER_POSTS[1].x + 10, STREAMER_POSTS[1].y + 8);
+  ctx.stroke();
+  const colors = ["#e74c3c", "#5b8def", "#f4b942", "#3f9b4a", "#c39bd3"];
+  for (const wall of STREAMER_WALLS) {
+    for (let i = 0; i < 5; i += 1) {
+      const x = wall.x + 8 + i * 9;
+      const sway = Math.sin(time * 3 + i) * 3;
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.beginPath();
+      ctx.moveTo(x, wall.y - 16);
+      ctx.lineTo(x + 5 + sway, wall.y + 36);
+      ctx.lineTo(x - 4 + sway, wall.y + 36);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+  ctx.fillStyle = "#f4a4c4";
+  ctx.globalAlpha = 0.55 + Math.sin(time * 4) * 0.1;
+  for (let i = 0; i < 3; i += 1) {
+    oval(ctx, RIBBON_GAP.x + 12 + i * 14, RIBBON_GAP.y + 10, 5, 10);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Ribbons", STREAMER_POSTS[0].x - 4, STREAMER_POSTS[0].y - 10);
+}
+
+function drawPuddle(ctx, time) {
+  ctx.fillStyle = "#6ec6e8";
+  ctx.globalAlpha = 0.8 + Math.sin(time * 2) * 0.08;
+  oval(ctx, PUDDLE.x + PUDDLE.w / 2, PUDDLE.y + PUDDLE.h / 2, PUDDLE.w / 2, PUDDLE.h / 2 - 4);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#8fd3ea";
+  oval(ctx, PUDDLE.x + 70, PUDDLE.y + 28, 28, 10);
+  ctx.fill();
+  ctx.fillStyle = "#b08968";
+  roundRect(ctx, PLANK.x, PLANK.y + 8, PLANK.w, PLANK.h - 16, 6);
+  ctx.fill();
+  ctx.fillStyle = "#d4a373";
+  for (let i = 0; i < 4; i += 1) {
+    roundRect(ctx, PLANK.x + 6, PLANK.y + 14 + i * 18, PLANK.w - 12, 12, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Puddle plank", PUDDLE.x + 8, PUDDLE.y - 8);
+}
+
+function drawSharedBook(ctx, carried) {
+  if (carried) return;
+  ctx.fillStyle = "#6b4f8a";
+  roundRect(ctx, 448, 1388, 16, 18, 3);
+  ctx.fill();
+  ctx.fillStyle = "#f4f1ea";
+  roundRect(ctx, 450, 1392, 12, 3, 1);
+  ctx.fill();
+  ctx.fillStyle = "#6b4f8a";
+  roundRect(ctx, BOOK_SPOT.x - 8, BOOK_SPOT.y - 6, 16, 12, 3);
+  ctx.fill();
+}
+
 function drawPicnic(ctx, carried) {
   ctx.fillStyle = "#fff8e7";
   roundRect(ctx, PICNIC_SPOT.x - 54, PICNIC_SPOT.y - 8, 108, 50, 16);
@@ -552,6 +752,13 @@ export function drawTown(ctx, player, time) {
   drawBridge(ctx);
   drawGate(ctx, player.parkGateOpen);
   drawPicnic(ctx, player.carry === "picnic");
+  drawHedgeArch(ctx);
+  drawFlowerPads(ctx);
+  drawBookCart(ctx, player.bookCartOut);
+  drawHopscotch(ctx);
+  drawStreamers(ctx, time);
+  drawPuddle(ctx, time);
+  drawSharedBook(ctx, player.carry === "book");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
@@ -823,5 +1030,6 @@ export function kidLook(player) {
     jobLook: jobLook(player.job).look,
     carry: player.carry,
     onStone: player.onStone,
+    onHop: player.onHop,
   };
 }

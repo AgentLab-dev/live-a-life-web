@@ -1,14 +1,29 @@
 import { describe, expect, it } from "vitest";
 import {
+  blockedByCart,
+  blockedByFlowerBed,
+  blockedByHedge,
+  blockedByHopscotch,
+  blockedByPuddle,
+  blockedByStreamers,
   blockedByWater,
   cheerCrossing,
   closeParkGate,
   defaultStickers,
   newSticker,
+  nudgeBookCart,
   onBridge,
+  onFlowerPad,
+  onHedgeArch,
+  onHopscotch,
+  onPlank,
+  onRibbonGap,
   onStone,
   openParkGate,
+  pushBookCart,
+  shareBook,
   sharePicnic,
+  takeBook,
   takePicnic,
 } from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
@@ -321,9 +336,9 @@ describe("park crossings", () => {
     expect(loaded.parkGateOpen).toBe(true);
     expect(loaded.carry).toBe("picnic");
     expect(loaded.stickers).toEqual({
+      ...defaultStickers(),
       gate: true,
       bridge: true,
-      stones: false,
       picnic: true,
       cheer: true,
     });
@@ -379,6 +394,183 @@ describe("park crossings", () => {
     expect(visibleActions({ ...inside, x: 500, y: 400, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
       expect.arrayContaining(["go-outside", "open-closet", "to-kitchen", "to-bedroom"]),
     );
+  });
+});
+
+describe("town crossings", () => {
+  const extrasCartOut = { bookCartOut: true };
+  const extrasCartAside = { bookCartOut: false };
+
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  function townKid(x, y, extra = {}) {
+    return {
+      room: "town",
+      x,
+      y,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      carry: "",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("blocks hedges, flower beds, puddles, and hopscotch dirt but not the paths", () => {
+    expect(blockedByHedge(900, 634)).toBe(true);
+    expect(isBlocked("town", 900, 634)).toBe(true);
+    expect(onHedgeArch(1056, 634)).toBe(true);
+    expect(isBlocked("town", 1056, 634)).toBe(false);
+    expect(blockedByFlowerBed(1380, 640)).toBe(true);
+    expect(onFlowerPad(1450, 662)).toBe(true);
+    expect(isBlocked("town", 1450, 662)).toBe(false);
+    expect(blockedByPuddle(140, 1170)).toBe(true);
+    expect(onPlank(224, 1170)).toBe(true);
+    expect(isBlocked("town", 224, 1170)).toBe(false);
+    expect(blockedByHopscotch(2000, 1490)).toBe(true);
+    expect(onHopscotch(2048, 1490)).toBe(true);
+    expect(isBlocked("town", 2048, 1490)).toBe(false);
+    expect(blockedByStreamers(1718, 1280)).toBe(true);
+    expect(onRibbonGap(1806, 1248)).toBe(true);
+    expect(isBlocked("town", 1806, 1248)).toBe(false);
+  });
+
+  it("blocks the library cart until the kid nudges it aside", () => {
+    expect(blockedByCart(514, 1400, true)).toBe(true);
+    expect(isBlocked("town", 514, 1400, extrasCartOut)).toBe(true);
+    expect(isBlocked("town", 514, 1400, extrasCartAside)).toBe(false);
+    const pushed = pushBookCart({ bookCartOut: true, stickers: defaultStickers() });
+    expect(pushed.bookCartOut).toBe(false);
+    expect(pushed.stickers.cart).toBe(true);
+    expect(pushed.score).toBeUndefined();
+    expect(nudgeBookCart(pushed).bookCartOut).toBe(true);
+  });
+
+  it("walks the hedge arch and earns a sticker without a fail state", () => {
+    const start = townKid(1056, 608);
+    const player = walkFrames(start, (now) => heldWalkTarget(now, "down"));
+    expect(player.y).toBeGreaterThan(648);
+    expect(player.stickers.hedge).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(start.stickers, player.stickers)).toBe("hedge");
+  });
+
+  it("hops flower pads and cafe hopscotch, then stops on dirt instead of punishing", () => {
+    let player = townKid(1450, 600);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 40);
+    expect(player.y).toBeGreaterThan(708);
+    expect(player.stickers.flowers).toBe(true);
+    expect(player.timer).toBeUndefined();
+
+    player = townKid(2048, 1440);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 40);
+    expect(player.y).toBeGreaterThan(1528);
+    expect(player.stickers.hopscotch).toBe(true);
+
+    const bump = stepToward(townKid(1380, 600), { x: 1380, y: 720 }, 80);
+    expect(bump.y).toBeLessThan(618);
+    expect(bump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1380, 640)).toBe(true);
+  });
+
+  it("walks mural ribbons and the bakery puddle plank", () => {
+    let player = townKid(1806, 1200);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 36);
+    expect(player.y).toBeGreaterThan(1260);
+    expect(player.stickers.ribbons).toBe(true);
+
+    player = townKid(224, 1124);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 36);
+    expect(player.y).toBeGreaterThan(1212);
+    expect(player.stickers.puddle).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("takes and shares a library book without money or a timer", () => {
+    const reader = takeBook({ room: "library", carry: "", stickers: defaultStickers(), money: 3 });
+    expect(reader.carry).toBe("book");
+    expect(reader.money).toBeUndefined();
+    expect(
+      visibleActions({ ...reader, room: "library", x: 200, y: 400, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+        (action) => action.id === "take-book",
+      ),
+    ).toBe(false);
+    const shared = shareBook({ ...reader, room: "town", x: 1010, y: 600 });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("look");
+    expect(shared.stickers.book).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+    expect(takePicnic({ ...reader, carry: "book" }).carry).toBe("book");
+  });
+
+  it("cheers a nearby neighbor after a town crossing", () => {
+    const people = createPeople();
+    const theo = people.find((person) => person.id === "theo");
+    const next = cheerCrossing(people, "cart", theo.x, theo.y);
+    expect(next.find((person) => person.id === "theo").line).toMatch(/cart/i);
+    expect(next.find((person) => person.id === "theo").bubbleMs).toBe(2400);
+  });
+
+  it("persists town stickers, the nudged cart, and a carried book", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      bookCartOut: false,
+      carry: "book",
+      stickers: { hedge: true, flowers: true, cart: true, book: true, coins: 4 },
+      money: 9,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.bookCartOut).toBe(false);
+    expect(loaded.carry).toBe("book");
+    expect(loaded.stickers.hedge).toBe(true);
+    expect(loaded.stickers.flowers).toBe(true);
+    expect(loaded.stickers.cart).toBe(true);
+    expect(loaded.stickers.book).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.bookCartOut).toBe(false);
+    expect(player.carry).toBe("book");
+  });
+
+  it("shows cart and book actions without hiding house or shop buttons", () => {
+    const atCart = townKid(514, 1400, { pose: "idle", job: "none" });
+    const ids = visibleActions(atCart).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["push-cart", "take-book", "stickers"]));
+    expect(ids).not.toContain("nudge-cart");
+    expect(ids).not.toContain("share-book");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+  });
+
+  it("keeps the house and shop paths open around the new crossings", () => {
+    let player = townKid(560, 920);
+    player = walkFrames(player, { x: 460, y: 980 }, 80);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    expect(player.x).toBeLessThan(520);
+    player = walkFrames(player, { x: 480, y: 720 }, 120);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
   });
 });
 
