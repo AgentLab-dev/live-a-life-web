@@ -71,7 +71,7 @@ export const PUDDLE = { x: 120, y: 1136, w: 220, h: 72 };
 
 export const PLANK = { x: 188, y: 1124, w: 72, h: 96 };
 
-export const BOOK_SPOT = { x: 1010, y: 600 };
+export const BOOK_SPOT = { x: 1010, y: 612 };
 
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },

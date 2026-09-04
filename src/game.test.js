@@ -7,6 +7,7 @@ import {
   blockedByPuddle,
   blockedByStreamers,
   blockedByWater,
+  BOOK_SPOT,
   cheerCrossing,
   closeParkGate,
   defaultStickers,
@@ -504,7 +505,7 @@ describe("town crossings", () => {
         (action) => action.id === "take-book",
       ),
     ).toBe(false);
-    const shared = shareBook({ ...reader, room: "town", x: 1010, y: 600 });
+    const shared = shareBook({ ...reader, room: "town", x: 1010, y: 612 });
     expect(shared.carry).toBe("");
     expect(shared.pose).toBe("look");
     expect(shared.stickers.book).toBe(true);
@@ -557,6 +558,11 @@ describe("town crossings", () => {
     expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
       expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
     );
+    const withBook = townKid(1056, 608, { carry: "book", pose: "idle", job: "none" });
+    expect(visibleActions(withBook).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["share-book", "stickers"]),
+    );
+    expect(isBlocked("town", BOOK_SPOT.x, BOOK_SPOT.y)).toBe(false);
   });
 
   it("keeps the house and shop paths open around the new crossings", () => {
