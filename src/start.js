@@ -8,8 +8,10 @@ import {
   openParkGate,
   pushBookCart,
   shareBook,
+  shareCard,
   sharePicnic,
   takeBook,
+  takeCard,
   takePicnic,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -146,6 +148,18 @@ export function startGame(root) {
     if (id === "share-book") {
       const before = player.stickers;
       player = shareBook(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-card") {
+      player = takeCard(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-card") {
+      const before = player.stickers;
+      player = shareCard(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

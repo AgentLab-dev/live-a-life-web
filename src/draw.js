@@ -3,17 +3,29 @@ import {
   BRIDGE,
   CART,
   CART_ASIDE,
+  CONE_BLOCKS,
+  CONE_ZONE,
+  CRATE_STEPS,
+  CRATE_ZONE,
   CREEK,
   FENCES,
   FLOWER_BED,
   FLOWER_PADS,
+  FLOUR_BED,
+  FLOUR_SACKS,
   GATE,
   HEDGE_ARCH,
   HEDGES,
   HOPSCOTCH,
   HOPSCOTCH_ZONE,
+  LILIES,
+  LINE_GAP,
+  LINE_POSTS,
+  LINE_WALLS,
+  MAIL_SPOT,
   PICNIC_SPOT,
   PLANK,
+  POND,
   PUDDLE,
   RIBBON_GAP,
   STONES,
@@ -223,6 +235,18 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#c39bd3";
     ctx.fillRect(16, 8, 3, 16);
+  }
+  if (look.carry === "card" && !sleeping) {
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, 16, 12, 16, 11, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(16, 12);
+    ctx.lineTo(24, 18);
+    ctx.lineTo(32, 12);
+    ctx.stroke();
   }
   ctx.restore();
 }
@@ -647,6 +671,134 @@ function drawPuddle(ctx, time) {
   ctx.fillText("Puddle plank", PUDDLE.x + 8, PUDDLE.y - 8);
 }
 
+function drawCrateSteps(ctx) {
+  ctx.fillStyle = "#c9b08a";
+  roundRect(ctx, CRATE_ZONE.x, CRATE_ZONE.y, CRATE_ZONE.w, CRATE_ZONE.h, 12);
+  ctx.fill();
+  CRATE_STEPS.forEach((crate, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#c45c26" : "#d4a373";
+    roundRect(ctx, crate.x - 18, crate.y - 10, 36, 22, 4);
+    ctx.fill();
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, crate.x - 16, crate.y - 4, 32, 4, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Market crates", CRATE_ZONE.x + 12, CRATE_ZONE.y - 8);
+}
+
+function drawFlourSacks(ctx) {
+  ctx.fillStyle = "#d8c3a5";
+  roundRect(ctx, FLOUR_BED.x, FLOUR_BED.y, FLOUR_BED.w, FLOUR_BED.h, 16);
+  ctx.fill();
+  FLOUR_SACKS.forEach((sack, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#f4e6c3" : "#efe0b8";
+    oval(ctx, sack.x, sack.y, 18, 12);
+    ctx.fill();
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, sack.x - 6, sack.y - 14, 12, 8, 3);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Flour sacks", FLOUR_BED.x + 16, FLOUR_BED.y - 8);
+}
+
+function drawLilyPads(ctx) {
+  const blooms = ["#f4a4c4", "#fff8e7", "#e74c3c"];
+  LILIES.forEach((pad, index) => {
+    ctx.fillStyle = "#2f8a40";
+    oval(ctx, pad.x, pad.y + 2, 18, 9);
+    ctx.fill();
+    ctx.fillStyle = "#4fb85a";
+    oval(ctx, pad.x, pad.y, 16, 8);
+    ctx.fill();
+    ctx.fillStyle = blooms[index % blooms.length];
+    oval(ctx, pad.x + 4, pad.y - 2, 4, 4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#2d5a27";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Lily pads", POND.x + 16, POND.y - 8);
+}
+
+function drawClothesline(ctx, time) {
+  for (const post of LINE_POSTS) {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, post.x + 4, post.y, 8, post.h, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#6d5a4a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(LINE_POSTS[0].x + 8, LINE_POSTS[0].y + 16);
+  ctx.lineTo(LINE_POSTS[1].x + 8, LINE_POSTS[1].y + 16);
+  ctx.stroke();
+  const clothes = ["#5b8def", "#f4a4c4", "#fff8e7", "#f4b942"];
+  for (const wall of LINE_WALLS) {
+    for (let i = 0; i < 3; i += 1) {
+      const x = wall.x + 6 + i * 10;
+      const sway = Math.sin(time * 2.4 + i) * 2;
+      ctx.fillStyle = clothes[i % clothes.length];
+      roundRect(ctx, x + sway, wall.y - 8, 8, 28, 3);
+      ctx.fill();
+    }
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.5 + Math.sin(time * 3) * 0.08;
+  oval(ctx, LINE_GAP.x + LINE_GAP.w / 2, LINE_GAP.y + 16, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Clothesline", LINE_POSTS[0].x - 8, LINE_POSTS[0].y - 10);
+}
+
+function drawCones(ctx) {
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, CONE_ZONE.x, CONE_ZONE.y, CONE_ZONE.w, CONE_ZONE.h, 12);
+  ctx.fill();
+  for (const cone of CONE_BLOCKS) {
+    ctx.fillStyle = "#e67e22";
+    ctx.beginPath();
+    ctx.moveTo(cone.x + 4, cone.y + cone.h - 6);
+    ctx.lineTo(cone.x + cone.w / 2, cone.y + 8);
+    ctx.lineTo(cone.x + cone.w - 4, cone.y + cone.h - 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, cone.x + 6, cone.y + 28, cone.w - 12, 6, 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pretend cones", CONE_ZONE.x + 8, CONE_ZONE.y - 8);
+}
+
+function drawPostcard(ctx, carried) {
+  if (!carried) {
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, 308, 676, 18, 12, 2);
+    ctx.fill();
+    ctx.fillStyle = "#c45c26";
+    ctx.fillRect(312, 680, 10, 2);
+  }
+  ctx.fillStyle = "#f4d35e";
+  roundRect(ctx, MAIL_SPOT.x - 10, MAIL_SPOT.y - 6, 20, 14, 3);
+  ctx.fill();
+  ctx.strokeStyle = "#c45c26";
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(MAIL_SPOT.x - 10, MAIL_SPOT.y - 6);
+  ctx.lineTo(MAIL_SPOT.x, MAIL_SPOT.y + 2);
+  ctx.lineTo(MAIL_SPOT.x + 10, MAIL_SPOT.y - 6);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Mail", MAIL_SPOT.x - 14, MAIL_SPOT.y - 14);
+}
+
 function drawSharedBook(ctx, carried) {
   if (carried) return;
   ctx.fillStyle = "#6b4f8a";
@@ -691,7 +843,7 @@ function drawPark(ctx, time) {
   oval(ctx, PARK.x + 180, PARK.y + 140, 70, 28);
   ctx.fill();
   ctx.fillStyle = "#6ec6e8";
-  oval(ctx, PARK.x + 560, PARK.y + 240, 90, 40);
+  oval(ctx, POND.x + POND.w / 2, POND.y + POND.h / 2, POND.w / 2, POND.h / 2 - 4);
   ctx.fill();
   ctx.fillStyle = "#e8d5a3";
   roundRect(ctx, PARK.x + 80, PARK.y + 260, 260, 22, 10);
@@ -758,6 +910,12 @@ export function drawTown(ctx, player, time) {
   drawHopscotch(ctx);
   drawStreamers(ctx, time);
   drawPuddle(ctx, time);
+  drawCrateSteps(ctx);
+  drawFlourSacks(ctx);
+  drawLilyPads(ctx);
+  drawClothesline(ctx, time);
+  drawCones(ctx);
+  drawPostcard(ctx, player.carry === "card");
   drawSharedBook(ctx, player.carry === "book");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";

@@ -18,6 +18,7 @@ This is a Vite 2D canvas game. Open on a phone or computer. No login. Tap **Play
 - Level 0 city around the house: plaza, park, mural, computer people with canned lines, cafe / bakery / library, pretend jobs
 - Park crossings: a friendly gate, garden bridge, stepping stones over a little creek, picnic delivery, sticker keepsakes, and neighbor cheers
 - Town crossings: a hedge arch by Next Door, flower-bed pads by Friends, a library book cart to nudge, cafe hopscotch, mural ribbons, a bakery puddle plank, and a library-book share
+- Weekday crossings: market crate steps, bakery flour-sack hops, park lily pads, a clothesline duck-under, pretend construction cones, and a postcard share at Friends
 - Drawn in the original 2D kid-and-house style. No 3D, no chat, no money, no cars, no multiplayer
 
 ## Local
