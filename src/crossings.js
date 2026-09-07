@@ -126,7 +126,7 @@ export const CONE_BLOCKS = [
   { x: 1950, y: 1728, w: 28, h: 64 },
 ];
 
-export const MAIL_SPOT = { x: 1610, y: 640 };
+export const MAIL_SPOT = { x: 1610, y: 720 };
 
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },

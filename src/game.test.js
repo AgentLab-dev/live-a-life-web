@@ -749,6 +749,8 @@ describe("weekday crossings", () => {
       expect.arrayContaining(["share-card", "stickers"]),
     );
     expect(isBlocked("town", MAIL_SPOT.x, MAIL_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 1610, 720)).toBe(false);
+    expect(blockedByFlowerBed(1610, 720)).toBe(false);
   });
 
   it("keeps the house, bakery, and cafe paths open around the new crossings", () => {
