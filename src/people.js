@@ -19,8 +19,8 @@ export const TOWN_PEOPLE = [
     job: "librarian",
     line: "Quiet voices in the stacks.",
     path: [
-      { x: 420, y: 1380 },
-      { x: 700, y: 1380 },
+      { x: 420, y: 1364 },
+      { x: 700, y: 1364 },
       { x: 980, y: 1180 },
     ],
     skin: "peach",
@@ -77,6 +77,7 @@ export const TOWN_PEOPLE = [
     path: [
       { x: 980, y: 900 },
       { x: 1720, y: 900 },
+      { x: 1806, y: 1280 },
       { x: 1720, y: 1520 },
       { x: 980, y: 1520 },
     ],

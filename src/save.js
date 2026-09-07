@@ -25,6 +25,7 @@ export function defaultSave() {
     outfit: { ...DEFAULT_OUTFIT },
     job: DEFAULT_JOB,
     parkGateOpen: false,
+    bookCartOut: true,
     carry: "",
     stickers: defaultStickers(),
   };
@@ -49,6 +50,7 @@ export function sanitizeSave(raw) {
     outfit: sanitizeOutfit(raw.outfit),
     job: JOBS.some((item) => item.id === raw.job) ? raw.job : fallback.job,
     parkGateOpen: raw.parkGateOpen === true,
+    bookCartOut: raw.bookCartOut !== false,
     carry: sanitizeCarry(raw.carry),
     stickers: sanitizeStickers(raw.stickers),
   };

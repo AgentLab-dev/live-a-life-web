@@ -38,5 +38,9 @@ describe("Play boot", () => {
     expect(start).toContain("cheerCrossing");
     expect(world).toContain("open-gate");
     expect(world).toContain("share-picnic");
+    expect(world).toContain("push-cart");
+    expect(world).toContain("share-book");
+    expect(start).toContain("takeBook");
+    expect(start).toContain("pushBookCart");
   });
 });
