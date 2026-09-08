@@ -1,4 +1,4 @@
-import { applyCrossingProgress, blockedByCrossing, BOOK_SPOT, CART, CART_ASIDE, MAIL_SPOT, PICNIC_SPOT } from "./crossings.js";
+import { applyCrossingProgress, blockedByCrossing, BOOK_SPOT, CART, CART_ASIDE, MAIL_SPOT, PICNIC_SPOT, SNACK_SPOT } from "./crossings.js";
 
 export const TOWN = {
   width: 2560,
@@ -73,6 +73,8 @@ export const ACTIONS = {
     { id: "share-book", label: "Share book", x: BOOK_SPOT.x, y: BOOK_SPOT.y },
     { id: "take-card", label: "Take postcard", x: 320, y: 690 },
     { id: "share-card", label: "Share postcard", x: MAIL_SPOT.x, y: MAIL_SPOT.y },
+    { id: "take-snack", label: "Take snack", x: 1920, y: 1320 },
+    { id: "share-snack", label: "Share snack", x: SNACK_SPOT.x, y: SNACK_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -93,6 +95,7 @@ export const ACTIONS = {
   cafe: [
     { id: "leave-cafe", label: "Go outside", x: 70, y: 340, anywhere: true },
     { id: "cafe-sit", label: "Sit", x: 500, y: 400, furniture: "sofa", anywhere: true },
+    { id: "take-snack", label: "Take snack", x: 500, y: 400, anywhere: true },
   ],
   bakery: [
     { id: "leave-bakery", label: "Go outside", x: 70, y: 340, anywhere: true },
@@ -238,6 +241,8 @@ export function visibleActions(player) {
     if (action.id === "share-book" && player.carry !== "book") return false;
     if (action.id === "take-card" && player.carry) return false;
     if (action.id === "share-card" && player.carry !== "card") return false;
+    if (action.id === "take-snack" && player.carry) return false;
+    if (action.id === "share-snack" && player.carry !== "snack") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });

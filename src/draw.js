@@ -1,8 +1,13 @@
 import {
+  BALLOON_GAP,
+  BALLOON_POSTS,
+  BALLOON_WALLS,
   BOOK_SPOT,
   BRIDGE,
   CART,
   CART_ASIDE,
+  CHALK,
+  CHALK_ZONE,
   CONE_BLOCKS,
   CONE_ZONE,
   CRATE_STEPS,
@@ -13,6 +18,8 @@ import {
   FLOWER_PADS,
   FLOUR_BED,
   FLOUR_SACKS,
+  FOUNTAIN_BOWL,
+  FOUNTAIN_PADS,
   GATE,
   HEDGE_ARCH,
   HEDGES,
@@ -28,9 +35,15 @@ import {
   POND,
   PUDDLE,
   RIBBON_GAP,
+  SANDBOX,
+  SANDBOX_MOUNDS,
+  SNACK_SPOT,
   STONES,
   STREAMER_POSTS,
   STREAMER_WALLS,
+  SWING_GAP,
+  SWING_POSTS,
+  SWING_WALLS,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -248,6 +261,20 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.lineTo(32, 12);
     ctx.stroke();
   }
+  if (look.carry === "snack" && !sleeping) {
+    ctx.fillStyle = "#e8b86d";
+    oval(ctx, 24, 16, 9, 6);
+    ctx.fill();
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(16, 14);
+    ctx.quadraticCurveTo(24, 10, 32, 14);
+    ctx.stroke();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 22, 15, 2, 2);
+    ctx.fill();
+  }
   ctx.restore();
 }
 
@@ -357,7 +384,7 @@ function drawFountain(ctx, x, y, time) {
   oval(ctx, x, y, 54, 24);
   ctx.fill();
   ctx.fillStyle = "#7ec8e3";
-  oval(ctx, x, y - 4, 36, 16);
+  roundRect(ctx, FOUNTAIN_BOWL.x, FOUNTAIN_BOWL.y, FOUNTAIN_BOWL.w, FOUNTAIN_BOWL.h, 16);
   ctx.fill();
   ctx.fillStyle = "#dfe7ef";
   roundRect(ctx, x - 6, y - 46, 12, 40, 4);
@@ -367,6 +394,19 @@ function drawFountain(ctx, x, y, time) {
   oval(ctx, x, y - 54, 16, 10);
   ctx.fill();
   ctx.globalAlpha = 1;
+  FOUNTAIN_PADS.forEach((pad, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#fff8e7" : "#dfe7ef";
+    oval(ctx, pad.x, pad.y + 2, 16, 8);
+    ctx.fill();
+    ctx.fillStyle = "#8fd3ea";
+    ctx.globalAlpha = 0.5 + Math.sin(time * 4 + index) * 0.12;
+    oval(ctx, pad.x, pad.y - 2, 8, 5);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Fountain pads", FOUNTAIN_BOWL.x - 8, FOUNTAIN_BOWL.y - 10);
 }
 
 function drawMural(ctx, x, y) {
@@ -799,6 +839,149 @@ function drawPostcard(ctx, carried) {
   ctx.fillText("Mail", MAIL_SPOT.x - 14, MAIL_SPOT.y - 14);
 }
 
+function drawChalk(ctx) {
+  ctx.fillStyle = "#d8c3a5";
+  roundRect(ctx, CHALK_ZONE.x, CHALK_ZONE.y, CHALK_ZONE.w, CHALK_ZONE.h, 12);
+  ctx.fill();
+  const chalk = ["#5b8def", "#e74c3c", "#f4b942", "#3f9b4a"];
+  CHALK.forEach((square, index) => {
+    ctx.fillStyle = chalk[index % chalk.length];
+    ctx.globalAlpha = 0.6;
+    roundRect(ctx, square.x, square.y, square.w, square.h, 8);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#fff8e7";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(String(index + 1), square.x + square.w / 2, square.y + 18);
+  });
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Chalk zig-zag", CHALK_ZONE.x - 18, CHALK_ZONE.y - 8);
+}
+
+function drawBalloons(ctx, time) {
+  for (const post of BALLOON_POSTS) {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, post.x + 4, post.y, 8, post.h, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#6d5a4a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(BALLOON_POSTS[0].x + 8, BALLOON_POSTS[0].y + 10);
+  ctx.lineTo(BALLOON_POSTS[1].x + 8, BALLOON_POSTS[1].y + 10);
+  ctx.stroke();
+  const colors = ["#e74c3c", "#5b8def", "#f4b942", "#f4a4c4", "#3f9b4a"];
+  for (const wall of BALLOON_WALLS) {
+    for (let i = 0; i < 3; i += 1) {
+      const x = wall.x + 6 + i * 10;
+      const sway = Math.sin(time * 2.6 + i) * 3;
+      ctx.strokeStyle = "#6d5a4a";
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(x, wall.y - 18);
+      ctx.lineTo(x + sway, wall.y + 28);
+      ctx.stroke();
+      ctx.fillStyle = colors[i % colors.length];
+      oval(ctx, x + sway, wall.y + 32, 7, 9);
+      ctx.fill();
+    }
+  }
+  ctx.fillStyle = "#8fd3ea";
+  ctx.globalAlpha = 0.5 + Math.sin(time * 3) * 0.08;
+  oval(ctx, BALLOON_GAP.x + BALLOON_GAP.w / 2, BALLOON_GAP.y + 16, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Balloons", BALLOON_POSTS[0].x - 4, BALLOON_POSTS[0].y - 10);
+}
+
+function drawSandbox(ctx) {
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, SANDBOX.x, SANDBOX.y, SANDBOX.w, SANDBOX.h, 16);
+  ctx.fill();
+  ctx.fillStyle = "#d4b48a";
+  roundRect(ctx, SANDBOX.x + 8, SANDBOX.y + 8, SANDBOX.w - 16, SANDBOX.h - 16, 12);
+  ctx.fill();
+  SANDBOX_MOUNDS.forEach((mound, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#f0d9a8" : "#e4c48a";
+    oval(ctx, mound.x, mound.y + 4, 20, 10);
+    ctx.fill();
+    ctx.fillStyle = "#fff4d6";
+    oval(ctx, mound.x - 4, mound.y - 2, 8, 5);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Sandbox", SANDBOX.x + 16, SANDBOX.y - 8);
+}
+
+function drawSwing(ctx, time) {
+  for (const post of SWING_POSTS) {
+    ctx.fillStyle = "#5b8def";
+    roundRect(ctx, post.x + 4, post.y, 8, post.h, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#5b8def";
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.moveTo(SWING_POSTS[0].x + 8, SWING_POSTS[0].y + 6);
+  ctx.lineTo(SWING_POSTS[1].x + 8, SWING_POSTS[1].y + 6);
+  ctx.stroke();
+  for (const wall of SWING_WALLS) {
+    const sway = Math.sin(time * 1.6) * 2;
+    ctx.strokeStyle = "#6d5a4a";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(wall.x + 8, SWING_POSTS[0].y + 8);
+    ctx.lineTo(wall.x + 8 + sway, wall.y + 4);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(wall.x + wall.w - 8, SWING_POSTS[0].y + 8);
+    ctx.lineTo(wall.x + wall.w - 8 + sway, wall.y + 4);
+    ctx.stroke();
+    ctx.fillStyle = "#e74c3c";
+    roundRect(ctx, wall.x + sway, wall.y, wall.w, 12, 4);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.45 + Math.sin(time * 3) * 0.08;
+  oval(ctx, SWING_GAP.x + SWING_GAP.w / 2, SWING_GAP.y + 18, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#2d5a27";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Swing path", SWING_POSTS[0].x - 8, SWING_POSTS[0].y - 10);
+}
+
+function drawSnack(ctx, carried) {
+  if (!carried) {
+    ctx.fillStyle = "#e8b86d";
+    oval(ctx, 1920, 1310, 10, 6);
+    ctx.fill();
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(1912, 1308);
+    ctx.quadraticCurveTo(1920, 1304, 1928, 1308);
+    ctx.stroke();
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, SNACK_SPOT.x - 22, SNACK_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  if (!carried) {
+    ctx.fillStyle = "#e8b86d";
+    oval(ctx, SNACK_SPOT.x, SNACK_SPOT.y + 2, 10, 6);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Snack", SNACK_SPOT.x - 18, SNACK_SPOT.y - 14);
+}
+
 function drawSharedBook(ctx, carried) {
   if (carried) return;
   ctx.fillStyle = "#6b4f8a";
@@ -916,6 +1099,11 @@ export function drawTown(ctx, player, time) {
   drawClothesline(ctx, time);
   drawCones(ctx);
   drawPostcard(ctx, player.carry === "card");
+  drawChalk(ctx);
+  drawBalloons(ctx, time);
+  drawSandbox(ctx);
+  drawSwing(ctx, time);
+  drawSnack(ctx, player.carry === "snack");
   drawSharedBook(ctx, player.carry === "book");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
@@ -964,15 +1152,6 @@ export function drawTown(ctx, player, time) {
   ctx.font = "600 12px Fredoka, sans-serif";
   ctx.fillText("pretend", 1180, 1226);
   ctx.textAlign = "left";
-
-  ctx.fillStyle = "#5b8def";
-  roundRect(ctx, 1240, 1910, 12, 70, 3);
-  ctx.fill();
-  roundRect(ctx, 1310, 1910, 12, 70, 3);
-  ctx.fill();
-  ctx.fillStyle = "#e74c3c";
-  roundRect(ctx, 1280, 1940, 90, 14, 6);
-  ctx.fill();
 
   ctx.fillStyle = "#6db3e0";
   oval(ctx, 920, 2080, 70, 28);
