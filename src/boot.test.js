@@ -42,9 +42,13 @@ describe("Play boot", () => {
     expect(world).toContain("share-book");
     expect(world).toContain("take-card");
     expect(world).toContain("share-card");
+    expect(world).toContain("take-snack");
+    expect(world).toContain("share-snack");
     expect(start).toContain("takeBook");
     expect(start).toContain("takeCard");
     expect(start).toContain("shareCard");
+    expect(start).toContain("takeSnack");
+    expect(start).toContain("shareSnack");
     expect(start).toContain("pushBookCart");
   });
 });

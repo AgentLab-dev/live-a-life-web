@@ -10,9 +10,11 @@ import {
   shareBook,
   shareCard,
   sharePicnic,
+  shareSnack,
   takeBook,
   takeCard,
   takePicnic,
+  takeSnack,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -160,6 +162,18 @@ export function startGame(root) {
     if (id === "share-card") {
       const before = player.stickers;
       player = shareCard(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-snack") {
+      player = takeSnack(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-snack") {
+      const before = player.stickers;
+      player = shareSnack(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

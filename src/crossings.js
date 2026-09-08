@@ -128,6 +128,65 @@ export const CONE_BLOCKS = [
 
 export const MAIL_SPOT = { x: 1610, y: 720 };
 
+export const FOUNTAIN_BOWL = { x: 1144, y: 1296, w: 72, h: 52 };
+
+export const FOUNTAIN_PADS = [
+  { x: 1180, y: 1308 },
+  { x: 1180, y: 1322 },
+  { x: 1180, y: 1336 },
+];
+
+export const FOUNTAIN_PAD_RADIUS = 16;
+
+export const CHALK_ZONE = { x: 1596, y: 504, w: 88, h: 120 };
+
+export const CHALK = [
+  { x: 1604, y: 504, w: 40, h: 36 },
+  { x: 1640, y: 532, w: 40, h: 36 },
+  { x: 1604, y: 560, w: 40, h: 36 },
+  { x: 1640, y: 588, w: 40, h: 36 },
+];
+
+export const BALLOON_POSTS = [
+  { x: 1824, y: 1376, w: 16, h: 128 },
+  { x: 1944, y: 1376, w: 16, h: 128 },
+];
+
+export const BALLOON_WALLS = [
+  { x: 1840, y: 1420, w: 36, h: 14 },
+  { x: 1908, y: 1420, w: 36, h: 14 },
+];
+
+export const BALLOON_GAP = { x: 1876, y: 1404, w: 32, h: 48 };
+
+export const BALLOON_BAND = { x: 1840, y: 1420, w: 104, h: 14 };
+
+export const SANDBOX = { x: 1904, y: 1920, w: 176, h: 88 };
+
+export const SANDBOX_MOUNDS = [
+  { x: 1992, y: 1936 },
+  { x: 1992, y: 1964 },
+  { x: 1992, y: 1992 },
+];
+
+export const SANDBOX_RADIUS = 20;
+
+export const SWING_POSTS = [
+  { x: 1196, y: 1908, w: 16, h: 108 },
+  { x: 1316, y: 1908, w: 16, h: 108 },
+];
+
+export const SWING_WALLS = [
+  { x: 1212, y: 1944, w: 32, h: 14 },
+  { x: 1284, y: 1944, w: 32, h: 14 },
+];
+
+export const SWING_GAP = { x: 1244, y: 1928, w: 40, h: 48 };
+
+export const SWING_BAND = { x: 1212, y: 1944, w: 104, h: 14 };
+
+export const SNACK_SPOT = { x: 1080, y: 1416 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -147,6 +206,12 @@ export const STICKERS = [
   { id: "line", name: "Clothes walker", hint: "You ducked under the sunny clothesline." },
   { id: "cones", name: "Cone walker", hint: "You walked the pretend cone path." },
   { id: "card", name: "Mail friend", hint: "You shared a postcard with a neighbor." },
+  { id: "fountain", name: "Fountain hopper", hint: "You hopped the bubbly fountain pads." },
+  { id: "zigzag", name: "Zigzag hopper", hint: "You hopped the sidewalk chalk zig-zag." },
+  { id: "balloons", name: "Balloon walker", hint: "You walked through the balloon-string arch." },
+  { id: "sandbox", name: "Sandbox hopper", hint: "You hopped the pretend sandbox mounds." },
+  { id: "swing", name: "Swing walker", hint: "You ducked under the quiet park swing." },
+  { id: "snack", name: "Snack friend", hint: "You shared a kind snack at the plaza." },
 ];
 
 export const CHEERS = {
@@ -167,9 +232,15 @@ export const CHEERS = {
   line: "Duck under, shirts say hi!",
   cones: "Careful pretend cone steps!",
   card: "A postcard for a neighbor. Kind!",
+  fountain: "Bubbly hops on the fountain rim!",
+  zigzag: "Zig and zag on the chalk!",
+  balloons: "Balloons tickled your hair!",
+  sandbox: "Sandy mound hops. Soft!",
+  swing: "Duck under the quiet swing!",
+  snack: "A sweet snack to share. Kind!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack"];
 
 export function defaultStickers() {
   return {
@@ -191,6 +262,12 @@ export function defaultStickers() {
     line: false,
     cones: false,
     card: false,
+    fountain: false,
+    zigzag: false,
+    balloons: false,
+    sandbox: false,
+    swing: false,
+    snack: false,
   };
 }
 
@@ -270,6 +347,26 @@ export function onConeLane(x, y) {
   return inRect(x, y, CONE_ZONE) && !CONE_BLOCKS.some((cone) => inRect(x, y, cone));
 }
 
+export function onFountainPad(x, y) {
+  return FOUNTAIN_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= FOUNTAIN_PAD_RADIUS);
+}
+
+export function onChalk(x, y) {
+  return CHALK.some((square) => inRect(x, y, square));
+}
+
+export function onBalloonGap(x, y) {
+  return inRect(x, y, BALLOON_GAP);
+}
+
+export function onSandboxMound(x, y) {
+  return SANDBOX_MOUNDS.some((mound) => Math.hypot(x - mound.x, y - mound.y) <= SANDBOX_RADIUS);
+}
+
+export function onSwingGap(x, y) {
+  return inRect(x, y, SWING_GAP);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -281,6 +378,11 @@ export function townPathAt(x, y) {
   if (onLily(x, y)) return "lilies";
   if (onLineGap(x, y)) return "line";
   if (onConeLane(x, y)) return "cones";
+  if (onFountainPad(x, y)) return "fountain";
+  if (onChalk(x, y)) return "zigzag";
+  if (onBalloonGap(x, y)) return "balloons";
+  if (onSandboxMound(x, y)) return "sandbox";
+  if (onSwingGap(x, y)) return "swing";
   return "";
 }
 
@@ -355,6 +457,28 @@ export function blockedByCones(x, y) {
   return CONE_BLOCKS.some((cone) => inRect(x, y, cone));
 }
 
+export function blockedByFountain(x, y) {
+  return inRect(x, y, FOUNTAIN_BOWL) && !onFountainPad(x, y);
+}
+
+export function blockedByChalk(x, y) {
+  return inRect(x, y, CHALK_ZONE) && !onChalk(x, y);
+}
+
+export function blockedByBalloons(x, y) {
+  if (onBalloonGap(x, y)) return false;
+  return BALLOON_POSTS.some((post) => inRect(x, y, post)) || BALLOON_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedBySandbox(x, y) {
+  return inRect(x, y, SANDBOX) && !onSandboxMound(x, y);
+}
+
+export function blockedBySwing(x, y) {
+  if (onSwingGap(x, y)) return false;
+  return SWING_POSTS.some((post) => inRect(x, y, post)) || SWING_WALLS.some((wall) => inRect(x, y, wall));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -370,7 +494,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByFlour(x, y) ||
     blockedByPond(x, y) ||
     blockedByClothesline(x, y) ||
-    blockedByCones(x, y)
+    blockedByCones(x, y) ||
+    blockedByFountain(x, y) ||
+    blockedByChalk(x, y) ||
+    blockedByBalloons(x, y) ||
+    blockedBySandbox(x, y) ||
+    blockedBySwing(x, y)
   );
 }
 
@@ -435,6 +564,11 @@ export function applyCrossingProgress(prev, next) {
     ["lilies", POND, "y"],
     ["line", LINE_BAND, "y"],
     ["cones", CONE_ZONE, "y"],
+    ["fountain", FOUNTAIN_BOWL, "y"],
+    ["zigzag", CHALK_ZONE, "y"],
+    ["balloons", BALLOON_BAND, "y"],
+    ["sandbox", SANDBOX, "y"],
+    ["swing", SWING_BAND, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -451,7 +585,15 @@ export function applyCrossingProgress(prev, next) {
     lastWays,
     lastSides,
     onStone: path === "stones",
-    onHop: onFlowerPad(next.x, next.y) || onHopscotch(next.x, next.y) || onCrate(next.x, next.y) || onFlourSack(next.x, next.y) || onLily(next.x, next.y),
+    onHop:
+      onFlowerPad(next.x, next.y) ||
+      onHopscotch(next.x, next.y) ||
+      onCrate(next.x, next.y) ||
+      onFlourSack(next.x, next.y) ||
+      onLily(next.x, next.y) ||
+      onFountainPad(next.x, next.y) ||
+      onChalk(next.x, next.y) ||
+      onSandboxMound(next.x, next.y),
   };
 }
 
@@ -549,6 +691,22 @@ export function shareCard(player) {
   });
 }
 
+export function takeSnack(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "snack", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareSnack(player) {
+  if (player.carry !== "snack") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "eat",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), snack: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -569,5 +727,6 @@ export function carryLabel(value) {
   if (value === "picnic") return "Picnic";
   if (value === "book") return "Book";
   if (value === "card") return "Postcard";
+  if (value === "snack") return "Snack";
   return "";
 }
