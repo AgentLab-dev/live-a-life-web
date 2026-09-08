@@ -73,6 +73,61 @@ export const PLANK = { x: 188, y: 1124, w: 72, h: 96 };
 
 export const BOOK_SPOT = { x: 1010, y: 612 };
 
+export const CRATE_ZONE = { x: 1508, y: 968, w: 176, h: 88 };
+
+export const CRATE_STEPS = [
+  { x: 1596, y: 984 },
+  { x: 1596, y: 1012 },
+  { x: 1596, y: 1040 },
+];
+
+export const CRATE_RADIUS = 20;
+
+export const FLOUR_BED = { x: 548, y: 1068, w: 168, h: 84 };
+
+export const FLOUR_SACKS = [
+  { x: 632, y: 1084 },
+  { x: 632, y: 1110 },
+  { x: 632, y: 1136 },
+];
+
+export const FLOUR_RADIUS = 20;
+
+export const POND = { x: 1334, y: 1882, w: 176, h: 78 };
+
+export const LILIES = [
+  { x: 1422, y: 1896 },
+  { x: 1422, y: 1921 },
+  { x: 1422, y: 1946 },
+];
+
+export const LILY_RADIUS = 20;
+
+export const LINE_POSTS = [
+  { x: 724, y: 420, w: 16, h: 168 },
+  { x: 848, y: 420, w: 16, h: 168 },
+];
+
+export const LINE_WALLS = [
+  { x: 740, y: 468, w: 36, h: 14 },
+  { x: 812, y: 468, w: 36, h: 14 },
+];
+
+export const LINE_GAP = { x: 776, y: 452, w: 36, h: 48 };
+
+export const LINE_BAND = { x: 740, y: 468, w: 108, h: 14 };
+
+export const CONE_ZONE = { x: 1720, y: 1728, w: 268, h: 64 };
+
+export const CONE_BLOCKS = [
+  { x: 1740, y: 1728, w: 28, h: 64 },
+  { x: 1810, y: 1728, w: 28, h: 64 },
+  { x: 1880, y: 1728, w: 28, h: 64 },
+  { x: 1950, y: 1728, w: 28, h: 64 },
+];
+
+export const MAIL_SPOT = { x: 1610, y: 720 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -86,6 +141,12 @@ export const STICKERS = [
   { id: "ribbons", name: "Ribbon walker", hint: "You walked through the mural ribbons." },
   { id: "puddle", name: "Plank walker", hint: "You crossed the bakery puddle on a plank." },
   { id: "book", name: "Book friend", hint: "You shared a library book next door." },
+  { id: "crates", name: "Crate hopper", hint: "You hopped the market crate steps." },
+  { id: "flour", name: "Flour hopper", hint: "You hopped the bakery flour sacks." },
+  { id: "lilies", name: "Lily hopper", hint: "You hopped the park lily pads." },
+  { id: "line", name: "Clothes walker", hint: "You ducked under the sunny clothesline." },
+  { id: "cones", name: "Cone walker", hint: "You walked the pretend cone path." },
+  { id: "card", name: "Mail friend", hint: "You shared a postcard with a neighbor." },
 ];
 
 export const CHEERS = {
@@ -100,9 +161,15 @@ export const CHEERS = {
   ribbons: "Those ribbons tickled by!",
   puddle: "A careful plank walk!",
   book: "A story for a neighbor. Kind!",
+  crates: "What a stack of crate hops!",
+  flour: "Soft hops on the flour sacks!",
+  lilies: "The lily pads like your toes!",
+  line: "Duck under, shirts say hi!",
+  cones: "Careful pretend cone steps!",
+  card: "A postcard for a neighbor. Kind!",
 };
 
-export const CARRY_KINDS = ["picnic", "book"];
+export const CARRY_KINDS = ["picnic", "book", "card"];
 
 export function defaultStickers() {
   return {
@@ -118,6 +185,12 @@ export function defaultStickers() {
     ribbons: false,
     puddle: false,
     book: false,
+    crates: false,
+    flour: false,
+    lilies: false,
+    line: false,
+    cones: false,
+    card: false,
   };
 }
 
@@ -177,12 +250,37 @@ export function onPlank(x, y) {
   return inRect(x, y, PLANK);
 }
 
+export function onCrate(x, y) {
+  return CRATE_STEPS.some((crate) => Math.hypot(x - crate.x, y - crate.y) <= CRATE_RADIUS);
+}
+
+export function onFlourSack(x, y) {
+  return FLOUR_SACKS.some((sack) => Math.hypot(x - sack.x, y - sack.y) <= FLOUR_RADIUS);
+}
+
+export function onLily(x, y) {
+  return LILIES.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= LILY_RADIUS);
+}
+
+export function onLineGap(x, y) {
+  return inRect(x, y, LINE_GAP);
+}
+
+export function onConeLane(x, y) {
+  return inRect(x, y, CONE_ZONE) && !CONE_BLOCKS.some((cone) => inRect(x, y, cone));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
   if (onHopscotch(x, y)) return "hopscotch";
   if (onRibbonGap(x, y)) return "ribbons";
   if (onPlank(x, y)) return "puddle";
+  if (onCrate(x, y)) return "crates";
+  if (onFlourSack(x, y)) return "flour";
+  if (onLily(x, y)) return "lilies";
+  if (onLineGap(x, y)) return "line";
+  if (onConeLane(x, y)) return "cones";
   return "";
 }
 
@@ -236,6 +334,27 @@ export function blockedByPuddle(x, y) {
   return inRect(x, y, PUDDLE) && !onPlank(x, y);
 }
 
+export function blockedByCrates(x, y) {
+  return inRect(x, y, CRATE_ZONE) && !onCrate(x, y);
+}
+
+export function blockedByFlour(x, y) {
+  return inRect(x, y, FLOUR_BED) && !onFlourSack(x, y);
+}
+
+export function blockedByPond(x, y) {
+  return inRect(x, y, POND) && !onLily(x, y);
+}
+
+export function blockedByClothesline(x, y) {
+  if (onLineGap(x, y)) return false;
+  return LINE_POSTS.some((post) => inRect(x, y, post)) || LINE_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByCones(x, y) {
+  return CONE_BLOCKS.some((cone) => inRect(x, y, cone));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -246,7 +365,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByCart(x, y, extras.bookCartOut) ||
     blockedByHopscotch(x, y) ||
     blockedByStreamers(x, y) ||
-    blockedByPuddle(x, y)
+    blockedByPuddle(x, y) ||
+    blockedByCrates(x, y) ||
+    blockedByFlour(x, y) ||
+    blockedByPond(x, y) ||
+    blockedByClothesline(x, y) ||
+    blockedByCones(x, y)
   );
 }
 
@@ -306,6 +430,11 @@ export function applyCrossingProgress(prev, next) {
     ["hopscotch", HOPSCOTCH_ZONE, "y"],
     ["ribbons", RIBBON_BAND, "y"],
     ["puddle", PUDDLE, "y"],
+    ["crates", CRATE_ZONE, "y"],
+    ["flour", FLOUR_BED, "y"],
+    ["lilies", POND, "y"],
+    ["line", LINE_BAND, "y"],
+    ["cones", CONE_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -322,7 +451,7 @@ export function applyCrossingProgress(prev, next) {
     lastWays,
     lastSides,
     onStone: path === "stones",
-    onHop: onFlowerPad(next.x, next.y) || onHopscotch(next.x, next.y),
+    onHop: onFlowerPad(next.x, next.y) || onHopscotch(next.x, next.y) || onCrate(next.x, next.y) || onFlourSack(next.x, next.y) || onLily(next.x, next.y),
   };
 }
 
@@ -404,6 +533,22 @@ export function shareBook(player) {
   });
 }
 
+export function takeCard(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "card", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareCard(player) {
+  if (player.carry !== "card") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), card: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -423,5 +568,6 @@ export function sanitizeCarry(value) {
 export function carryLabel(value) {
   if (value === "picnic") return "Picnic";
   if (value === "book") return "Book";
+  if (value === "card") return "Postcard";
   return "";
 }
