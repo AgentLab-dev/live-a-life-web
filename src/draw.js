@@ -44,6 +44,19 @@ import {
   SWING_GAP,
   SWING_POSTS,
   SWING_WALLS,
+  TIRE_BED,
+  TIRE_RINGS,
+  LOG_MUD,
+  LOGS,
+  BUS_ZONE,
+  BUS_BLOCKS,
+  AWNING_GAP,
+  AWNING_POSTS,
+  AWNING_WALLS,
+  TRELLIS_GAP,
+  TRELLIS_POSTS,
+  TRELLIS_WALLS,
+  FLOWER_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -273,6 +286,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.stroke();
     ctx.fillStyle = "#f4d35e";
     oval(ctx, 22, 15, 2, 2);
+    ctx.fill();
+  }
+  if (look.carry === "flower" && !sleeping) {
+    ctx.fillStyle = "#3f9b4a";
+    roundRect(ctx, 22, 16, 3, 12, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, 24, 12, 7, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 24, 12, 2.4, 2.4);
     ctx.fill();
   }
   ctx.restore();
@@ -957,6 +981,186 @@ function drawSwing(ctx, time) {
   ctx.fillText("Swing path", SWING_POSTS[0].x - 8, SWING_POSTS[0].y - 10);
 }
 
+function drawTires(ctx) {
+  ctx.fillStyle = "#c9b08a";
+  roundRect(ctx, TIRE_BED.x, TIRE_BED.y, TIRE_BED.w, TIRE_BED.h, 16);
+  ctx.fill();
+  TIRE_RINGS.forEach((ring, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#4a4a4a" : "#5c5c5c";
+    oval(ctx, ring.x, ring.y + 2, 18, 11);
+    ctx.fill();
+    ctx.fillStyle = "#d8c3a5";
+    oval(ctx, ring.x, ring.y + 2, 8, 5);
+    ctx.fill();
+    ctx.fillStyle = "#6d5a4a";
+    oval(ctx, ring.x, ring.y - 2, 16, 8);
+    ctx.fill();
+    ctx.fillStyle = "#e8d5b5";
+    oval(ctx, ring.x, ring.y - 2, 7, 4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Tire hops", TIRE_BED.x + 16, TIRE_BED.y - 8);
+}
+
+function drawLogs(ctx) {
+  ctx.fillStyle = "#8b6b3a";
+  ctx.globalAlpha = 0.78;
+  oval(ctx, LOG_MUD.x + LOG_MUD.w / 2, LOG_MUD.y + LOG_MUD.h / 2, LOG_MUD.w / 2, LOG_MUD.h / 2 - 4);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#a9844a";
+  oval(ctx, LOG_MUD.x + 70, LOG_MUD.y + 30, 28, 10);
+  ctx.fill();
+  LOGS.forEach((log, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#8d6e4c" : "#b08968";
+    roundRect(ctx, log.x - 22, log.y - 8, 44, 16, 8);
+    ctx.fill();
+    ctx.fillStyle = "#d4a373";
+    oval(ctx, log.x - 20, log.y, 6, 7);
+    ctx.fill();
+    oval(ctx, log.x + 20, log.y, 6, 7);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Log path", LOG_MUD.x + 16, LOG_MUD.y - 8);
+}
+
+function drawBusStop(ctx) {
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, BUS_ZONE.x, BUS_ZONE.y, BUS_ZONE.w, BUS_ZONE.h, 12);
+  ctx.fill();
+  ctx.fillStyle = "#5b8def";
+  roundRect(ctx, BUS_ZONE.x + BUS_ZONE.w - 18, BUS_ZONE.y - 54, 8, 54, 3);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  roundRect(ctx, BUS_ZONE.x + BUS_ZONE.w - 40, BUS_ZONE.y - 72, 52, 24, 6);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 11px Fredoka, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("Bus stop", BUS_ZONE.x + BUS_ZONE.w - 14, BUS_ZONE.y - 56);
+  ctx.textAlign = "left";
+  for (const bench of BUS_BLOCKS) {
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, bench.x, bench.y + 18, bench.w, 14, 4);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, bench.x + bench.w / 2, bench.y + 12, 10, 8);
+    ctx.fill();
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, bench.x + 4, bench.y + 32, 6, 16, 2);
+    ctx.fill();
+    roundRect(ctx, bench.x + bench.w - 10, bench.y + 32, 6, 16, 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Bench weave", BUS_ZONE.x + 8, BUS_ZONE.y - 8);
+}
+
+function drawAwning(ctx, time) {
+  for (const post of AWNING_POSTS) {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, post.x + 4, post.y, 8, post.h, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#e74c3c";
+  roundRect(ctx, AWNING_POSTS[0].x, AWNING_POSTS[0].y + 8, AWNING_POSTS[1].x - AWNING_POSTS[0].x + 16, 18, 4);
+  ctx.fill();
+  ctx.fillStyle = "#fff8e7";
+  for (let i = 0; i < 6; i += 1) {
+    if (i % 2 === 0) continue;
+    ctx.fillRect(AWNING_POSTS[0].x + 8 + i * 20, AWNING_POSTS[0].y + 10, 16, 14);
+  }
+  for (const wall of AWNING_WALLS) {
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, wall.x, wall.y - 8, wall.w, 10, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.5 + Math.sin(time * 3) * 0.08;
+  oval(ctx, AWNING_GAP.x + AWNING_GAP.w / 2, AWNING_GAP.y + 16, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Shop awning", AWNING_POSTS[0].x - 8, AWNING_POSTS[0].y - 10);
+}
+
+function drawTrellis(ctx) {
+  for (const post of TRELLIS_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y, 8, post.h, 3);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    for (let i = 0; i < 5; i += 1) {
+      oval(ctx, post.x + 8, post.y + 18 + i * 24, 12, 8);
+      ctx.fill();
+    }
+  }
+  ctx.fillStyle = "#2f8a40";
+  oval(ctx, TRELLIS_GAP.x + TRELLIS_GAP.w / 2, TRELLIS_POSTS[0].y + 10, 28, 14);
+  ctx.fill();
+  ctx.fillStyle = "#4fb85a";
+  oval(ctx, TRELLIS_GAP.x + 6, TRELLIS_POSTS[0].y + 16, 10, 8);
+  ctx.fill();
+  oval(ctx, TRELLIS_GAP.x + TRELLIS_GAP.w - 6, TRELLIS_POSTS[0].y + 16, 10, 8);
+  ctx.fill();
+  ctx.fillStyle = "#f4a4c4";
+  oval(ctx, TRELLIS_GAP.x + 8, TRELLIS_POSTS[0].y + 8, 4, 4);
+  ctx.fill();
+  ctx.fillStyle = "#f4b942";
+  oval(ctx, TRELLIS_GAP.x + TRELLIS_GAP.w - 8, TRELLIS_POSTS[0].y + 6, 4, 4);
+  ctx.fill();
+  ctx.fillStyle = "#dfe7ef";
+  ctx.globalAlpha = 0.45;
+  oval(ctx, TRELLIS_GAP.x + TRELLIS_GAP.w / 2, TRELLIS_GAP.y + 18, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#2d5a27";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Garden trellis", TRELLIS_POSTS[0].x - 18, TRELLIS_POSTS[0].y - 10);
+}
+
+function drawSharedFlower(ctx, carried) {
+  if (!carried) {
+    ctx.fillStyle = "#3f9b4a";
+    roundRect(ctx, 1196, 572, 3, 12, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, 1198, 568, 7, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 1198, 568, 2.2, 2.2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, FLOWER_SPOT.x - 22, FLOWER_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, FLOWER_SPOT.x - 20, FLOWER_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, FLOWER_SPOT.x - 16, FLOWER_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, FLOWER_SPOT.x + 10, FLOWER_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) {
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, FLOWER_SPOT.x, FLOWER_SPOT.y + 2, 7, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, FLOWER_SPOT.x, FLOWER_SPOT.y + 2, 2.2, 2.2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Flower", FLOWER_SPOT.x - 20, FLOWER_SPOT.y - 14);
+}
+
 function drawSnack(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#e8b86d";
@@ -1105,6 +1309,12 @@ export function drawTown(ctx, player, time) {
   drawSwing(ctx, time);
   drawSnack(ctx, player.carry === "snack");
   drawSharedBook(ctx, player.carry === "book");
+  drawTires(ctx);
+  drawLogs(ctx);
+  drawBusStop(ctx);
+  drawAwning(ctx, time);
+  drawTrellis(ctx);
+  drawSharedFlower(ctx, player.carry === "flower");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
