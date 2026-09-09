@@ -1,4 +1,4 @@
-import { applyCrossingProgress, blockedByCrossing, BOOK_SPOT, CART, CART_ASIDE, MAIL_SPOT, PICNIC_SPOT, SNACK_SPOT } from "./crossings.js";
+import { applyCrossingProgress, blockedByCrossing, BOOK_SPOT, CART, CART_ASIDE, FLOWER_SPOT, MAIL_SPOT, PICNIC_SPOT, SNACK_SPOT } from "./crossings.js";
 
 export const TOWN = {
   width: 2560,
@@ -75,6 +75,8 @@ export const ACTIONS = {
     { id: "share-card", label: "Share postcard", x: MAIL_SPOT.x, y: MAIL_SPOT.y },
     { id: "take-snack", label: "Take snack", x: 1920, y: 1320 },
     { id: "share-snack", label: "Share snack", x: SNACK_SPOT.x, y: SNACK_SPOT.y },
+    { id: "take-flower", label: "Take flower", x: 1200, y: 580 },
+    { id: "share-flower", label: "Share flower", x: FLOWER_SPOT.x, y: FLOWER_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -243,6 +245,8 @@ export function visibleActions(player) {
     if (action.id === "share-card" && player.carry !== "card") return false;
     if (action.id === "take-snack" && player.carry) return false;
     if (action.id === "share-snack" && player.carry !== "snack") return false;
+    if (action.id === "take-flower" && player.carry) return false;
+    if (action.id === "share-flower" && player.carry !== "flower") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });
