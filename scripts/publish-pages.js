@@ -21,9 +21,9 @@ cpSync(join(dist, "index.html"), join(root, "index.html"));
 if (existsSync(join(dist, "assets"))) {
   cpSync(join(dist, "assets"), assets, { recursive: true });
 }
-for (const name of [".nojekyll", "favicon.svg"]) {
-  const from = join(dist, name);
-  if (existsSync(from)) cpSync(from, join(root, name));
+for (const name of readdirSync(dist)) {
+  if (name === "index.html" || name === "assets") continue;
+  cpSync(join(dist, name), join(root, name), { recursive: true });
 }
 
 console.log("Published Vite dist to repo root for GitHub Pages");

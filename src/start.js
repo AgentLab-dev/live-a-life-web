@@ -22,6 +22,7 @@ import { createPeople, listenTo, stepPeople } from "./people.js";
 import { drawKid, drawRoom, kidLook } from "./draw.js";
 import { beatLabel, enterRoom, moveToAction, spawnFor, startFurniture, stepToward, tickAction } from "./world.js";
 import { closetSheet, doorSheet, gameMarkup, hudKey, jobSheet, paintSheet, renderHud, stickerSheet } from "./hud.js";
+import { mountInstallTip } from "./pwa.js";
 import { loadSave, spawnPlayer, writeSave } from "./save.js";
 
 export function startGame(root) {
@@ -35,6 +36,7 @@ export function startGame(root) {
   let lastHud = "";
 
   root.innerHTML = gameMarkup();
+  mountInstallTip(root);
   const game = root.querySelector(".game-root");
   const canvas = game.querySelector("#game-canvas");
   const ctx = canvas.getContext("2d");
