@@ -259,11 +259,14 @@ export const ROOT_RADIUS = 20;
 export const STUMP_BED = { x: 1516, y: 1988, w: 140, h: 140 };
 
 export const STUMPS = [
-  { x: 1586, y: 2024 },
-  { x: 1620, y: 2058 },
-  { x: 1586, y: 2058 },
-  { x: 1552, y: 2058 },
-  { x: 1586, y: 2092 },
+  { x: 1586, y: 2010 },
+  { x: 1618, y: 2042 },
+  { x: 1586, y: 2042 },
+  { x: 1554, y: 2042 },
+  { x: 1618, y: 2074 },
+  { x: 1586, y: 2074 },
+  { x: 1554, y: 2074 },
+  { x: 1586, y: 2106 },
 ];
 
 export const STUMP_RADIUS = 22;
