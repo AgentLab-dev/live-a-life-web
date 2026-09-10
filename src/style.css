@@ -248,6 +248,41 @@ h1 {
   font-size: 14px;
 }
 
+.install-tip {
+  z-index: 4;
+  left: 50%;
+  top: calc(72px + env(safe-area-inset-top));
+  text-align: center;
+  width: min(320px, calc(100% - 24px));
+  padding: 14px 14px 12px;
+  background: #fff8e7;
+  border-radius: 20px;
+  position: absolute;
+  transform: translateX(-50%);
+  box-shadow: 0 6px #3d2a1a2e;
+}
+
+.install-tip[hidden] {
+  display: none;
+}
+
+.install-tip p {
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.install-tip .install-how {
+  color: #7a5a3a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.install-tip .hud-btn {
+  min-width: 120px;
+  min-height: 44px;
+  font-size: 18px;
+}
+
 .hud-actions {
   left: 0;
   right: 0;
