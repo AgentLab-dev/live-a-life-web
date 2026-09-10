@@ -11,10 +11,12 @@ import {
   shareCard,
   sharePicnic,
   shareFlower,
+  shareLeaf,
   shareSnack,
   takeBook,
   takeCard,
   takeFlower,
+  takeLeaf,
   takePicnic,
   takeSnack,
 } from "./crossings.js";
@@ -188,6 +190,18 @@ export function startGame(root) {
     if (id === "share-flower") {
       const before = player.stickers;
       player = shareFlower(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-leaf") {
+      player = takeLeaf(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-leaf") {
+      const before = player.stickers;
+      player = shareLeaf(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

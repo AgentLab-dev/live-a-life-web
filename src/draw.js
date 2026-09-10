@@ -57,6 +57,18 @@ import {
   TRELLIS_POSTS,
   TRELLIS_WALLS,
   FLOWER_SPOT,
+  ROOT_BED,
+  ROOTS,
+  STUMP_BED,
+  STUMPS,
+  HOSE_ZONE,
+  HOSE_BLOCKS,
+  PORCH_GAP,
+  PORCH_POSTS,
+  PORCH_WALLS,
+  BASKET_ZONE,
+  BASKET_BLOCKS,
+  LEAF_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -297,6 +309,27 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#f4d35e";
     oval(ctx, 24, 12, 2.4, 2.4);
+    ctx.fill();
+  }
+  if (look.carry === "leaf" && !sleeping) {
+    ctx.fillStyle = "#e67e22";
+    ctx.beginPath();
+    ctx.moveTo(24, 8);
+    ctx.quadraticCurveTo(34, 12, 30, 20);
+    ctx.quadraticCurveTo(24, 16, 18, 20);
+    ctx.quadraticCurveTo(14, 12, 24, 8);
+    ctx.fill();
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(24, 8);
+    ctx.lineTo(24, 22);
+    ctx.stroke();
+    ctx.fillStyle = "#f4b942";
+    oval(ctx, 21, 13, 2, 2);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, 27, 14, 2, 2);
     ctx.fill();
   }
   ctx.restore();
@@ -1125,6 +1158,189 @@ function drawTrellis(ctx) {
   ctx.fillText("Garden trellis", TRELLIS_POSTS[0].x - 18, TRELLIS_POSTS[0].y - 10);
 }
 
+function drawRoots(ctx) {
+  ctx.fillStyle = "#8b6b3a";
+  ctx.globalAlpha = 0.72;
+  roundRect(ctx, ROOT_BED.x, ROOT_BED.y, ROOT_BED.w, ROOT_BED.h, 16);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#7a5a32";
+  roundRect(ctx, ROOT_BED.x + 10, ROOT_BED.y + 10, ROOT_BED.w - 20, ROOT_BED.h - 20, 12);
+  ctx.fill();
+  drawTree(ctx, ROOTS[0].x, ROOT_BED.y - 4, "#2f8a40");
+  ROOTS.forEach((root, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#8d6e4c" : "#6d4c41";
+    oval(ctx, root.x - 10, root.y + 2, 18, 8);
+    ctx.fill();
+    ctx.fillStyle = "#b08968";
+    oval(ctx, root.x + 8, root.y - 2, 16, 7);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, root.x, root.y, 14, 6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#2d5a27";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Tree roots", ROOT_BED.x + 16, ROOT_BED.y - 8);
+}
+
+function drawStumps(ctx) {
+  ctx.fillStyle = "#7a5a32";
+  ctx.globalAlpha = 0.7;
+  oval(ctx, STUMP_BED.x + STUMP_BED.w / 2, STUMP_BED.y + STUMP_BED.h / 2, STUMP_BED.w / 2 - 4, STUMP_BED.h / 2 - 6);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  STUMPS.forEach((stump, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#8d6e4c" : "#b08968";
+    oval(ctx, stump.x, stump.y + 6, 18, 8);
+    ctx.fill();
+    ctx.fillStyle = "#d4a373";
+    oval(ctx, stump.x, stump.y, 16, 8);
+    ctx.fill();
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 1.4;
+    oval(ctx, stump.x, stump.y, 10, 5);
+    ctx.stroke();
+    oval(ctx, stump.x, stump.y, 5, 2.5);
+    ctx.stroke();
+    ctx.fillStyle = "#4fb85a";
+    oval(ctx, stump.x + 8, stump.y - 4, 4, 3);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Stump circle", STUMP_BED.x + 8, STUMP_BED.y - 8);
+}
+
+function drawHose(ctx) {
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, HOSE_ZONE.x, HOSE_ZONE.y, HOSE_ZONE.w, HOSE_ZONE.h, 12);
+  ctx.fill();
+  for (const coil of HOSE_BLOCKS) {
+    const cx = coil.x + coil.w / 2;
+    const cy = coil.y + coil.h / 2;
+    ctx.strokeStyle = "#3f9b4a";
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 11, 18, 0, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = "#7ec850";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 6, 11, 0.2, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = "#2f8a40";
+    oval(ctx, cx, cy - 16, 4, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Garden hose", HOSE_ZONE.x + 8, HOSE_ZONE.y - 8);
+}
+
+function drawPorch(ctx) {
+  for (const post of PORCH_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y, 8, post.h, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#d4a373";
+  roundRect(ctx, PORCH_POSTS[0].x, PORCH_POSTS[0].y + 4, PORCH_POSTS[1].x - PORCH_POSTS[0].x + 16, 10, 3);
+  ctx.fill();
+  for (const wall of PORCH_WALLS) {
+    ctx.fillStyle = "#b08968";
+    roundRect(ctx, wall.x, wall.y - 6, wall.w, 8, 2);
+    ctx.fill();
+    ctx.fillStyle = "#8d6e4c";
+    for (let i = 0; i < 3; i += 1) {
+      roundRect(ctx, wall.x + 4 + i * 7, wall.y - 18, 4, 16, 1);
+      ctx.fill();
+    }
+  }
+  ctx.fillStyle = "#c9b08a";
+  roundRect(ctx, PORCH_GAP.x + 4, PORCH_GAP.y + 28, PORCH_GAP.w - 8, 10, 3);
+  ctx.fill();
+  ctx.fillStyle = "#dfe7ef";
+  ctx.globalAlpha = 0.45;
+  oval(ctx, PORCH_GAP.x + PORCH_GAP.w / 2, PORCH_GAP.y + 18, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Library porch", PORCH_POSTS[0].x - 10, PORCH_POSTS[0].y - 10);
+}
+
+function drawBaskets(ctx) {
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, BASKET_ZONE.x, BASKET_ZONE.y, BASKET_ZONE.w, BASKET_ZONE.h, 12);
+  ctx.fill();
+  const rims = ["#c45c26", "#d4a373", "#e67e22", "#b08968"];
+  BASKET_BLOCKS.forEach((basket, index) => {
+    const cx = basket.x + basket.w / 2;
+    ctx.fillStyle = rims[index % rims.length];
+    oval(ctx, cx, basket.y + 44, 14, 10);
+    ctx.fill();
+    ctx.fillStyle = "#f4e6c3";
+    oval(ctx, cx, basket.y + 40, 11, 7);
+    ctx.fill();
+    ctx.fillStyle = rims[(index + 1) % rims.length];
+    oval(ctx, cx, basket.y + 26, 13, 9);
+    ctx.fill();
+    ctx.fillStyle = "#fff4d6";
+    oval(ctx, cx, basket.y + 22, 9, 5);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, cx - 3, basket.y + 20, 3, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f4b942";
+    oval(ctx, cx + 3, basket.y + 21, 3, 3);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Market baskets", BASKET_ZONE.x + 8, BASKET_ZONE.y - 8);
+}
+
+function drawSharedLeaf(ctx, carried) {
+  if (!carried) {
+    ctx.fillStyle = "#e67e22";
+    ctx.beginPath();
+    ctx.moveTo(1472, 1768);
+    ctx.quadraticCurveTo(1484, 1772, 1480, 1780);
+    ctx.quadraticCurveTo(1472, 1776, 1464, 1780);
+    ctx.quadraticCurveTo(1460, 1772, 1472, 1768);
+    ctx.fill();
+    ctx.fillStyle = "#f4b942";
+    oval(ctx, 1466, 1800, 5, 4);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, 1478, 1802, 5, 4);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, LEAF_SPOT.x - 22, LEAF_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, LEAF_SPOT.x - 20, LEAF_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, LEAF_SPOT.x - 16, LEAF_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, LEAF_SPOT.x + 10, LEAF_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) {
+    ctx.fillStyle = "#e67e22";
+    oval(ctx, LEAF_SPOT.x, LEAF_SPOT.y + 2, 8, 5);
+    ctx.fill();
+    ctx.fillStyle = "#f4b942";
+    oval(ctx, LEAF_SPOT.x - 3, LEAF_SPOT.y + 1, 2, 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Leaf", LEAF_SPOT.x - 14, LEAF_SPOT.y - 14);
+}
+
 function drawSharedFlower(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#3f9b4a";
@@ -1315,6 +1531,12 @@ export function drawTown(ctx, player, time) {
   drawAwning(ctx, time);
   drawTrellis(ctx);
   drawSharedFlower(ctx, player.carry === "flower");
+  drawRoots(ctx);
+  drawStumps(ctx);
+  drawHose(ctx);
+  drawPorch(ctx);
+  drawBaskets(ctx);
+  drawSharedLeaf(ctx, player.carry === "leaf");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

@@ -21,6 +21,7 @@ This is a Vite 2D canvas game. Open on a phone or computer. No login. Tap **Play
 - Weekday crossings: market crate steps, bakery flour-sack hops, park lily pads, a clothesline duck-under, pretend construction cones, and a postcard share at Friends
 - Tuesday crossings: plaza fountain pads, sidewalk chalk zig-zag, a balloon-string arch, sandbox mound hops, a park swing duck-under, and a kind snack share from Honey Cafe
 - Wednesday crossings: tire-stack hops by the shed, a log path over park-edge mud, a pretend bus-stop bench weave, a striped shop awning duck-under, a leafy garden trellis by Friends, and a kind flower share at the fountain bench
+- Thursday crossings: tree-root hops by a park tree, a stepping-stump circle near the play area, a garden hose weave by Friends, a library porch rail, market basket stacks, and a kind leaf share at the plaza bench
 - Drawn in the original 2D kid-and-house style. No 3D, no chat, no money, no cars, no multiplayer
 
 ## Local
