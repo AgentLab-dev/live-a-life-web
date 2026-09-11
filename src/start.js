@@ -10,9 +10,15 @@ import {
   shareBook,
   shareCard,
   sharePicnic,
+  shareFlower,
+  shareLeaf,
+  shareBalloon,
   shareSnack,
+  takeBalloon,
   takeBook,
   takeCard,
+  takeFlower,
+  takeLeaf,
   takePicnic,
   takeSnack,
 } from "./crossings.js";
@@ -174,6 +180,42 @@ export function startGame(root) {
     if (id === "share-snack") {
       const before = player.stickers;
       player = shareSnack(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-flower") {
+      player = takeFlower(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-flower") {
+      const before = player.stickers;
+      player = shareFlower(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-leaf") {
+      player = takeLeaf(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-leaf") {
+      const before = player.stickers;
+      player = shareLeaf(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-balloon") {
+      player = takeBalloon(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-balloon") {
+      const before = player.stickers;
+      player = shareBalloon(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
