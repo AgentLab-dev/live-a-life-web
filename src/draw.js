@@ -69,6 +69,18 @@ import {
   BASKET_ZONE,
   BASKET_BLOCKS,
   LEAF_SPOT,
+  SWIRL,
+  SWIRL_ZONE,
+  RIM_BED,
+  RIM_HOLE,
+  PICKET_GAP,
+  PICKET_POSTS,
+  PICKET_WALLS,
+  WET,
+  WET_STONES,
+  MAIL_ZONE,
+  MAIL_BLOCKS,
+  BALLOON_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -330,6 +342,27 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#e74c3c";
     oval(ctx, 27, 14, 2, 2);
+    ctx.fill();
+  }
+  if (look.carry === "balloon" && !sleeping) {
+    ctx.strokeStyle = "#6d5a4a";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(18, 16);
+    ctx.lineTo(26, 0);
+    ctx.stroke();
+    ctx.fillStyle = "#5b8def";
+    oval(ctx, 26, -8, 8, 10);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, 24, -10, 3, 3);
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    ctx.beginPath();
+    ctx.moveTo(26, 2);
+    ctx.lineTo(23, 6);
+    ctx.lineTo(29, 6);
+    ctx.closePath();
     ctx.fill();
   }
   ctx.restore();
@@ -1341,6 +1374,184 @@ function drawSharedLeaf(ctx, carried) {
   ctx.fillText("Leaf", LEAF_SPOT.x - 14, LEAF_SPOT.y - 14);
 }
 
+function drawSwirl(ctx) {
+  ctx.fillStyle = "#d8c3a5";
+  roundRect(ctx, SWIRL_ZONE.x, SWIRL_ZONE.y, SWIRL_ZONE.w, SWIRL_ZONE.h, 16);
+  ctx.fill();
+  const chalk = ["#5b8def", "#f4a4c4", "#f4b942", "#3f9b4a", "#c39bd3"];
+  ctx.save();
+  ctx.translate(SWIRL_ZONE.x + SWIRL_ZONE.w / 2, SWIRL_ZONE.y + SWIRL_ZONE.h / 2);
+  ctx.strokeStyle = "#fff8e7";
+  ctx.lineWidth = 7;
+  ctx.beginPath();
+  ctx.arc(0, 0, 38, 0, Math.PI * 1.7);
+  ctx.stroke();
+  ctx.restore();
+  SWIRL.forEach((tile, index) => {
+    ctx.fillStyle = chalk[index % chalk.length];
+    ctx.globalAlpha = 0.62;
+    roundRect(ctx, tile.x, tile.y, tile.w, tile.h, 12);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  ctx.fillStyle = "#fff8e7";
+  oval(ctx, SWIRL_ZONE.x + SWIRL_ZONE.w / 2, SWIRL_ZONE.y + SWIRL_ZONE.h / 2, 8, 8);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Chalk swirl", SWIRL_ZONE.x - 6, SWIRL_ZONE.y - 8);
+}
+
+function drawSandRim(ctx) {
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, RIM_BED.x, RIM_BED.y, RIM_BED.w, RIM_BED.h, 14);
+  ctx.fill();
+  ctx.fillStyle = "#d4a373";
+  roundRect(ctx, RIM_BED.x + 8, RIM_BED.y + 8, RIM_BED.w - 16, RIM_BED.h - 16, 10);
+  ctx.fill();
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, RIM_HOLE.x, RIM_HOLE.y, RIM_HOLE.w, RIM_HOLE.h, 10);
+  ctx.fill();
+  ctx.fillStyle = "#f0d9a8";
+  oval(ctx, RIM_HOLE.x + 28, RIM_HOLE.y + 18, 16, 8);
+  ctx.fill();
+  oval(ctx, RIM_HOLE.x + 72, RIM_HOLE.y + 28, 14, 7);
+  ctx.fill();
+  ctx.fillStyle = "#fff4d6";
+  oval(ctx, RIM_HOLE.x + 50, RIM_HOLE.y + 14, 8, 5);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Sandbox rim", RIM_BED.x + 12, RIM_BED.y - 8);
+}
+
+function drawPicket(ctx) {
+  for (const post of PICKET_POSTS) {
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, post.x + 4, post.y, 8, post.h, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, post.x + 8, post.y + 4, 4, 4);
+    ctx.fill();
+  }
+  for (const wall of PICKET_WALLS) {
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, wall.x, wall.y - 4, wall.w, 10, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f4e6c3";
+    for (let i = 0; i < 4; i += 1) {
+      roundRect(ctx, wall.x + 2 + i * 7, wall.y - 18, 5, 18, 2);
+      ctx.fill();
+      ctx.fillStyle = "#fff8e7";
+      ctx.beginPath();
+      ctx.moveTo(wall.x + 2 + i * 7, wall.y - 18);
+      ctx.lineTo(wall.x + 4.5 + i * 7, wall.y - 24);
+      ctx.lineTo(wall.x + 7 + i * 7, wall.y - 18);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#f4e6c3";
+    }
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.45;
+  oval(ctx, PICKET_GAP.x + PICKET_GAP.w / 2, PICKET_GAP.y + 18, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Picket gap", PICKET_POSTS[0].x - 8, PICKET_POSTS[0].y - 10);
+}
+
+function drawWetStones(ctx, time) {
+  ctx.fillStyle = "#6ec6e8";
+  ctx.globalAlpha = 0.78 + Math.sin(time * 2.1) * 0.08;
+  oval(ctx, WET.x + WET.w / 2, WET.y + WET.h / 2, WET.w / 2, WET.h / 2 - 4);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#8fd3ea";
+  oval(ctx, WET.x + 70, WET.y + 28, 28, 10);
+  ctx.fill();
+  oval(ctx, WET.x + 150, WET.y + 50, 22, 8);
+  ctx.fill();
+  WET_STONES.forEach((stone, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#c9b08a" : "#e8d5b5";
+    oval(ctx, stone.x, stone.y + 3, 18, 9);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, stone.x - 3, stone.y - 1, 7, 4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Puddle stones", WET.x + 16, WET.y - 8);
+}
+
+function drawMailboxes(ctx) {
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, MAIL_ZONE.x, MAIL_ZONE.y, MAIL_ZONE.w, MAIL_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#e74c3c", "#5b8def", "#f4b942", "#3f9b4a"];
+  MAIL_BLOCKS.forEach((box, index) => {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, box.x + 10, box.y + 28, 8, 28, 2);
+    ctx.fill();
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, box.x, box.y + 8, box.w, 28, 5);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, box.x + 6, box.y + 14, box.w - 12, 8, 2);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, box.x + box.w - 8, box.y + 18, 8, 4, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Mailboxes", MAIL_ZONE.x + 8, MAIL_ZONE.y - 8);
+}
+
+function drawSharedBalloon(ctx, carried) {
+  if (!carried) {
+    ctx.strokeStyle = "#6d5a4a";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(1760, 1336);
+    ctx.lineTo(1760, 1312);
+    ctx.stroke();
+    ctx.fillStyle = "#5b8def";
+    oval(ctx, 1760, 1304, 8, 10);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, 1758, 1302, 3, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, BALLOON_SPOT.x - 22, BALLOON_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, BALLOON_SPOT.x - 20, BALLOON_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, BALLOON_SPOT.x - 16, BALLOON_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, BALLOON_SPOT.x + 10, BALLOON_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) {
+    ctx.strokeStyle = "#6d5a4a";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(BALLOON_SPOT.x, BALLOON_SPOT.y + 8);
+    ctx.lineTo(BALLOON_SPOT.x, BALLOON_SPOT.y - 4);
+    ctx.stroke();
+    ctx.fillStyle = "#5b8def";
+    oval(ctx, BALLOON_SPOT.x, BALLOON_SPOT.y - 10, 7, 8);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Balloon", BALLOON_SPOT.x - 24, BALLOON_SPOT.y - 18);
+}
+
 function drawSharedFlower(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#3f9b4a";
@@ -1537,6 +1748,12 @@ export function drawTown(ctx, player, time) {
   drawPorch(ctx);
   drawBaskets(ctx);
   drawSharedLeaf(ctx, player.carry === "leaf");
+  drawSwirl(ctx);
+  drawSandRim(ctx);
+  drawPicket(ctx);
+  drawWetStones(ctx, time);
+  drawMailboxes(ctx);
+  drawSharedBalloon(ctx, player.carry === "balloon");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

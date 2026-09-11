@@ -1,4 +1,4 @@
-import { applyCrossingProgress, blockedByCrossing, BOOK_SPOT, CART, CART_ASIDE, FLOWER_SPOT, LEAF_SPOT, MAIL_SPOT, PICNIC_SPOT, SNACK_SPOT } from "./crossings.js";
+import { applyCrossingProgress, BALLOON_SPOT, blockedByCrossing, BOOK_SPOT, CART, CART_ASIDE, FLOWER_SPOT, LEAF_SPOT, MAIL_SPOT, PICNIC_SPOT, SNACK_SPOT } from "./crossings.js";
 
 export const TOWN = {
   width: 2560,
@@ -79,6 +79,8 @@ export const ACTIONS = {
     { id: "share-flower", label: "Share flower", x: FLOWER_SPOT.x, y: FLOWER_SPOT.y },
     { id: "take-leaf", label: "Take a leaf", x: 1472, y: 1784 },
     { id: "share-leaf", label: "Share leaf", x: LEAF_SPOT.x, y: LEAF_SPOT.y },
+    { id: "take-balloon", label: "Take balloon", x: 1760, y: 1328 },
+    { id: "share-balloon", label: "Share balloon", x: BALLOON_SPOT.x, y: BALLOON_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -251,6 +253,8 @@ export function visibleActions(player) {
     if (action.id === "share-flower" && player.carry !== "flower") return false;
     if (action.id === "take-leaf" && player.carry) return false;
     if (action.id === "share-leaf" && player.carry !== "leaf") return false;
+    if (action.id === "take-balloon" && player.carry) return false;
+    if (action.id === "share-balloon" && player.carry !== "balloon") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });
