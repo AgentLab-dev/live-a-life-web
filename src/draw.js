@@ -69,7 +69,7 @@ import {
   BASKET_ZONE,
   BASKET_BLOCKS,
   LEAF_SPOT,
-  SWIRL,
+  SWIRL_MARKS,
   SWIRL_ZONE,
   RIM_BED,
   RIM_HOLE,
@@ -1387,7 +1387,7 @@ function drawSwirl(ctx) {
   ctx.arc(0, 0, 38, 0, Math.PI * 1.7);
   ctx.stroke();
   ctx.restore();
-  SWIRL.forEach((tile, index) => {
+  SWIRL_MARKS.forEach((tile, index) => {
     ctx.fillStyle = chalk[index % chalk.length];
     ctx.globalAlpha = 0.62;
     roundRect(ctx, tile.x, tile.y, tile.w, tile.h, 12);

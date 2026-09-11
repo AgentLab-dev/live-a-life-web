@@ -308,6 +308,10 @@ export const LEAF_SPOT = { x: 1480, y: 1368 };
 export const SWIRL_ZONE = { x: 896, y: 1196, w: 96, h: 116 };
 
 export const SWIRL = [
+  { x: 908, y: 1196, w: 72, h: 116 },
+];
+
+export const SWIRL_MARKS = [
   { x: 904, y: 1196, w: 48, h: 28 },
   { x: 928, y: 1218, w: 48, h: 28 },
   { x: 904, y: 1240, w: 48, h: 28 },
@@ -317,7 +321,7 @@ export const SWIRL = [
 
 export const RIM_BED = { x: 2104, y: 1768, w: 168, h: 104 };
 
-export const RIM_HOLE = { x: 2136, y: 1796, w: 104, h: 48 };
+export const RIM_HOLE = { x: 2148, y: 1804, w: 80, h: 36 };
 
 export const PICKET_POSTS = [
   { x: 112, y: 668, w: 16, h: 56 },
@@ -353,7 +357,7 @@ export const MAIL_BLOCKS = [
   { x: 1998, y: 792, w: 28, h: 64 },
 ];
 
-export const BALLOON_SPOT = { x: 820, y: 1416 };
+export const BALLOON_SPOT = { x: 700, y: 1416 };
 
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
