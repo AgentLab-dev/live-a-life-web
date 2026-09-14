@@ -50,6 +50,8 @@ describe("Play boot", () => {
     expect(world).toContain("share-leaf");
     expect(world).toContain("take-balloon");
     expect(world).toContain("share-balloon");
+    expect(world).toContain("take-pinwheel");
+    expect(world).toContain("share-pinwheel");
     expect(start).toContain("takeBook");
     expect(start).toContain("takeCard");
     expect(start).toContain("shareCard");
@@ -61,6 +63,8 @@ describe("Play boot", () => {
     expect(start).toContain("shareLeaf");
     expect(start).toContain("takeBalloon");
     expect(start).toContain("shareBalloon");
+    expect(start).toContain("takePinwheel");
+    expect(start).toContain("sharePinwheel");
     expect(start).toContain("pushBookCart");
   });
 });
