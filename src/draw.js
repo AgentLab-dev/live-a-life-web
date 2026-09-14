@@ -81,6 +81,18 @@ import {
   MAIL_ZONE,
   MAIL_BLOCKS,
   BALLOON_SPOT,
+  CURB_BED,
+  CURB_STONES,
+  PLANTER_ZONE,
+  PLANTER_BLOCKS,
+  LANTERN_GAP,
+  LANTERN_POSTS,
+  LANTERN_WALLS,
+  BOARD_ZONE,
+  BOARDS,
+  TOAD_BED,
+  TOADSTOOLS,
+  PINWHEEL_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -363,6 +375,45 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.lineTo(23, 6);
     ctx.lineTo(29, 6);
     ctx.closePath();
+    ctx.fill();
+  }
+  if (look.carry === "pinwheel" && !sleeping) {
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(22, 22);
+    ctx.lineTo(26, 4);
+    ctx.stroke();
+    ctx.fillStyle = "#e74c3c";
+    ctx.beginPath();
+    ctx.moveTo(26, 4);
+    ctx.lineTo(36, 0);
+    ctx.lineTo(28, 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    ctx.beginPath();
+    ctx.moveTo(26, 4);
+    ctx.lineTo(36, 12);
+    ctx.lineTo(24, 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    ctx.beginPath();
+    ctx.moveTo(26, 4);
+    ctx.lineTo(16, 0);
+    ctx.lineTo(24, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    ctx.beginPath();
+    ctx.moveTo(26, 4);
+    ctx.lineTo(16, 12);
+    ctx.lineTo(22, 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, 26, 4, 2.4, 2.4);
     ctx.fill();
   }
   ctx.restore();
@@ -1552,6 +1603,216 @@ function drawSharedBalloon(ctx, carried) {
   ctx.fillText("Balloon", BALLOON_SPOT.x - 24, BALLOON_SPOT.y - 18);
 }
 
+function drawCurbStones(ctx) {
+  ctx.fillStyle = "#c9b08a";
+  roundRect(ctx, CURB_BED.x, CURB_BED.y, CURB_BED.w, CURB_BED.h, 16);
+  ctx.fill();
+  ctx.fillStyle = "#d8c3a5";
+  roundRect(ctx, CURB_BED.x + 10, CURB_BED.y + 8, CURB_BED.w - 20, CURB_BED.h - 16, 10);
+  ctx.fill();
+  CURB_STONES.forEach((stone, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#fff8e7" : "#f4d35e";
+    oval(ctx, stone.x, stone.y + 2, 18, 11);
+    ctx.fill();
+    ctx.fillStyle = "#e8d5b5";
+    oval(ctx, stone.x - 4, stone.y - 2, 7, 4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Curb stones", CURB_BED.x + 12, CURB_BED.y - 8);
+}
+
+function drawPlanters(ctx) {
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, PLANTER_ZONE.x, PLANTER_ZONE.y, PLANTER_ZONE.w, PLANTER_ZONE.h, 12);
+  ctx.fill();
+  const blooms = ["#e74c3c", "#5b8def", "#f4a4c4", "#f4b942"];
+  PLANTER_BLOCKS.forEach((pot, index) => {
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, pot.x + 2, pot.y + 28, pot.w - 4, 28, 6);
+    ctx.fill();
+    ctx.fillStyle = "#a04820";
+    roundRect(ctx, pot.x, pot.y + 24, pot.w, 10, 3);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pot.x + pot.w / 2, pot.y + 20, 12, 10);
+    ctx.fill();
+    ctx.fillStyle = blooms[index % blooms.length];
+    oval(ctx, pot.x + pot.w / 2, pot.y + 12, 6, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, pot.x + pot.w / 2, pot.y + 12, 2, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Planter pots", PLANTER_ZONE.x + 8, PLANTER_ZONE.y - 8);
+}
+
+function drawLanterns(ctx, time) {
+  for (const post of LANTERN_POSTS) {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, post.x + 4, post.y, 8, post.h, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#6d5a4a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(LANTERN_POSTS[0].x + 8, LANTERN_POSTS[0].y + 12);
+  ctx.lineTo(LANTERN_POSTS[1].x + 8, LANTERN_POSTS[1].y + 12);
+  ctx.stroke();
+  const colors = ["#e74c3c", "#f4b942", "#5b8def", "#3f9b4a", "#f4a4c4"];
+  for (const wall of LANTERN_WALLS) {
+    for (let i = 0; i < 3; i += 1) {
+      const x = wall.x + 6 + i * 10;
+      ctx.fillStyle = colors[(i + (wall.x > LANTERN_GAP.x ? 2 : 0)) % colors.length];
+      ctx.globalAlpha = 0.85 + Math.sin(time * 3 + i) * 0.08;
+      roundRect(ctx, x - 5, wall.y - 22, 10, 14, 4);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#fff8e7";
+      oval(ctx, x, wall.y - 16, 2, 2);
+      ctx.fill();
+    }
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.5 + Math.sin(time * 3) * 0.08;
+  oval(ctx, LANTERN_GAP.x + LANTERN_GAP.w / 2, LANTERN_GAP.y + 16, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Paper lanterns", LANTERN_POSTS[0].x - 8, LANTERN_POSTS[0].y - 10);
+}
+
+function drawBoards(ctx) {
+  ctx.fillStyle = "#d8c3a5";
+  roundRect(ctx, BOARD_ZONE.x, BOARD_ZONE.y, BOARD_ZONE.w, BOARD_ZONE.h, 12);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.35;
+  roundRect(ctx, BOARD_ZONE.x + 8, BOARD_ZONE.y + 6, BOARD_ZONE.w - 16, BOARD_ZONE.h - 12, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  BOARDS.forEach((board, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#b08968" : "#8d6e4c";
+    roundRect(ctx, board.x, board.y, board.w, board.h, 8);
+    ctx.fill();
+    ctx.fillStyle = "#d4a373";
+    roundRect(ctx, board.x + 4, board.y + 6, board.w - 8, 6, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Sidewalk boards", BOARD_ZONE.x - 18, BOARD_ZONE.y - 8);
+}
+
+function drawToadstools(ctx) {
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, TOAD_BED.x, TOAD_BED.y, TOAD_BED.w, TOAD_BED.h, 16);
+  ctx.fill();
+  TOADSTOOLS.forEach((toad, index) => {
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, toad.x - 5, toad.y, 10, 12, 3);
+    ctx.fill();
+    ctx.fillStyle = index % 2 === 0 ? "#e74c3c" : "#c0392b";
+    oval(ctx, toad.x, toad.y - 2, 16, 10);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, toad.x - 6, toad.y - 4, 3, 2.4);
+    ctx.fill();
+    oval(ctx, toad.x + 4, toad.y - 1, 2.4, 2);
+    ctx.fill();
+    oval(ctx, toad.x + 1, toad.y - 6, 2, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Toadstool hops", TOAD_BED.x + 8, TOAD_BED.y - 8);
+}
+
+function drawSharedPinwheel(ctx, carried) {
+  if (!carried) {
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(1400, 228);
+    ctx.lineTo(1400, 208);
+    ctx.stroke();
+    ctx.fillStyle = "#e74c3c";
+    ctx.beginPath();
+    ctx.moveTo(1400, 208);
+    ctx.lineTo(1412, 202);
+    ctx.lineTo(1402, 212);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    ctx.beginPath();
+    ctx.moveTo(1400, 208);
+    ctx.lineTo(1412, 218);
+    ctx.lineTo(1398, 212);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    ctx.beginPath();
+    ctx.moveTo(1400, 208);
+    ctx.lineTo(1388, 202);
+    ctx.lineTo(1398, 204);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    ctx.beginPath();
+    ctx.moveTo(1400, 208);
+    ctx.lineTo(1388, 218);
+    ctx.lineTo(1396, 206);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, 1400, 208, 2.4, 2.4);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, PINWHEEL_SPOT.x - 22, PINWHEEL_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, PINWHEEL_SPOT.x - 20, PINWHEEL_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, PINWHEEL_SPOT.x - 16, PINWHEEL_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, PINWHEEL_SPOT.x + 10, PINWHEEL_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) {
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(PINWHEEL_SPOT.x, PINWHEEL_SPOT.y + 8);
+    ctx.lineTo(PINWHEEL_SPOT.x, PINWHEEL_SPOT.y - 6);
+    ctx.stroke();
+    ctx.fillStyle = "#e74c3c";
+    ctx.beginPath();
+    ctx.moveTo(PINWHEEL_SPOT.x, PINWHEEL_SPOT.y - 6);
+    ctx.lineTo(PINWHEEL_SPOT.x + 10, PINWHEEL_SPOT.y - 12);
+    ctx.lineTo(PINWHEEL_SPOT.x + 2, PINWHEEL_SPOT.y - 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    ctx.beginPath();
+    ctx.moveTo(PINWHEEL_SPOT.x, PINWHEEL_SPOT.y - 6);
+    ctx.lineTo(PINWHEEL_SPOT.x + 10, PINWHEEL_SPOT.y + 2);
+    ctx.lineTo(PINWHEEL_SPOT.x - 2, PINWHEEL_SPOT.y - 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, PINWHEEL_SPOT.x, PINWHEEL_SPOT.y - 6, 2.2, 2.2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pinwheel", PINWHEEL_SPOT.x - 28, PINWHEEL_SPOT.y - 18);
+}
+
 function drawSharedFlower(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#3f9b4a";
@@ -1754,6 +2015,12 @@ export function drawTown(ctx, player, time) {
   drawWetStones(ctx, time);
   drawMailboxes(ctx);
   drawSharedBalloon(ctx, player.carry === "balloon");
+  drawCurbStones(ctx);
+  drawPlanters(ctx);
+  drawLanterns(ctx, time);
+  drawBoards(ctx);
+  drawToadstools(ctx);
+  drawSharedPinwheel(ctx, player.carry === "pinwheel");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

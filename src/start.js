@@ -13,6 +13,7 @@ import {
   shareFlower,
   shareLeaf,
   shareBalloon,
+  sharePinwheel,
   shareSnack,
   takeBalloon,
   takeBook,
@@ -20,6 +21,7 @@ import {
   takeFlower,
   takeLeaf,
   takePicnic,
+  takePinwheel,
   takeSnack,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -216,6 +218,18 @@ export function startGame(root) {
     if (id === "share-balloon") {
       const before = player.stickers;
       player = shareBalloon(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-pinwheel") {
+      player = takePinwheel(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-pinwheel") {
+      const before = player.stickers;
+      player = sharePinwheel(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

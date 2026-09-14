@@ -359,6 +359,60 @@ export const MAIL_BLOCKS = [
 
 export const BALLOON_SPOT = { x: 700, y: 1416 };
 
+export const CURB_BED = { x: 96, y: 500, w: 176, h: 84 };
+
+export const CURB_STONES = [
+  { x: 184, y: 516 },
+  { x: 184, y: 542 },
+  { x: 184, y: 568 },
+];
+
+export const CURB_RADIUS = 20;
+
+export const PLANTER_ZONE = { x: 1396, y: 1168, w: 268, h: 64 };
+
+export const PLANTER_BLOCKS = [
+  { x: 1416, y: 1168, w: 28, h: 64 },
+  { x: 1486, y: 1168, w: 28, h: 64 },
+  { x: 1556, y: 1168, w: 28, h: 64 },
+  { x: 1626, y: 1168, w: 28, h: 64 },
+];
+
+export const LANTERN_POSTS = [
+  { x: 2368, y: 1188, w: 16, h: 128 },
+  { x: 2488, y: 1188, w: 16, h: 128 },
+];
+
+export const LANTERN_WALLS = [
+  { x: 2384, y: 1232, w: 36, h: 14 },
+  { x: 2452, y: 1232, w: 36, h: 14 },
+];
+
+export const LANTERN_GAP = { x: 2420, y: 1216, w: 32, h: 48 };
+
+export const LANTERN_BAND = { x: 2384, y: 1232, w: 104, h: 14 };
+
+export const BOARD_ZONE = { x: 520, y: 1440, w: 88, h: 120 };
+
+export const BOARDS = [
+  { x: 528, y: 1440, w: 40, h: 36 },
+  { x: 564, y: 1468, w: 40, h: 36 },
+  { x: 528, y: 1496, w: 40, h: 36 },
+  { x: 564, y: 1524, w: 40, h: 36 },
+];
+
+export const TOAD_BED = { x: 2208, y: 2040, w: 176, h: 84 };
+
+export const TOADSTOOLS = [
+  { x: 2296, y: 2056 },
+  { x: 2296, y: 2082 },
+  { x: 2296, y: 2108 },
+];
+
+export const TOAD_RADIUS = 20;
+
+export const PINWHEEL_SPOT = { x: 1880, y: 1608 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -402,6 +456,12 @@ export const STICKERS = [
   { id: "splash", name: "Splash hopper", hint: "You hopped the zigzag puddle stones." },
   { id: "boxes", name: "Mailbox hopper", hint: "You hopped past the colorful mailboxes." },
   { id: "puff", name: "Balloon friend", hint: "You shared a cheerful balloon." },
+  { id: "curb", name: "Curb hopper", hint: "You hopped the painted curb stones." },
+  { id: "pots", name: "Planter walker", hint: "You walked between the plaza planter pots." },
+  { id: "lanterns", name: "Lantern walker", hint: "You ducked under the paper lanterns." },
+  { id: "boards", name: "Board walker", hint: "You zigzagged the sidewalk boards." },
+  { id: "toads", name: "Toadstool hopper", hint: "You hopped the spotted yard toadstools." },
+  { id: "spin", name: "Pinwheel friend", hint: "You shared a twirly pinwheel." },
 ];
 
 export const CHEERS = {
@@ -446,9 +506,15 @@ export const CHEERS = {
   splash: "Zigzag hops on the puddle stones!",
   boxes: "Colorful mailboxes said hello!",
   puff: "A cheerful balloon to share. Kind!",
+  curb: "Sunny hops on the painted curb!",
+  pots: "Friendly planters made a little path!",
+  lanterns: "Paper lanterns glowed hello!",
+  boards: "Zigzag boards, careful toes!",
+  toads: "Soft hops on the spotted toadstools!",
+  spin: "A twirly pinwheel to share. Kind!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel"];
 
 export function defaultStickers() {
   return {
@@ -494,6 +560,12 @@ export function defaultStickers() {
     splash: false,
     boxes: false,
     puff: false,
+    curb: false,
+    pots: false,
+    lanterns: false,
+    boards: false,
+    toads: false,
+    spin: false,
   };
 }
 
@@ -653,6 +725,26 @@ export function onMailboxLane(x, y) {
   return inRect(x, y, MAIL_ZONE) && !MAIL_BLOCKS.some((box) => inRect(x, y, box));
 }
 
+export function onCurbStone(x, y) {
+  return CURB_STONES.some((stone) => Math.hypot(x - stone.x, y - stone.y) <= CURB_RADIUS);
+}
+
+export function onPlanterLane(x, y) {
+  return inRect(x, y, PLANTER_ZONE) && !PLANTER_BLOCKS.some((pot) => inRect(x, y, pot));
+}
+
+export function onLanternGap(x, y) {
+  return inRect(x, y, LANTERN_GAP);
+}
+
+export function onBoard(x, y) {
+  return BOARDS.some((board) => inRect(x, y, board));
+}
+
+export function onToadstool(x, y) {
+  return TOADSTOOLS.some((toad) => Math.hypot(x - toad.x, y - toad.y) <= TOAD_RADIUS);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -684,6 +776,11 @@ export function townPathAt(x, y) {
   if (onPicketGap(x, y)) return "picket";
   if (onWetStone(x, y)) return "splash";
   if (onMailboxLane(x, y)) return "boxes";
+  if (onCurbStone(x, y)) return "curb";
+  if (onPlanterLane(x, y)) return "pots";
+  if (onLanternGap(x, y)) return "lanterns";
+  if (onBoard(x, y)) return "boards";
+  if (onToadstool(x, y)) return "toads";
   return "";
 }
 
@@ -844,6 +941,27 @@ export function blockedByMailboxes(x, y) {
   return MAIL_BLOCKS.some((box) => inRect(x, y, box));
 }
 
+export function blockedByCurb(x, y) {
+  return inRect(x, y, CURB_BED) && !onCurbStone(x, y);
+}
+
+export function blockedByPlanters(x, y) {
+  return PLANTER_BLOCKS.some((pot) => inRect(x, y, pot));
+}
+
+export function blockedByLanterns(x, y) {
+  if (onLanternGap(x, y)) return false;
+  return LANTERN_POSTS.some((post) => inRect(x, y, post)) || LANTERN_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByBoards(x, y) {
+  return inRect(x, y, BOARD_ZONE) && !onBoard(x, y);
+}
+
+export function blockedByToadstools(x, y) {
+  return inRect(x, y, TOAD_BED) && !onToadstool(x, y);
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -879,7 +997,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByRim(x, y) ||
     blockedByPicket(x, y) ||
     blockedByWet(x, y) ||
-    blockedByMailboxes(x, y)
+    blockedByMailboxes(x, y) ||
+    blockedByCurb(x, y) ||
+    blockedByPlanters(x, y) ||
+    blockedByLanterns(x, y) ||
+    blockedByBoards(x, y) ||
+    blockedByToadstools(x, y)
   );
 }
 
@@ -964,6 +1087,11 @@ export function applyCrossingProgress(prev, next) {
     ["picket", PICKET_BAND, "y"],
     ["splash", WET, "y"],
     ["boxes", MAIL_ZONE, "y"],
+    ["curb", CURB_BED, "y"],
+    ["pots", PLANTER_ZONE, "y"],
+    ["lanterns", LANTERN_BAND, "y"],
+    ["boards", BOARD_ZONE, "y"],
+    ["toads", TOAD_BED, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -995,7 +1123,10 @@ export function applyCrossingProgress(prev, next) {
       onStump(next.x, next.y) ||
       onSwirl(next.x, next.y) ||
       onSandRim(next.x, next.y) ||
-      onWetStone(next.x, next.y),
+      onWetStone(next.x, next.y) ||
+      onCurbStone(next.x, next.y) ||
+      onBoard(next.x, next.y) ||
+      onToadstool(next.x, next.y),
   };
 }
 
@@ -1157,6 +1288,22 @@ export function shareBalloon(player) {
   });
 }
 
+export function takePinwheel(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "pinwheel", pose: "idle", actionBeatMs: 0 });
+}
+
+export function sharePinwheel(player) {
+  if (player.carry !== "pinwheel") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), spin: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -1181,5 +1328,6 @@ export function carryLabel(value) {
   if (value === "flower") return "Flower";
   if (value === "leaf") return "Leaf";
   if (value === "balloon") return "Balloon";
+  if (value === "pinwheel") return "Pinwheel";
   return "";
 }
