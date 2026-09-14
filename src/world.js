@@ -81,7 +81,7 @@ export const ACTIONS = {
     { id: "share-leaf", label: "Share leaf", x: LEAF_SPOT.x, y: LEAF_SPOT.y },
     { id: "take-balloon", label: "Take balloon", x: 1760, y: 1328 },
     { id: "share-balloon", label: "Share balloon", x: BALLOON_SPOT.x, y: BALLOON_SPOT.y },
-    { id: "take-pinwheel", label: "Take pinwheel", x: 1400, y: 220 },
+    { id: "take-pinwheel", label: "Take pinwheel", x: 1588, y: 448 },
     { id: "share-pinwheel", label: "Share pinwheel", x: PINWHEEL_SPOT.x, y: PINWHEEL_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
