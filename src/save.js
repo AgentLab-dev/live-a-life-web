@@ -83,5 +83,11 @@ export function spawnPlayer(save) {
     lastPath: "",
     lastBank: "",
     onStone: false,
+    jumper: false,
+    capitalId: "",
+    stateId: "",
+    hopMs: 0,
+    hopFrom: null,
+    hopTo: null,
   };
 }

@@ -35,7 +35,7 @@ export function renderHud(root, player, people = []) {
   const place = root.querySelector("#place-name");
   const actions = root.querySelector("#hud-actions");
   const stickers = root.querySelector("#sticker-row");
-  if (place) place.textContent = placeName(player.room);
+  if (place) place.textContent = placeName(player.room, player);
   if (stickers) {
     const items = stickerList(player.stickers);
     const heldLabel = carryLabel(player.carry);
@@ -177,5 +177,5 @@ export function hudKey(player, people) {
     .filter((item) => item.earned)
     .map((item) => item.id)
     .join("");
-  return `${player.room}:${player.pose}:${player.actionBeatMs > 0}:${player.job}:${player.parkGateOpen}:${player.bookCartOut}:${player.carry}:${marks}:${actionIds}:${listen}`;
+  return `${player.room}:${player.stateId || ""}:${player.capitalId || ""}:${player.pose}:${player.actionBeatMs > 0}:${player.hopMs > 0}:${player.job}:${player.parkGateOpen}:${player.bookCartOut}:${player.carry}:${marks}:${actionIds}:${listen}`;
 }
