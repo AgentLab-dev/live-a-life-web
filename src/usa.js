@@ -260,10 +260,10 @@ export function neighborPads(stateId) {
   const here = stateById(stateId);
   if (!here) return [];
   const spots = [
-    { x: STATE_MAP.width / 2, y: 108 },
-    { x: STATE_MAP.width - 130, y: STATE_MAP.height / 2 },
+    { x: 340, y: 96 },
+    { x: STATE_MAP.width - 130, y: STATE_MAP.height / 2 + 20 },
     { x: STATE_MAP.width / 2, y: STATE_MAP.height - 90 },
-    { x: 130, y: STATE_MAP.height / 2 },
+    { x: 130, y: STATE_MAP.height / 2 + 20 },
   ];
   return nearbyHopTargets({ room: "usa", capitalId: stateId, x: here.x, y: here.y }, 4).map((state, index) => ({
     ...state,
@@ -286,15 +286,13 @@ export function startHop(player, targetId) {
   if (here?.id === target.id && player.hopMs <= 0 && player.room !== "state") return player;
 
   if (player.room === "state" && player.stateId !== target.id) {
-    const dest = stateViewPoint(target.id);
-    const from = stateRimPoint(player.stateId || here?.id, target.id);
+    const pad = neighborPads(player.stateId).find((item) => item.id === target.id);
+    const dest = pad ? { x: pad.padX, y: pad.padY } : stateViewPoint(target.id);
+    const from = { x: player.x, y: player.y };
     return clearPay({
       ...player,
-      room: "state",
-      stateId: target.id,
       capitalId: target.id,
-      x: from.x,
-      y: from.y,
+      pendingState: target.id,
       pose: "hop",
       hopMs: HOP_MS,
       hopFrom: from,
@@ -329,7 +327,7 @@ export function tickHop(player, dt) {
   const x = from.x + (to.x - from.x) * eased;
   const y = from.y + (to.y - from.y) * eased - arc;
   if (nextMs <= 0) {
-    return {
+    const landed = {
       ...player,
       x: to.x,
       y: to.y,
@@ -340,6 +338,11 @@ export function tickHop(player, dt) {
       jumper: true,
       capitalId: player.capitalId,
     };
+    if (player.pendingState) {
+      const next = enterStateMap(landed, player.pendingState);
+      return { ...next, pendingState: "", snapCamera: true };
+    }
+    return landed;
   }
   return { ...player, x, y, pose: "hop", hopMs: nextMs, jumper: true };
 }

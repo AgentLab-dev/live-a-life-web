@@ -416,6 +416,11 @@ export function startGame(root) {
     last = now;
     player = tickAction(player, dt);
     player = tickHop(player, dt);
+    if (player.snapCamera) {
+      camera.x = player.x;
+      camera.y = player.y;
+      player = { ...player, snapCamera: false };
+    }
     people = stepPeople(people, dt);
     const held = hold.current();
     const before = player.stickers;

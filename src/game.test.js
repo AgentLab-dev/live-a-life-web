@@ -1089,10 +1089,12 @@ describe("USA capitals hop", () => {
     const neighbor = nearbyHopTargets(player)[0];
     player = startHop(player, neighbor.id);
     expect(player.room).toBe("state");
-    expect(player.stateId).toBe(neighbor.id);
+    expect(player.stateId).toBe("tx");
+    expect(player.pendingState).toBe(neighbor.id);
     expect(player.pose).toBe("hop");
     player = tickHop(player, HOP_MS);
     expect(player.stateId).toBe(neighbor.id);
+    expect(player.pendingState).toBe("");
     expect(placeName(player.room, player)).toBe(capitalLabel(neighbor));
     expect(showJumperI(player)).toBe(true);
     expect(player.needs).toBeUndefined();

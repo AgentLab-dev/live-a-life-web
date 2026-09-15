@@ -1276,6 +1276,17 @@ function labelOffset(id) {
   return { x: 0, y: -16 };
 }
 
+function drawCapitalLabel(ctx, text, x, y) {
+  ctx.font = "700 11px Fredoka, sans-serif";
+  ctx.textAlign = "center";
+  const width = Math.min(168, ctx.measureText(text).width + 12);
+  ctx.fillStyle = "rgba(255,248,231,0.9)";
+  roundRect(ctx, x - width / 2, y - 12, width, 16, 6);
+  ctx.fill();
+  ctx.fillStyle = "#3d2a1a";
+  ctx.fillText(text, x, y);
+}
+
 function drawStateBlob(ctx, state, time) {
   ctx.fillStyle = state.color;
   roundRect(ctx, state.x - state.w / 2, state.y - state.h / 2, state.w, state.h, 22);
@@ -1286,10 +1297,7 @@ function drawStateBlob(ctx, state, time) {
   const pulse = 0.6 + Math.sin(time * 2 + state.x) * 0.4;
   drawCapitalStar(ctx, state.x, state.y, pulse);
   const offset = labelOffset(state.id);
-  ctx.fillStyle = "#3d2a1a";
-  ctx.font = "700 11px Fredoka, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText(capitalLabel(state), state.x + offset.x, state.y + offset.y);
+  drawCapitalLabel(ctx, capitalLabel(state), state.x + offset.x, state.y + offset.y);
   ctx.textAlign = "left";
 }
 
@@ -1356,21 +1364,17 @@ export function drawStateMap(ctx, player, time) {
   ctx.closePath();
   ctx.fill();
   drawCapitalStar(ctx, home.x, home.y, 1 + Math.sin(time * 3));
-  ctx.fillStyle = "#3d2a1a";
-  ctx.font = "700 28px Fredoka, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText(capitalLabel(state), home.x, 120);
-  ctx.font = "600 16px Fredoka, sans-serif";
+  drawCapitalLabel(ctx, capitalLabel(state), home.x, home.y + 44);
   ctx.fillStyle = "#355c3a";
-  ctx.fillText("State map · hop a neighbor capital", home.x, 148);
+  ctx.font = "600 16px Fredoka, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("State map · hop a neighbor capital", home.x, 196);
   for (const pad of neighborPads(state.id)) {
     ctx.fillStyle = pad.color;
     oval(ctx, pad.padX, pad.padY, 46, 32);
     ctx.fill();
     drawCapitalStar(ctx, pad.padX, pad.padY);
-    ctx.fillStyle = "#3d2a1a";
-    ctx.font = "700 12px Fredoka, sans-serif";
-    ctx.fillText(capitalLabel(pad), pad.padX, pad.padY - 28);
+    drawCapitalLabel(ctx, capitalLabel(pad), pad.padX, pad.padY - 28);
   }
   ctx.textAlign = "left";
 }
