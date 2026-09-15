@@ -187,6 +187,178 @@ export const SWING_BAND = { x: 1212, y: 1944, w: 104, h: 14 };
 
 export const SNACK_SPOT = { x: 1080, y: 1416 };
 
+export const TIRE_BED = { x: 1688, y: 2040, w: 176, h: 84 };
+
+export const TIRE_RINGS = [
+  { x: 1776, y: 2056 },
+  { x: 1776, y: 2082 },
+  { x: 1776, y: 2108 },
+];
+
+export const TIRE_RADIUS = 20;
+
+export const LOG_MUD = { x: 520, y: 1920, w: 176, h: 84 };
+
+export const LOGS = [
+  { x: 608, y: 1936 },
+  { x: 608, y: 1962 },
+  { x: 608, y: 1988 },
+];
+
+export const LOG_RADIUS = 20;
+
+export const BUS_ZONE = { x: 2140, y: 756, w: 268, h: 64 };
+
+export const BUS_BLOCKS = [
+  { x: 2160, y: 756, w: 28, h: 64 },
+  { x: 2230, y: 756, w: 28, h: 64 },
+  { x: 2300, y: 756, w: 28, h: 64 },
+  { x: 2370, y: 756, w: 28, h: 64 },
+];
+
+export const AWNING_POSTS = [
+  { x: 436, y: 1168, w: 16, h: 128 },
+  { x: 556, y: 1168, w: 16, h: 128 },
+];
+
+export const AWNING_WALLS = [
+  { x: 452, y: 1212, w: 36, h: 14 },
+  { x: 520, y: 1212, w: 36, h: 14 },
+];
+
+export const AWNING_GAP = { x: 488, y: 1196, w: 32, h: 48 };
+
+export const AWNING_BAND = { x: 452, y: 1212, w: 104, h: 14 };
+
+export const TRELLIS_POSTS = [
+  { x: 1162, y: 388, w: 16, h: 148 },
+  { x: 1244, y: 388, w: 16, h: 148 },
+];
+
+export const TRELLIS_WALLS = [
+  { x: 1178, y: 448, w: 16, h: 14 },
+  { x: 1228, y: 448, w: 16, h: 14 },
+];
+
+export const TRELLIS_GAP = { x: 1194, y: 432, w: 34, h: 48 };
+
+export const TRELLIS_BAND = { x: 1178, y: 448, w: 66, h: 14 };
+
+export const FLOWER_SPOT = { x: 1280, y: 1368 };
+
+export const ROOT_BED = { x: 1008, y: 1992, w: 176, h: 84 };
+
+export const ROOTS = [
+  { x: 1096, y: 2008 },
+  { x: 1096, y: 2034 },
+  { x: 1096, y: 2060 },
+];
+
+export const ROOT_RADIUS = 20;
+
+export const STUMP_BED = { x: 1516, y: 1988, w: 140, h: 140 };
+
+export const STUMPS = [
+  { x: 1586, y: 2010 },
+  { x: 1618, y: 2042 },
+  { x: 1586, y: 2042 },
+  { x: 1554, y: 2042 },
+  { x: 1618, y: 2074 },
+  { x: 1586, y: 2074 },
+  { x: 1554, y: 2074 },
+  { x: 1586, y: 2106 },
+];
+
+export const STUMP_RADIUS = 22;
+
+export const HOSE_ZONE = { x: 1724, y: 628, w: 268, h: 64 };
+
+export const HOSE_BLOCKS = [
+  { x: 1744, y: 628, w: 28, h: 64 },
+  { x: 1814, y: 628, w: 28, h: 64 },
+  { x: 1884, y: 628, w: 28, h: 64 },
+  { x: 1954, y: 628, w: 28, h: 64 },
+];
+
+export const PORCH_POSTS = [
+  { x: 444, y: 1298, w: 16, h: 56 },
+  { x: 536, y: 1298, w: 16, h: 56 },
+];
+
+export const PORCH_WALLS = [
+  { x: 460, y: 1324, w: 24, h: 14 },
+  { x: 512, y: 1324, w: 24, h: 14 },
+];
+
+export const PORCH_GAP = { x: 484, y: 1308, w: 28, h: 48 };
+
+export const PORCH_BAND = { x: 460, y: 1324, w: 76, h: 14 };
+
+export const BASKET_ZONE = { x: 1720, y: 968, w: 268, h: 64 };
+
+export const BASKET_BLOCKS = [
+  { x: 1740, y: 968, w: 28, h: 64 },
+  { x: 1810, y: 968, w: 28, h: 64 },
+  { x: 1880, y: 968, w: 28, h: 64 },
+  { x: 1950, y: 968, w: 28, h: 64 },
+];
+
+export const LEAF_SPOT = { x: 1480, y: 1368 };
+
+export const SWIRL_ZONE = { x: 896, y: 1196, w: 96, h: 116 };
+
+export const SWIRL = [
+  { x: 908, y: 1196, w: 72, h: 116 },
+];
+
+export const SWIRL_MARKS = [
+  { x: 904, y: 1196, w: 48, h: 28 },
+  { x: 928, y: 1218, w: 48, h: 28 },
+  { x: 904, y: 1240, w: 48, h: 28 },
+  { x: 928, y: 1262, w: 48, h: 28 },
+  { x: 904, y: 1284, w: 48, h: 28 },
+];
+
+export const RIM_BED = { x: 2104, y: 1768, w: 168, h: 104 };
+
+export const RIM_HOLE = { x: 2148, y: 1804, w: 80, h: 36 };
+
+export const PICKET_POSTS = [
+  { x: 112, y: 668, w: 16, h: 56 },
+  { x: 224, y: 668, w: 16, h: 56 },
+];
+
+export const PICKET_WALLS = [
+  { x: 128, y: 692, w: 28, h: 14 },
+  { x: 180, y: 692, w: 28, h: 14 },
+];
+
+export const PICKET_GAP = { x: 156, y: 676, w: 24, h: 48 };
+
+export const PICKET_BAND = { x: 128, y: 692, w: 80, h: 14 };
+
+export const WET = { x: 168, y: 1640, w: 216, h: 88 };
+
+export const WET_STONES = [
+  { x: 248, y: 1656 },
+  { x: 276, y: 1678 },
+  { x: 248, y: 1700 },
+  { x: 276, y: 1720 },
+];
+
+export const WET_RADIUS = 22;
+
+export const MAIL_ZONE = { x: 1768, y: 792, w: 268, h: 64 };
+
+export const MAIL_BLOCKS = [
+  { x: 1788, y: 792, w: 28, h: 64 },
+  { x: 1858, y: 792, w: 28, h: 64 },
+  { x: 1928, y: 792, w: 28, h: 64 },
+  { x: 1998, y: 792, w: 28, h: 64 },
+];
+
+export const BALLOON_SPOT = { x: 700, y: 1416 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -212,6 +384,24 @@ export const STICKERS = [
   { id: "sandbox", name: "Sandbox hopper", hint: "You hopped the pretend sandbox mounds." },
   { id: "swing", name: "Swing walker", hint: "You ducked under the quiet park swing." },
   { id: "snack", name: "Snack friend", hint: "You shared a kind snack at the plaza." },
+  { id: "tires", name: "Tire hopper", hint: "You hopped the soft pretend tires." },
+  { id: "logs", name: "Log walker", hint: "You stepped the logs over the mud." },
+  { id: "benches", name: "Bench walker", hint: "You walked between the bus-stop benches." },
+  { id: "awning", name: "Awning walker", hint: "You ducked under the striped shop awning." },
+  { id: "trellis", name: "Trellis walker", hint: "You walked through the leafy garden trellis." },
+  { id: "bloom", name: "Flower friend", hint: "You shared a kind flower at the fountain." },
+  { id: "roots", name: "Root hopper", hint: "You hopped the gnarly park roots." },
+  { id: "stumps", name: "Stump hopper", hint: "You hopped the stepping-stump circle." },
+  { id: "hose", name: "Hose walker", hint: "You walked between the garden hose loops." },
+  { id: "porch", name: "Porch walker", hint: "You walked the library porch rail." },
+  { id: "baskets", name: "Basket walker", hint: "You walked between the market baskets." },
+  { id: "leaf", name: "Leaf friend", hint: "You shared a colorful leaf at the plaza." },
+  { id: "swirl", name: "Swirl walker", hint: "You followed the plaza chalk swirl." },
+  { id: "rim", name: "Rim walker", hint: "You balanced on the sandbox rim." },
+  { id: "picket", name: "Fence friend", hint: "You squeezed through the picket gap." },
+  { id: "splash", name: "Splash hopper", hint: "You hopped the zigzag puddle stones." },
+  { id: "boxes", name: "Mailbox hopper", hint: "You hopped past the colorful mailboxes." },
+  { id: "puff", name: "Balloon friend", hint: "You shared a cheerful balloon." },
 ];
 
 export const CHEERS = {
@@ -238,9 +428,27 @@ export const CHEERS = {
   sandbox: "Sandy mound hops. Soft!",
   swing: "Duck under the quiet swing!",
   snack: "A sweet snack to share. Kind!",
+  tires: "Bouncy hops on the tire rings!",
+  logs: "Steady steps on the sunny logs!",
+  benches: "Friendly benches said hello!",
+  awning: "Duck under the stripey shade!",
+  trellis: "Leaves waved you through!",
+  bloom: "A flower for the fountain. Kind!",
+  roots: "Those twisty roots like your hops!",
+  stumps: "Round stump hops. Soft wood!",
+  hose: "Friendly hose loops said hello!",
+  porch: "Quiet steps on the library porch!",
+  baskets: "Soft baskets made a little path!",
+  leaf: "A colorful leaf to share. Kind!",
+  swirl: "Round and round on the chalk!",
+  rim: "Soft steps on the sandbox rim!",
+  picket: "A friendly squeeze through the fence!",
+  splash: "Zigzag hops on the puddle stones!",
+  boxes: "Colorful mailboxes said hello!",
+  puff: "A cheerful balloon to share. Kind!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon"];
 
 export function defaultStickers() {
   return {
@@ -268,6 +476,24 @@ export function defaultStickers() {
     sandbox: false,
     swing: false,
     snack: false,
+    tires: false,
+    logs: false,
+    benches: false,
+    awning: false,
+    trellis: false,
+    bloom: false,
+    roots: false,
+    stumps: false,
+    hose: false,
+    porch: false,
+    baskets: false,
+    leaf: false,
+    swirl: false,
+    rim: false,
+    picket: false,
+    splash: false,
+    boxes: false,
+    puff: false,
   };
 }
 
@@ -367,6 +593,66 @@ export function onSwingGap(x, y) {
   return inRect(x, y, SWING_GAP);
 }
 
+export function onTire(x, y) {
+  return TIRE_RINGS.some((ring) => Math.hypot(x - ring.x, y - ring.y) <= TIRE_RADIUS);
+}
+
+export function onLog(x, y) {
+  return LOGS.some((log) => Math.hypot(x - log.x, y - log.y) <= LOG_RADIUS);
+}
+
+export function onBenchLane(x, y) {
+  return inRect(x, y, BUS_ZONE) && !BUS_BLOCKS.some((bench) => inRect(x, y, bench));
+}
+
+export function onAwningGap(x, y) {
+  return inRect(x, y, AWNING_GAP);
+}
+
+export function onTrellisGap(x, y) {
+  return inRect(x, y, TRELLIS_GAP);
+}
+
+export function onRoot(x, y) {
+  return ROOTS.some((root) => Math.hypot(x - root.x, y - root.y) <= ROOT_RADIUS);
+}
+
+export function onStump(x, y) {
+  return STUMPS.some((stump) => Math.hypot(x - stump.x, y - stump.y) <= STUMP_RADIUS);
+}
+
+export function onHoseLane(x, y) {
+  return inRect(x, y, HOSE_ZONE) && !HOSE_BLOCKS.some((coil) => inRect(x, y, coil));
+}
+
+export function onPorchGap(x, y) {
+  return inRect(x, y, PORCH_GAP);
+}
+
+export function onBasketLane(x, y) {
+  return inRect(x, y, BASKET_ZONE) && !BASKET_BLOCKS.some((basket) => inRect(x, y, basket));
+}
+
+export function onSwirl(x, y) {
+  return SWIRL.some((tile) => inRect(x, y, tile));
+}
+
+export function onSandRim(x, y) {
+  return inRect(x, y, RIM_BED) && !inRect(x, y, RIM_HOLE);
+}
+
+export function onPicketGap(x, y) {
+  return inRect(x, y, PICKET_GAP);
+}
+
+export function onWetStone(x, y) {
+  return WET_STONES.some((stone) => Math.hypot(x - stone.x, y - stone.y) <= WET_RADIUS);
+}
+
+export function onMailboxLane(x, y) {
+  return inRect(x, y, MAIL_ZONE) && !MAIL_BLOCKS.some((box) => inRect(x, y, box));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -383,6 +669,21 @@ export function townPathAt(x, y) {
   if (onBalloonGap(x, y)) return "balloons";
   if (onSandboxMound(x, y)) return "sandbox";
   if (onSwingGap(x, y)) return "swing";
+  if (onTire(x, y)) return "tires";
+  if (onLog(x, y)) return "logs";
+  if (onBenchLane(x, y)) return "benches";
+  if (onAwningGap(x, y)) return "awning";
+  if (onTrellisGap(x, y)) return "trellis";
+  if (onRoot(x, y)) return "roots";
+  if (onStump(x, y)) return "stumps";
+  if (onHoseLane(x, y)) return "hose";
+  if (onPorchGap(x, y)) return "porch";
+  if (onBasketLane(x, y)) return "baskets";
+  if (onSwirl(x, y)) return "swirl";
+  if (onSandRim(x, y)) return "rim";
+  if (onPicketGap(x, y)) return "picket";
+  if (onWetStone(x, y)) return "splash";
+  if (onMailboxLane(x, y)) return "boxes";
   return "";
 }
 
@@ -479,6 +780,70 @@ export function blockedBySwing(x, y) {
   return SWING_POSTS.some((post) => inRect(x, y, post)) || SWING_WALLS.some((wall) => inRect(x, y, wall));
 }
 
+export function blockedByTires(x, y) {
+  return inRect(x, y, TIRE_BED) && !onTire(x, y);
+}
+
+export function blockedByLogs(x, y) {
+  return inRect(x, y, LOG_MUD) && !onLog(x, y);
+}
+
+export function blockedByBenches(x, y) {
+  return BUS_BLOCKS.some((bench) => inRect(x, y, bench));
+}
+
+export function blockedByAwning(x, y) {
+  if (onAwningGap(x, y)) return false;
+  return AWNING_POSTS.some((post) => inRect(x, y, post)) || AWNING_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByTrellis(x, y) {
+  if (onTrellisGap(x, y)) return false;
+  return TRELLIS_POSTS.some((post) => inRect(x, y, post)) || TRELLIS_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByRoots(x, y) {
+  return inRect(x, y, ROOT_BED) && !onRoot(x, y);
+}
+
+export function blockedByStumps(x, y) {
+  return inRect(x, y, STUMP_BED) && !onStump(x, y);
+}
+
+export function blockedByHose(x, y) {
+  return HOSE_BLOCKS.some((coil) => inRect(x, y, coil));
+}
+
+export function blockedByPorch(x, y) {
+  if (onPorchGap(x, y)) return false;
+  return PORCH_POSTS.some((post) => inRect(x, y, post)) || PORCH_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByBaskets(x, y) {
+  return BASKET_BLOCKS.some((basket) => inRect(x, y, basket));
+}
+
+export function blockedBySwirl(x, y) {
+  return inRect(x, y, SWIRL_ZONE) && !onSwirl(x, y);
+}
+
+export function blockedByRim(x, y) {
+  return inRect(x, y, RIM_HOLE);
+}
+
+export function blockedByPicket(x, y) {
+  if (onPicketGap(x, y)) return false;
+  return PICKET_POSTS.some((post) => inRect(x, y, post)) || PICKET_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByWet(x, y) {
+  return inRect(x, y, WET) && !onWetStone(x, y);
+}
+
+export function blockedByMailboxes(x, y) {
+  return MAIL_BLOCKS.some((box) => inRect(x, y, box));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -499,7 +864,22 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByChalk(x, y) ||
     blockedByBalloons(x, y) ||
     blockedBySandbox(x, y) ||
-    blockedBySwing(x, y)
+    blockedBySwing(x, y) ||
+    blockedByTires(x, y) ||
+    blockedByLogs(x, y) ||
+    blockedByBenches(x, y) ||
+    blockedByAwning(x, y) ||
+    blockedByTrellis(x, y) ||
+    blockedByRoots(x, y) ||
+    blockedByStumps(x, y) ||
+    blockedByHose(x, y) ||
+    blockedByPorch(x, y) ||
+    blockedByBaskets(x, y) ||
+    blockedBySwirl(x, y) ||
+    blockedByRim(x, y) ||
+    blockedByPicket(x, y) ||
+    blockedByWet(x, y) ||
+    blockedByMailboxes(x, y)
   );
 }
 
@@ -569,6 +949,21 @@ export function applyCrossingProgress(prev, next) {
     ["balloons", BALLOON_BAND, "y"],
     ["sandbox", SANDBOX, "y"],
     ["swing", SWING_BAND, "y"],
+    ["tires", TIRE_BED, "y"],
+    ["logs", LOG_MUD, "y"],
+    ["benches", BUS_ZONE, "y"],
+    ["awning", AWNING_BAND, "y"],
+    ["trellis", TRELLIS_BAND, "y"],
+    ["roots", ROOT_BED, "y"],
+    ["stumps", STUMP_BED, "y"],
+    ["hose", HOSE_ZONE, "y"],
+    ["porch", PORCH_BAND, "y"],
+    ["baskets", BASKET_ZONE, "y"],
+    ["swirl", SWIRL_ZONE, "y"],
+    ["rim", RIM_BED, "y"],
+    ["picket", PICKET_BAND, "y"],
+    ["splash", WET, "y"],
+    ["boxes", MAIL_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -593,7 +988,14 @@ export function applyCrossingProgress(prev, next) {
       onLily(next.x, next.y) ||
       onFountainPad(next.x, next.y) ||
       onChalk(next.x, next.y) ||
-      onSandboxMound(next.x, next.y),
+      onSandboxMound(next.x, next.y) ||
+      onTire(next.x, next.y) ||
+      onLog(next.x, next.y) ||
+      onRoot(next.x, next.y) ||
+      onStump(next.x, next.y) ||
+      onSwirl(next.x, next.y) ||
+      onSandRim(next.x, next.y) ||
+      onWetStone(next.x, next.y),
   };
 }
 
@@ -707,6 +1109,54 @@ export function shareSnack(player) {
   });
 }
 
+export function takeFlower(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "flower", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareFlower(player) {
+  if (player.carry !== "flower") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), bloom: true },
+  });
+}
+
+export function takeLeaf(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "leaf", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareLeaf(player) {
+  if (player.carry !== "leaf") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), leaf: true },
+  });
+}
+
+export function takeBalloon(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "balloon", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareBalloon(player) {
+  if (player.carry !== "balloon") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), puff: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -728,5 +1178,8 @@ export function carryLabel(value) {
   if (value === "book") return "Book";
   if (value === "card") return "Postcard";
   if (value === "snack") return "Snack";
+  if (value === "flower") return "Flower";
+  if (value === "leaf") return "Leaf";
+  if (value === "balloon") return "Balloon";
   return "";
 }
