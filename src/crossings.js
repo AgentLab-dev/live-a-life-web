@@ -413,6 +413,65 @@ export const TOAD_RADIUS = 20;
 
 export const PINWHEEL_SPOT = { x: 1880, y: 1608 };
 
+export const PAINT_BED = { x: 2288, y: 1548, w: 176, h: 84 };
+
+export const PAINT_CANS = [
+  { x: 2376, y: 1564 },
+  { x: 2376, y: 1590 },
+  { x: 2376, y: 1616 },
+];
+
+export const PAINT_RADIUS = 20;
+
+export const KITE_ZONE = { x: 2232, y: 1688, w: 268, h: 64 };
+
+export const KITE_BLOCKS = [
+  { x: 2252, y: 1688, w: 28, h: 64 },
+  { x: 2322, y: 1688, w: 28, h: 64 },
+  { x: 2392, y: 1688, w: 28, h: 64 },
+  { x: 2462, y: 1688, w: 28, h: 64 },
+];
+
+export const BATH_BOWL = { x: 88, y: 1788, w: 176, h: 84 };
+
+export const BATH_PADS = [
+  { x: 176, y: 1804 },
+  { x: 176, y: 1830 },
+  { x: 176, y: 1856 },
+];
+
+export const BATH_RADIUS = 20;
+
+export const WICKET_POSTS = [
+  { x: 1948, y: 2072, w: 16, h: 56 },
+  { x: 2060, y: 2072, w: 16, h: 56 },
+];
+
+export const WICKET_WALLS = [
+  { x: 1964, y: 2096, w: 28, h: 14 },
+  { x: 2016, y: 2096, w: 28, h: 14 },
+];
+
+export const WICKET_GAP = { x: 1992, y: 2080, w: 24, h: 48 };
+
+export const WICKET_BAND = { x: 1964, y: 2096, w: 80, h: 14 };
+
+export const LEMON_POSTS = [
+  { x: 2016, y: 888, w: 16, h: 128 },
+  { x: 2136, y: 888, w: 16, h: 128 },
+];
+
+export const LEMON_WALLS = [
+  { x: 2032, y: 932, w: 36, h: 14 },
+  { x: 2100, y: 932, w: 36, h: 14 },
+];
+
+export const LEMON_GAP = { x: 2068, y: 916, w: 32, h: 48 };
+
+export const LEMON_BAND = { x: 2032, y: 932, w: 104, h: 14 };
+
+export const BUBBLE_SPOT = { x: 1480, y: 1520 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -462,6 +521,12 @@ export const STICKERS = [
   { id: "boards", name: "Board walker", hint: "You zigzagged the sidewalk boards." },
   { id: "toads", name: "Toadstool hopper", hint: "You hopped the spotted yard toadstools." },
   { id: "spin", name: "Pinwheel friend", hint: "You shared a twirly pinwheel." },
+  { id: "paints", name: "Paint hopper", hint: "You hopped the colorful paint cans." },
+  { id: "kites", name: "Kite walker", hint: "You walked between the kite strings." },
+  { id: "bath", name: "Birdbath hopper", hint: "You hopped the sunny birdbath pads." },
+  { id: "wicket", name: "Garden-gate walker", hint: "You slipped through the garden gate." },
+  { id: "lemon", name: "Lemonade walker", hint: "You ducked under the pretend lemonade stand." },
+  { id: "pop", name: "Bubble friend", hint: "You shared a bubble wand." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -515,12 +580,18 @@ export const CHEERS = {
   boards: "Zigzag boards, careful toes!",
   toads: "Soft hops on the spotted toadstools!",
   spin: "A twirly pinwheel to share. Kind!",
+  paints: "Colorful hops on the paint cans!",
+  kites: "Kite strings tickled hello!",
+  bath: "Birdbath pads like your toes!",
+  wicket: "The garden gate swung hello!",
+  lemon: "Duck under the lemonade shade!",
+  pop: "Bubbles for a neighbor. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble"];
 
 export function defaultStickers() {
   return {
@@ -572,6 +643,12 @@ export function defaultStickers() {
     boards: false,
     toads: false,
     spin: false,
+    paints: false,
+    kites: false,
+    bath: false,
+    wicket: false,
+    lemon: false,
+    pop: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -754,6 +831,26 @@ export function onToadstool(x, y) {
   return TOADSTOOLS.some((toad) => Math.hypot(x - toad.x, y - toad.y) <= TOAD_RADIUS);
 }
 
+export function onPaintCan(x, y) {
+  return PAINT_CANS.some((can) => Math.hypot(x - can.x, y - can.y) <= PAINT_RADIUS);
+}
+
+export function onKiteLane(x, y) {
+  return inRect(x, y, KITE_ZONE) && !KITE_BLOCKS.some((line) => inRect(x, y, line));
+}
+
+export function onBathPad(x, y) {
+  return BATH_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= BATH_RADIUS);
+}
+
+export function onWicketGap(x, y) {
+  return inRect(x, y, WICKET_GAP);
+}
+
+export function onLemonGap(x, y) {
+  return inRect(x, y, LEMON_GAP);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -790,6 +887,11 @@ export function townPathAt(x, y) {
   if (onLanternGap(x, y)) return "lanterns";
   if (onBoard(x, y)) return "boards";
   if (onToadstool(x, y)) return "toads";
+  if (onPaintCan(x, y)) return "paints";
+  if (onKiteLane(x, y)) return "kites";
+  if (onBathPad(x, y)) return "bath";
+  if (onWicketGap(x, y)) return "wicket";
+  if (onLemonGap(x, y)) return "lemon";
   return "";
 }
 
@@ -971,6 +1073,28 @@ export function blockedByToadstools(x, y) {
   return inRect(x, y, TOAD_BED) && !onToadstool(x, y);
 }
 
+export function blockedByPaint(x, y) {
+  return inRect(x, y, PAINT_BED) && !onPaintCan(x, y);
+}
+
+export function blockedByKites(x, y) {
+  return KITE_BLOCKS.some((line) => inRect(x, y, line));
+}
+
+export function blockedByBath(x, y) {
+  return inRect(x, y, BATH_BOWL) && !onBathPad(x, y);
+}
+
+export function blockedByWicket(x, y) {
+  if (onWicketGap(x, y)) return false;
+  return WICKET_POSTS.some((post) => inRect(x, y, post)) || WICKET_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByLemon(x, y) {
+  if (onLemonGap(x, y)) return false;
+  return LEMON_POSTS.some((post) => inRect(x, y, post)) || LEMON_WALLS.some((wall) => inRect(x, y, wall));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -1011,7 +1135,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByPlanters(x, y) ||
     blockedByLanterns(x, y) ||
     blockedByBoards(x, y) ||
-    blockedByToadstools(x, y)
+    blockedByToadstools(x, y) ||
+    blockedByPaint(x, y) ||
+    blockedByKites(x, y) ||
+    blockedByBath(x, y) ||
+    blockedByWicket(x, y) ||
+    blockedByLemon(x, y)
   );
 }
 
@@ -1101,6 +1230,11 @@ export function applyCrossingProgress(prev, next) {
     ["lanterns", LANTERN_BAND, "y"],
     ["boards", BOARD_ZONE, "y"],
     ["toads", TOAD_BED, "y"],
+    ["paints", PAINT_BED, "y"],
+    ["kites", KITE_ZONE, "y"],
+    ["bath", BATH_BOWL, "y"],
+    ["wicket", WICKET_BAND, "y"],
+    ["lemon", LEMON_BAND, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -1135,7 +1269,9 @@ export function applyCrossingProgress(prev, next) {
       onWetStone(next.x, next.y) ||
       onCurbStone(next.x, next.y) ||
       onBoard(next.x, next.y) ||
-      onToadstool(next.x, next.y),
+      onToadstool(next.x, next.y) ||
+      onPaintCan(next.x, next.y) ||
+      onBathPad(next.x, next.y),
   };
 }
 
@@ -1313,6 +1449,22 @@ export function sharePinwheel(player) {
   });
 }
 
+export function takeBubble(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "bubble", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareBubble(player) {
+  if (player.carry !== "bubble") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), pop: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -1338,5 +1490,6 @@ export function carryLabel(value) {
   if (value === "leaf") return "Leaf";
   if (value === "balloon") return "Balloon";
   if (value === "pinwheel") return "Pinwheel";
+  if (value === "bubble") return "Bubbles";
   return "";
 }

@@ -15,6 +15,7 @@ import {
   shareBalloon,
   sharePinwheel,
   shareSnack,
+  shareBubble,
   takeBalloon,
   takeBook,
   takeCard,
@@ -23,6 +24,7 @@ import {
   takePicnic,
   takePinwheel,
   takeSnack,
+  takeBubble,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -285,6 +287,18 @@ export function startGame(root) {
     if (id === "share-pinwheel") {
       const before = player.stickers;
       player = sharePinwheel(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-bubble") {
+      player = takeBubble(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-bubble") {
+      const before = player.stickers;
+      player = shareBubble(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
