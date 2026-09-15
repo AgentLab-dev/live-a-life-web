@@ -20,6 +20,11 @@ export function gameMarkup() {
         <button type="button" class="dpad-btn dpad-right" data-dir="right" aria-label="Walk right" tabindex="-1">▶</button>
         <button type="button" class="dpad-btn dpad-down" data-dir="down" aria-label="Walk down" tabindex="-1">▼</button>
       </div>
+      <div id="install-tip" class="install-tip" hidden>
+        <p>Add to Home Screen for the app icon</p>
+        <p class="install-how">iPhone: tap Share, then Add to Home Screen. Android: tap Install app.</p>
+        <button type="button" class="hud-btn" id="install-tip-ok">Got it</button>
+      </div>
       <div id="hud-actions" class="hud-actions"></div>
       <div id="panel" class="panel" hidden></div>
     </div>
