@@ -1661,7 +1661,7 @@ describe("monday crossings", () => {
     expect(helper.carry).toBe("pinwheel");
     expect(helper.money).toBeUndefined();
     expect(
-      visibleActions({ ...helper, x: 1400, y: 220, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+      visibleActions({ ...helper, x: 1588, y: 448, pose: "idle", actionBeatMs: 0, job: "none" }).some(
         (action) => action.id === "take-pinwheel",
       ),
     ).toBe(false);
@@ -1709,7 +1709,7 @@ describe("monday crossings", () => {
   });
 
   it("shows pinwheel actions without hiding house or shop buttons", () => {
-    const atYard = townKid(1400, 220, { pose: "idle", job: "none" });
+    const atYard = townKid(1588, 448, { pose: "idle", job: "none" });
     const ids = visibleActions(atYard).map((action) => action.id);
     expect(ids).toEqual(expect.arrayContaining(["take-pinwheel", "stickers"]));
     expect(ids).not.toContain("share-pinwheel");
@@ -1722,7 +1722,7 @@ describe("monday crossings", () => {
       expect.arrayContaining(["share-pinwheel", "stickers"]),
     );
     expect(isBlocked("town", PINWHEEL_SPOT.x, PINWHEEL_SPOT.y)).toBe(false);
-    expect(isBlocked("town", 1400, 220)).toBe(false);
+    expect(isBlocked("town", 1588, 448)).toBe(false);
     expect(isBlocked("town", 480, 660)).toBe(false);
   });
 
