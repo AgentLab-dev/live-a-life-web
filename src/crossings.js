@@ -212,6 +212,9 @@ export const STICKERS = [
   { id: "sandbox", name: "Sandbox hopper", hint: "You hopped the pretend sandbox mounds." },
   { id: "swing", name: "Swing walker", hint: "You ducked under the quiet park swing." },
   { id: "snack", name: "Snack friend", hint: "You shared a kind snack at the plaza." },
+  { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
+  { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
+  { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
 ];
 
 export const CHEERS = {
@@ -238,6 +241,9 @@ export const CHEERS = {
   sandbox: "Sandy mound hops. Soft!",
   swing: "Duck under the quiet swing!",
   snack: "A sweet snack to share. Kind!",
+  usaMap: "A whole country to hop!",
+  usaHop: "Capital to capital. Boing!",
+  usaState: "A whole state to visit!",
 };
 
 export const CARRY_KINDS = ["picnic", "book", "card", "snack"];
@@ -268,6 +274,9 @@ export function defaultStickers() {
     sandbox: false,
     swing: false,
     snack: false,
+    usaMap: false,
+    usaHop: false,
+    usaState: false,
   };
 }
 

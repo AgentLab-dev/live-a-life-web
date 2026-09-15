@@ -44,11 +44,30 @@ describe("Play boot", () => {
     expect(world).toContain("share-card");
     expect(world).toContain("take-snack");
     expect(world).toContain("share-snack");
+    expect(world).toContain("enter-usa");
     expect(start).toContain("takeBook");
     expect(start).toContain("takeCard");
     expect(start).toContain("shareCard");
     expect(start).toContain("takeSnack");
     expect(start).toContain("shareSnack");
     expect(start).toContain("pushBookCart");
+    expect(start).toContain("enterUsaMap");
+    expect(start).toContain("startHop");
+    expect(start).toContain("drawPlayerMarker");
+  });
+
+  it("keeps the USA capitals hop and a distinct letter I jumper", () => {
+    const usa = readFileSync(new URL("./usa.js", import.meta.url), "utf8");
+    const draw = readFileSync(new URL("./draw.js", import.meta.url), "utf8");
+    const start = readFileSync(new URL("./start.js", import.meta.url), "utf8");
+    expect(usa).toContain("Austin");
+    expect(usa).toContain("capitalLabel");
+    expect(usa).toContain("JUMPER_COLOR");
+    expect(draw).toContain('fillText("I"');
+    expect(draw).toContain("drawUsaMap");
+    expect(draw).toContain("drawStateMap");
+    expect(draw).not.toMatch(/WebGLRenderer|three\.module/i);
+    expect(start).toContain("hopFromPoint");
+    expect(start).toContain("tickHop");
   });
 });

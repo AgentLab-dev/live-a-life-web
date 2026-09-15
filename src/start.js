@@ -19,10 +19,20 @@ import {
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
 import { createPeople, listenTo, stepPeople } from "./people.js";
-import { drawKid, drawRoom, kidLook } from "./draw.js";
+import { drawKid, drawPlayerMarker, drawRoom } from "./draw.js";
 import { beatLabel, enterRoom, moveToAction, spawnFor, startFurniture, stepToward, tickAction } from "./world.js";
 import { closetSheet, doorSheet, gameMarkup, hudKey, jobSheet, paintSheet, renderHud, stickerSheet } from "./hud.js";
 import { loadSave, spawnPlayer, writeSave } from "./save.js";
+import {
+  currentCapital,
+  enterStateMap,
+  enterUsaMap,
+  hopFromPoint,
+  isUsaRoom,
+  leaveUsaMap,
+  startHop,
+  tickHop,
+} from "./usa.js";
 
 export function startGame(root) {
   let player = spawnPlayer(loadSave());
@@ -97,6 +107,49 @@ export function startGame(root) {
   }
 
   function runAction(id) {
+    if (id === "enter-usa") {
+      const before = player.stickers;
+      player = enterUsaMap(player);
+      camera.x = player.x;
+      camera.y = player.y;
+      walkTarget = null;
+      noteCheer(before, player.stickers);
+      persist();
+    }
+    if (id === "leave-usa") {
+      player = leaveUsaMap(player);
+      camera.x = player.x;
+      camera.y = player.y;
+      walkTarget = null;
+    }
+    if (id === "leave-state") {
+      const before = player.stickers;
+      player = enterUsaMap(player, player.stateId || player.capitalId || "dc");
+      camera.x = player.x;
+      camera.y = player.y;
+      walkTarget = null;
+      noteCheer(before, player.stickers);
+      persist();
+    }
+    if (id === "see-state") {
+      const here = currentCapital(player);
+      if (here) {
+        const before = player.stickers;
+        player = enterStateMap(player, here.id);
+        camera.x = player.x;
+        camera.y = player.y;
+        walkTarget = null;
+        noteCheer(before, player.stickers);
+        persist();
+      }
+    }
+    if (id.startsWith("hop:")) {
+      const before = player.stickers;
+      player = startHop(player, id.slice(4));
+      walkTarget = null;
+      noteCheer(before, player.stickers);
+      persist();
+    }
     if (id === "enter-house") goTo("living");
     if (id === "go-outside" || id === "leave-cafe" || id === "leave-bakery" || id === "leave-library") goTo("town");
     if (id === "to-kitchen") goTo("kitchen");
@@ -225,7 +278,7 @@ export function startGame(root) {
       }
     }
     speech.innerHTML = bits.join("");
-    const label = player.actionBeatMs > 0 ? beatLabel(player.pose) : "";
+    const label = player.hopMs > 0 ? beatLabel("hop") : player.actionBeatMs > 0 ? beatLabel(player.pose) : "";
     caption.hidden = !label;
     caption.textContent = label;
   }
@@ -282,8 +335,20 @@ export function startGame(root) {
     "pointerdown",
     (event) => {
       event.preventDefault();
-      if (sheet || player.actionBeatMs > 0) return;
-      walkTarget = worldFromPointer(event.clientX, event.clientY);
+      if (sheet || player.actionBeatMs > 0 || player.hopMs > 0) return;
+      const point = worldFromPointer(event.clientX, event.clientY);
+      if (isUsaRoom(player.room)) {
+        const hopped = hopFromPoint(player, point.x, point.y);
+        if (hopped && hopped.hopMs > 0) {
+          const before = player.stickers;
+          player = hopped;
+          walkTarget = null;
+          noteCheer(before, player.stickers);
+          persist();
+          return;
+        }
+      }
+      walkTarget = point;
       if (["sit", "eat", "sleep", "look", "play", "work"].includes(player.pose)) {
         player = { ...player, pose: "walk" };
       }
@@ -350,10 +415,13 @@ export function startGame(root) {
     const dt = Math.min(40, now - last);
     last = now;
     player = tickAction(player, dt);
+    player = tickHop(player, dt);
     people = stepPeople(people, dt);
     const held = hold.current();
     const before = player.stickers;
-    if (held && player.actionBeatMs <= 0 && !sheet) {
+    if (player.hopMs > 0) {
+      walkTarget = null;
+    } else if (held && player.actionBeatMs <= 0 && !sheet) {
       walkTarget = null;
       player = stepToward(player, heldWalkTarget(player, held), dt);
     } else if (walkTarget && player.actionBeatMs <= 0 && !sheet) {
@@ -393,7 +461,7 @@ export function startGame(root) {
         );
       }
     }
-    drawKid(ctx, player.x, player.y, kidLook(player), time, player.pose, player.facing);
+    drawPlayerMarker(ctx, player, time);
     ctx.restore();
     refreshSpeech();
     refreshHud();
