@@ -1,4 +1,5 @@
 import { applyCrossingProgress, BALLOON_SPOT, blockedByCrossing, BOOK_SPOT, CART, CART_ASIDE, FLOWER_SPOT, LEAF_SPOT, MAIL_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, SNACK_SPOT } from "./crossings.js";
+import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
   width: 2560,
@@ -40,13 +41,15 @@ export const FURNITURE_POSES = {
 };
 
 export const ROOMS = {
-  town: { id: "town", doors: ["living", "cafe", "bakery", "library"] },
+  town: { id: "town", doors: ["living", "cafe", "bakery", "library", "usa"] },
   living: { id: "living", doors: ["town", "kitchen", "bedroom"] },
   kitchen: { id: "kitchen", doors: ["living"] },
   bedroom: { id: "bedroom", doors: ["living"] },
   cafe: { id: "cafe", doors: ["town"] },
   bakery: { id: "bakery", doors: ["town"] },
   library: { id: "library", doors: ["town"] },
+  usa: { id: "usa", doors: ["town", "state"] },
+  state: { id: "state", doors: ["usa"] },
 };
 
 export const ACTIONS = {
@@ -58,6 +61,7 @@ export const ACTIONS = {
     { id: "enter-bakery", label: "Little Bakery", x: 420, y: 980 },
     { id: "enter-library", label: "Library", x: 420, y: 1400 },
     { id: "jobs", label: "Pretend job", x: 1180, y: 1280 },
+    { id: "enter-usa", label: "USA map", x: MAP_STAND.x, y: MAP_STAND.y },
     { id: "look-fountain", label: "Look", x: 1180, y: 1320, furniture: "look" },
     { id: "look-mural", label: "See mural", x: 1680, y: 1360, furniture: "look" },
     { id: "park-sit", label: "Sit", x: 1020, y: 1880, furniture: "sofa" },
@@ -148,7 +152,9 @@ export function spawnFor(from, to) {
   return { x: ROOM.width / 2, y: ROOM.height / 2 };
 }
 
-export function placeName(room) {
+export function placeName(room, player) {
+  const usaName = usaPlaceName(player ?? { room });
+  if (usaName) return usaName;
   if (room === "town") return "Sunny Plaza";
   if (room === "living") return "Living room";
   if (room === "kitchen") return "Kitchen";
@@ -168,6 +174,7 @@ export function blockedByBuildings(x, y) {
 }
 
 export function isBlocked(room, x, y, extras = {}) {
+  if (isUsaRoom(room)) return isUsaBlocked(room, x, y);
   if (room === "town") {
     return (
       x < 40 ||
@@ -210,6 +217,10 @@ export function stepToward(player, target, dt, speed = 195) {
     facing,
     pose: moving ? "walk" : "idle",
   };
+  if (player.room === "usa") {
+    const here = capitalAt(moved.x, moved.y, CAPITAL_REACH);
+    return here ? { ...moved, capitalId: here.id } : moved;
+  }
   if (player.room !== "town") return moved;
   return applyCrossingProgress(player, moved);
 }
@@ -231,6 +242,7 @@ export function tickAction(player, dt) {
 }
 
 export function visibleActions(player) {
+  if (isUsaRoom(player.room)) return usaActions(player);
   const idle = player.pose !== "walk" && player.actionBeatMs <= 0;
   return (ACTIONS[player.room] ?? []).filter((action) => {
     if (player.actionBeatMs > 0) return false;
@@ -264,12 +276,13 @@ export function visibleActions(player) {
   });
 }
 
-export function actionById(room, id) {
+export function actionById(room, id, player) {
+  if (isUsaRoom(room) && player) return usaActions(player).find((action) => action.id === id) ?? null;
   return (ACTIONS[room] ?? []).find((action) => action.id === id);
 }
 
 export function moveToAction(player, id) {
-  const action = actionById(player.room, id);
+  const action = actionById(player.room, id, player);
   return action ? { ...player, x: action.x, y: action.y } : player;
 }
 

@@ -96,6 +96,20 @@ import {
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
+import {
+  CAPITAL_MARKER,
+  JUMPER_COLOR,
+  JUMPER_OUTLINE,
+  MAP_STAND,
+  STATES,
+  STATE_MAP,
+  USA_MAP,
+  capitalLabel,
+  neighborPads,
+  showJumperI,
+  stateById,
+  stateViewPoint,
+} from "./usa.js";
 import { HOUSE, PARK, ROOM, TOWN } from "./world.js";
 
 export function roundRect(ctx, x, y, w, h, r) {
@@ -130,6 +144,33 @@ function shoeColor(shoes) {
 
 function jobOverlay(look) {
   return look === "apron" ? "#f4f1ea" : look === "cardigan" ? "#6b4f8a" : look === "vest" ? "#3f9b4a" : "";
+}
+
+export function drawJumperI(ctx, x, y, time, hopping = false) {
+  const bounce = hopping ? Math.abs(Math.sin(time * 14)) * 10 : Math.abs(Math.sin(time * 5)) * 2;
+  ctx.save();
+  ctx.translate(x, y - bounce);
+  ctx.fillStyle = "rgba(40, 28, 16, 0.2)";
+  oval(ctx, 0, 12, 14, 6);
+  ctx.fill();
+  ctx.font = "900 48px Fredoka, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.lineJoin = "round";
+  ctx.strokeStyle = JUMPER_OUTLINE;
+  ctx.lineWidth = 10;
+  ctx.strokeText("I", 0, -22);
+  ctx.fillStyle = JUMPER_COLOR;
+  ctx.fillText("I", 0, -22);
+  ctx.restore();
+}
+
+export function drawPlayerMarker(ctx, player, time) {
+  if (showJumperI(player)) {
+    drawJumperI(ctx, player.x, player.y, time, player.pose === "hop" || player.hopMs > 0);
+    return;
+  }
+  drawKid(ctx, player.x, player.y, kidLook(player), time, player.pose, player.facing);
 }
 
 export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
@@ -2104,6 +2145,157 @@ export function drawTown(ctx, player, time) {
   ctx.font = "700 18px Fredoka, sans-serif";
   ctx.fillText("Your house", HOUSE.x + 16, HOUSE.y + 64);
   ctx.fillText("Plaza", 1120, 1288);
+  drawMapStand(ctx, MAP_STAND.x, MAP_STAND.y);
+}
+
+function drawMapStand(ctx, x, y) {
+  ctx.fillStyle = "#8d6e4c";
+  roundRect(ctx, x - 8, y + 8, 16, 36, 4);
+  ctx.fill();
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, x - 46, y - 58, 92, 70, 10);
+  ctx.fill();
+  ctx.fillStyle = "#7dcea0";
+  roundRect(ctx, x - 36, y - 44, 72, 40, 8);
+  ctx.fill();
+  ctx.fillStyle = CAPITAL_MARKER;
+  oval(ctx, x - 8, y - 28, 4, 4);
+  ctx.fill();
+  oval(ctx, x + 12, y - 20, 4, 4);
+  ctx.fill();
+  ctx.fillStyle = JUMPER_COLOR;
+  ctx.font = "900 16px Fredoka, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("I", x + 4, y - 32);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("USA map", x, y + 54);
+  ctx.textAlign = "left";
+}
+
+function drawCapitalStar(ctx, x, y, pulse = 0) {
+  ctx.fillStyle = CAPITAL_MARKER;
+  oval(ctx, x, y, 7 + pulse, 7 + pulse);
+  ctx.fill();
+  ctx.fillStyle = "#fff8e7";
+  oval(ctx, x, y, 3, 3);
+  ctx.fill();
+}
+
+function labelOffset(id) {
+  if (id === "ri") return { x: 28, y: 16 };
+  if (id === "ct") return { x: 8, y: 20 };
+  if (id === "de") return { x: 26, y: 8 };
+  if (id === "nj") return { x: 30, y: -4 };
+  if (id === "md") return { x: 8, y: 18 };
+  if (id === "dc") return { x: -8, y: 22 };
+  if (id === "nh") return { x: 26, y: 4 };
+  if (id === "vt") return { x: -30, y: 4 };
+  if (id === "ma") return { x: 20, y: -14 };
+  return { x: 0, y: -16 };
+}
+
+function drawCapitalLabel(ctx, text, x, y) {
+  ctx.font = "700 11px Fredoka, sans-serif";
+  ctx.textAlign = "center";
+  const width = Math.min(168, ctx.measureText(text).width + 12);
+  ctx.fillStyle = "rgba(255,248,231,0.9)";
+  roundRect(ctx, x - width / 2, y - 12, width, 16, 6);
+  ctx.fill();
+  ctx.fillStyle = "#3d2a1a";
+  ctx.fillText(text, x, y);
+}
+
+function drawStateBlob(ctx, state, time) {
+  ctx.fillStyle = state.color;
+  roundRect(ctx, state.x - state.w / 2, state.y - state.h / 2, state.w, state.h, 22);
+  ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,0.18)";
+  oval(ctx, state.x - state.w / 6, state.y - state.h / 6, state.w / 5, state.h / 6);
+  ctx.fill();
+  const pulse = 0.6 + Math.sin(time * 2 + state.x) * 0.4;
+  drawCapitalStar(ctx, state.x, state.y, pulse);
+  const offset = labelOffset(state.id);
+  drawCapitalLabel(ctx, capitalLabel(state), state.x + offset.x, state.y + offset.y);
+  ctx.textAlign = "left";
+}
+
+export function drawUsaMap(ctx, player, time) {
+  ctx.fillStyle = "#8ecae6";
+  ctx.fillRect(0, 0, USA_MAP.width, 220);
+  ctx.fillStyle = "#6ec6e8";
+  ctx.fillRect(0, 180, USA_MAP.width, USA_MAP.height);
+  ctx.fillStyle = "#7ec850";
+  roundRect(ctx, 40, 70, USA_MAP.width - 80, 1320, 40);
+  ctx.fill();
+  ctx.fillStyle = "#72b846";
+  for (let i = 0; i < 12; i += 1) ctx.fillRect(40, 160 + i * 110, USA_MAP.width - 80, 10);
+  ctx.fillStyle = "#5aa8d4";
+  roundRect(ctx, 80, 1388, 640, 220, 24);
+  ctx.fill();
+  ctx.fillStyle = "#fff8e7";
+  ctx.font = "700 28px Fredoka, sans-serif";
+  ctx.fillText("USA map", 80, 58);
+  ctx.font = "600 16px Fredoka, sans-serif";
+  ctx.fillStyle = "#355c3a";
+  ctx.fillText("Hop capital to capital. Tap a star or a Hop button.", 280, 54);
+  for (const state of STATES) drawStateBlob(ctx, state, time);
+  const here = stateById(player.capitalId);
+  if (here) {
+    ctx.strokeStyle = JUMPER_COLOR;
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.ellipse(here.x, here.y, 22, 16, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Alaska", 160, 1398);
+  ctx.fillText("Hawaii", 490, 1428);
+}
+
+export function drawStateMap(ctx, player, time) {
+  const state = stateById(player.stateId) ?? STATES[0];
+  const home = stateViewPoint(state.id);
+  ctx.fillStyle = "#8ecae6";
+  ctx.fillRect(0, 0, STATE_MAP.width, 180);
+  ctx.fillStyle = "#7ec850";
+  ctx.fillRect(0, 150, STATE_MAP.width, STATE_MAP.height);
+  ctx.fillStyle = "#72b846";
+  for (let i = 0; i < 8; i += 1) ctx.fillRect(0, 200 + i * 120, STATE_MAP.width, 12);
+  ctx.fillStyle = state.color;
+  roundRect(ctx, 220, 150, 1160, 760, 48);
+  ctx.fill();
+  ctx.fillStyle = "rgba(255,255,255,0.2)";
+  oval(ctx, 520, 320, 180, 90);
+  ctx.fill();
+  drawTree(ctx, 380, 640, "#2f8a40");
+  drawTree(ctx, 1180, 300, "#3aa14a");
+  drawTree(ctx, 1240, 700);
+  ctx.fillStyle = "#fff4c8";
+  roundRect(ctx, home.x - 36, home.y - 48, 72, 52, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  ctx.beginPath();
+  ctx.moveTo(home.x - 44, home.y - 36);
+  ctx.lineTo(home.x, home.y - 78);
+  ctx.lineTo(home.x + 44, home.y - 36);
+  ctx.closePath();
+  ctx.fill();
+  drawCapitalStar(ctx, home.x, home.y, 1 + Math.sin(time * 3));
+  drawCapitalLabel(ctx, capitalLabel(state), home.x, home.y + 44);
+  ctx.fillStyle = "#355c3a";
+  ctx.font = "600 16px Fredoka, sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("State map · hop a neighbor capital", home.x, 196);
+  for (const pad of neighborPads(state.id)) {
+    ctx.fillStyle = pad.color;
+    oval(ctx, pad.padX, pad.padY, 46, 32);
+    ctx.fill();
+    drawCapitalStar(ctx, pad.padX, pad.padY);
+    drawCapitalLabel(ctx, capitalLabel(pad), pad.padX, pad.padY - 28);
+  }
+  ctx.textAlign = "left";
 }
 
 function drawRoomBase(ctx, floor, rug) {
@@ -2276,6 +2468,8 @@ export function drawRoom(ctx, room, player, time) {
   else if (room === "cafe") drawCafe(ctx);
   else if (room === "bakery") drawBakery(ctx);
   else if (room === "library") drawLibrary(ctx);
+  else if (room === "usa") drawUsaMap(ctx, player, time);
+  else if (room === "state") drawStateMap(ctx, player, time);
 }
 
 export function kidLook(player) {

@@ -462,6 +462,9 @@ export const STICKERS = [
   { id: "boards", name: "Board walker", hint: "You zigzagged the sidewalk boards." },
   { id: "toads", name: "Toadstool hopper", hint: "You hopped the spotted yard toadstools." },
   { id: "spin", name: "Pinwheel friend", hint: "You shared a twirly pinwheel." },
+  { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
+  { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
+  { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
 ];
 
 export const CHEERS = {
@@ -512,6 +515,9 @@ export const CHEERS = {
   boards: "Zigzag boards, careful toes!",
   toads: "Soft hops on the spotted toadstools!",
   spin: "A twirly pinwheel to share. Kind!",
+  usaMap: "A whole country to hop!",
+  usaHop: "Capital to capital. Boing!",
+  usaState: "A whole state to visit!",
 };
 
 export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel"];
@@ -566,6 +572,9 @@ export function defaultStickers() {
     boards: false,
     toads: false,
     spin: false,
+    usaMap: false,
+    usaHop: false,
+    usaState: false,
   };
 }
 

@@ -120,6 +120,26 @@ import {
   stepToward,
   visibleActions,
 } from "./world.js";
+import {
+  CAPITAL_MARKER,
+  HOP_MS,
+  JUMPER_COLOR,
+  KID_SHIRT,
+  MAP_STAND,
+  STATES,
+  capitalLabel,
+  currentCapital,
+  enterStateMap,
+  enterUsaMap,
+  hopFromPoint,
+  jumperMarkerLooksDistinct,
+  leaveUsaMap,
+  nearbyHopTargets,
+  showJumperI,
+  startHop,
+  stateById,
+  tickHop,
+} from "./usa.js";
 
 describe("Level -1 house looks", () => {
   it("keeps paint, door name, closet colors, and outfit", () => {
@@ -1771,5 +1791,185 @@ describe("save and sit", () => {
     expect(sitting.pose).toBe("sit");
     expect(sitting.actionBeatMs).toBe(1100);
     expect(sitting.hunger).toBeUndefined();
+  });
+});
+
+describe("USA capitals hop", () => {
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  it("lists all 50 states plus D.C. with unique capitals labeled by city and state", () => {
+    expect(STATES).toHaveLength(51);
+    const ids = STATES.map((state) => state.id);
+    expect(new Set(ids).size).toBe(51);
+    expect(stateById("tx").capital).toBe("Austin");
+    expect(capitalLabel(stateById("tx"))).toBe("Austin, Texas");
+    expect(capitalLabel(stateById("ca"))).toBe("Sacramento, California");
+    expect(capitalLabel(stateById("ny"))).toBe("Albany, New York");
+    expect(capitalLabel(stateById("dc"))).toBe("Washington, D.C.");
+    expect(STATES.every((state) => capitalLabel(state).includes(",") && state.capital && state.name)).toBe(true);
+    expect(STATES.some((state) => state.id === "ak" && state.capital === "Juneau")).toBe(true);
+    expect(STATES.some((state) => state.id === "hi" && state.capital === "Honolulu")).toBe(true);
+  });
+
+  it("opens the USA map from town and returns to the plaza stand", () => {
+    expect(canEnter("town", "usa")).toBe(true);
+    const town = { room: "town", x: MAP_STAND.x, y: MAP_STAND.y, pose: "idle", actionBeatMs: 0, job: "none", stickers: defaultStickers() };
+    expect(visibleActions(town).map((action) => action.id)).toEqual(expect.arrayContaining(["enter-usa", "stickers"]));
+    const onMap = enterUsaMap(town);
+    expect(onMap.room).toBe("usa");
+    expect(onMap.jumper).toBe(true);
+    expect(placeName(onMap.room, onMap)).toBe("USA map");
+    expect(currentCapital(onMap).id).toBe("dc");
+    expect(onMap.stickers.usaMap).toBe(true);
+    expect(onMap.money).toBeUndefined();
+    const back = leaveUsaMap(onMap);
+    expect(back.room).toBe("town");
+    expect(back.jumper).toBe(false);
+    expect(back.x).toBe(MAP_STAND.x);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y + 36)).toBe(false);
+  });
+
+  it("hops from one capital to another and stays a teal letter I", () => {
+    let player = enterUsaMap({ stickers: defaultStickers(), money: 8 });
+    expect(showJumperI(player)).toBe(true);
+    expect(jumperMarkerLooksDistinct()).toBe(true);
+    expect(JUMPER_COLOR).toBe("#00bfc8");
+    expect(JUMPER_COLOR).not.toBe(CAPITAL_MARKER);
+    expect(JUMPER_COLOR).not.toBe(KID_SHIRT);
+    const hops = nearbyHopTargets(player);
+    expect(hops.length).toBeGreaterThan(0);
+    const dest = hops[0];
+    const ids = visibleActions(player).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["leave-usa", `hop:${dest.id}`, "stickers"]));
+    expect(visibleActions(player).some((action) => action.label === `Hop to ${capitalLabel(dest)}`)).toBe(true);
+    player = startHop(player, dest.id);
+    expect(player.pose).toBe("hop");
+    expect(player.hopMs).toBe(HOP_MS);
+    expect(player.jumper).toBe(true);
+    expect(player.stickers.usaHop).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(showJumperI(player)).toBe(true);
+    player = tickHop(player, HOP_MS);
+    expect(player.hopMs).toBe(0);
+    expect(player.x).toBe(dest.x);
+    expect(player.y).toBe(dest.y);
+    expect(player.capitalId).toBe(dest.id);
+    expect(player.pose).toBe("idle");
+    expect(showJumperI(player)).toBe(true);
+    expect(player.timer).toBeUndefined();
+  });
+
+  it("enters a state-wide map with the capital labeled, then hops a neighbor", () => {
+    let player = enterUsaMap({ stickers: defaultStickers() });
+    player = startHop(player, "tx");
+    player = tickHop(player, HOP_MS);
+    player = enterStateMap(player, "tx");
+    expect(player.room).toBe("state");
+    expect(player.stateId).toBe("tx");
+    expect(placeName(player.room, player)).toBe("Austin, Texas");
+    expect(showJumperI(player)).toBe(true);
+    expect(player.stickers.usaState).toBe(true);
+    const ids = visibleActions(player).map((action) => action.id);
+    expect(ids).toContain("leave-state");
+    expect(ids.some((id) => id.startsWith("hop:"))).toBe(true);
+    const neighbor = nearbyHopTargets(player)[0];
+    player = startHop(player, neighbor.id);
+    expect(player.room).toBe("state");
+    expect(player.stateId).toBe("tx");
+    expect(player.pendingState).toBe(neighbor.id);
+    expect(player.pose).toBe("hop");
+    player = tickHop(player, HOP_MS);
+    expect(player.stateId).toBe(neighbor.id);
+    expect(player.pendingState).toBe("");
+    expect(placeName(player.room, player)).toBe(capitalLabel(neighbor));
+    expect(showJumperI(player)).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets arrows walk the USA map and tap a capital star to hop", () => {
+    let player = enterUsaMap({ stickers: defaultStickers(), facing: 1, actionBeatMs: 0 });
+    const right = stepToward(player, heldWalkTarget(player, "right"), 200);
+    const left = stepToward(player, heldWalkTarget(player, "left"), 200);
+    expect(right.x).toBeGreaterThan(player.x);
+    expect(left.x).toBeLessThan(player.x);
+    expect(dirFromKey("ArrowRight", "ArrowRight")).toBe("right");
+    expect(dirFromKey("KeyD", "d")).toBe("right");
+    const austin = stateById("tx");
+    const hopped = hopFromPoint(player, austin.x, austin.y);
+    expect(hopped.capitalId).toBe("tx");
+    expect(hopped.hopMs).toBe(HOP_MS);
+    expect(hopFromPoint(player, player.x, player.y)).toBeNull();
+  });
+
+  it("walks toward a capital and offers See state without hiding plaza buttons", () => {
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+    expect(visibleActions(atHouse).map((action) => action.id)).not.toContain("enter-usa");
+    let player = enterUsaMap({ stickers: defaultStickers(), facing: 1, actionBeatMs: 0 });
+    const austin = stateById("tx");
+    player = walkFrames(player, { x: austin.x, y: austin.y }, 200);
+    expect(player.capitalId).toBe("tx");
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, hopMs: 0 }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["see-state", "leave-usa", "stickers"]),
+    );
+  });
+
+  it("cheers a neighbor after a capital hop and persists USA stickers", () => {
+    const people = createPeople();
+    const pip = people.find((person) => person.id === "pip");
+    const next = cheerCrossing(people, "usaHop", pip.x, pip.y);
+    expect(next.find((person) => person.id === "pip").line).toMatch(/capital/i);
+    expect(next.find((person) => person.id === "pip").bubbleMs).toBe(2400);
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      stickers: { usaMap: true, usaHop: true, usaState: true, coins: 4 },
+      money: 9,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.stickers.usaMap).toBe(true);
+    expect(loaded.stickers.usaHop).toBe(true);
+    expect(loaded.stickers.usaState).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+  });
+
+  it("keeps the house, cafe, and park paths open around the USA map stand", () => {
+    let player = {
+      room: "town",
+      x: 560,
+      y: 920,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      stickers: defaultStickers(),
+    };
+    player = walkFrames(player, { x: MAP_STAND.x, y: MAP_STAND.y }, 120);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-usa", "stickers"]),
+    );
+    player = walkFrames(player, { x: 480, y: 720 }, 160);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(isBlocked("town", 1920, 1320)).toBe(false);
+    expect(isBlocked("town", 840, 1610)).toBe(false);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
   });
 });
