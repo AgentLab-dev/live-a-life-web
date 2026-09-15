@@ -102,17 +102,17 @@ export function drawJumperI(ctx, x, y, time, hopping = false) {
   ctx.save();
   ctx.translate(x, y - bounce);
   ctx.fillStyle = "rgba(40, 28, 16, 0.2)";
-  oval(ctx, 0, 12, 14, 6);
+  oval(ctx, 0, 12, 16, 6);
   ctx.fill();
-  ctx.font = "900 48px Fredoka, sans-serif";
+  ctx.font = "900 64px Fredoka, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.lineJoin = "round";
   ctx.strokeStyle = JUMPER_OUTLINE;
-  ctx.lineWidth = 10;
-  ctx.strokeText("I", 0, -22);
+  ctx.lineWidth = 12;
+  ctx.strokeText("I", 0, -36);
   ctx.fillStyle = JUMPER_COLOR;
-  ctx.fillText("I", 0, -22);
+  ctx.fillText("I", 0, -36);
   ctx.restore();
 }
 
