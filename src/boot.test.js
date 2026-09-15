@@ -27,6 +27,15 @@ describe("Play boot", () => {
     expect(start).toContain("walkTarget");
   });
 
+  it("keeps the home-screen tip ready after Play", () => {
+    const hud = readFileSync(new URL("./hud.js", import.meta.url), "utf8");
+    const start = readFileSync(new URL("./start.js", import.meta.url), "utf8");
+    expect(hud).toContain('id="install-tip"');
+    expect(hud).toContain("Add to Home Screen for the app icon");
+    expect(hud).toContain('id="install-tip-ok"');
+    expect(start).toContain("mountInstallTip");
+  });
+
   it("keeps crossing stickers and picnic actions after Play", () => {
     const hud = readFileSync(new URL("./hud.js", import.meta.url), "utf8");
     const start = readFileSync(new URL("./start.js", import.meta.url), "utf8");
