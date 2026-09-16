@@ -1,4 +1,4 @@
-import { applyCrossingProgress, BALLOON_SPOT, blockedByCrossing, BOOK_SPOT, BUBBLE_SPOT, CART, CART_ASIDE, FLOWER_SPOT, LEAF_SPOT, MAIL_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, SNACK_SPOT } from "./crossings.js";
+import { applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BUBBLE_SPOT, CART, CART_ASIDE, FLOWER_SPOT, LEAF_SPOT, MAIL_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, SNACK_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -89,6 +89,8 @@ export const ACTIONS = {
     { id: "share-pinwheel", label: "Share pinwheel", x: PINWHEEL_SPOT.x, y: PINWHEEL_SPOT.y },
     { id: "take-bubble", label: "Take bubble wand", x: 1020, y: 1760 },
     { id: "share-bubble", label: "Share bubbles", x: BUBBLE_SPOT.x, y: BUBBLE_SPOT.y },
+    { id: "take-bracelet", label: "Take bracelet", x: 1088, y: 880 },
+    { id: "share-bracelet", label: "Share bracelet", x: BAND_SPOT.x, y: BAND_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -275,6 +277,8 @@ export function visibleActions(player) {
     if (action.id === "share-pinwheel" && player.carry !== "pinwheel") return false;
     if (action.id === "take-bubble" && player.carry) return false;
     if (action.id === "share-bubble" && player.carry !== "bubble") return false;
+    if (action.id === "take-bracelet" && player.carry) return false;
+    if (action.id === "share-bracelet" && player.carry !== "bracelet") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });

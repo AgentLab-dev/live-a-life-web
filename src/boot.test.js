@@ -63,6 +63,8 @@ describe("Play boot", () => {
     expect(world).toContain("share-pinwheel");
     expect(world).toContain("take-bubble");
     expect(world).toContain("share-bubble");
+    expect(world).toContain("take-bracelet");
+    expect(world).toContain("share-bracelet");
     expect(world).toContain("enter-usa");
     expect(start).toContain("takeBook");
     expect(start).toContain("takeCard");
@@ -79,6 +81,8 @@ describe("Play boot", () => {
     expect(start).toContain("sharePinwheel");
     expect(start).toContain("takeBubble");
     expect(start).toContain("shareBubble");
+    expect(start).toContain("takeBracelet");
+    expect(start).toContain("shareBracelet");
     expect(start).toContain("pushBookCart");
     expect(start).toContain("enterUsaMap");
     expect(start).toContain("startHop");
