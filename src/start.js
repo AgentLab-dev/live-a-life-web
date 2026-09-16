@@ -25,6 +25,8 @@ import {
   takePinwheel,
   takeSnack,
   takeBubble,
+  takeBracelet,
+  shareBracelet,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -299,6 +301,18 @@ export function startGame(root) {
     if (id === "share-bubble") {
       const before = player.stickers;
       player = shareBubble(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-bracelet") {
+      player = takeBracelet(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-bracelet") {
+      const before = player.stickers;
+      player = shareBracelet(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

@@ -472,6 +472,64 @@ export const LEMON_BAND = { x: 2032, y: 932, w: 104, h: 14 };
 
 export const BUBBLE_SPOT = { x: 1480, y: 1520 };
 
+export const RAINBOW_ZONE = { x: 980, y: 736, w: 88, h: 120 };
+
+export const RAINBOW = [
+  { x: 988, y: 736, w: 40, h: 36 },
+  { x: 1024, y: 764, w: 40, h: 36 },
+  { x: 988, y: 792, w: 40, h: 36 },
+  { x: 1024, y: 820, w: 40, h: 36 },
+];
+
+export const CAN_ZONE = { x: 1288, y: 728, w: 268, h: 64 };
+
+export const CAN_BLOCKS = [
+  { x: 1308, y: 728, w: 28, h: 64 },
+  { x: 1378, y: 728, w: 28, h: 64 },
+  { x: 1448, y: 728, w: 28, h: 64 },
+  { x: 1518, y: 728, w: 28, h: 64 },
+];
+
+export const TOWEL_POSTS = [
+  { x: 320, y: 1908, w: 16, h: 128 },
+  { x: 440, y: 1908, w: 16, h: 128 },
+];
+
+export const TOWEL_WALLS = [
+  { x: 336, y: 1952, w: 36, h: 14 },
+  { x: 404, y: 1952, w: 36, h: 14 },
+];
+
+export const TOWEL_GAP = { x: 372, y: 1936, w: 32, h: 48 };
+
+export const TOWEL_BAND = { x: 336, y: 1952, w: 104, h: 14 };
+
+export const COOLER_POSTS = [
+  { x: 600, y: 1768, w: 16, h: 56 },
+  { x: 712, y: 1768, w: 16, h: 56 },
+];
+
+export const COOLER_WALLS = [
+  { x: 616, y: 1792, w: 28, h: 14 },
+  { x: 668, y: 1792, w: 28, h: 14 },
+];
+
+export const COOLER_GAP = { x: 644, y: 1776, w: 24, h: 48 };
+
+export const COOLER_BAND = { x: 616, y: 1792, w: 80, h: 14 };
+
+export const MUD_BED = { x: 1188, y: 2124, w: 176, h: 84 };
+
+export const MUD_STONES = [
+  { x: 1276, y: 2140 },
+  { x: 1276, y: 2166 },
+  { x: 1276, y: 2192 },
+];
+
+export const MUD_RADIUS = 20;
+
+export const BAND_SPOT = { x: 1696, y: 1544 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -527,6 +585,12 @@ export const STICKERS = [
   { id: "wicket", name: "Garden-gate walker", hint: "You slipped through the garden gate." },
   { id: "lemon", name: "Lemonade walker", hint: "You ducked under the pretend lemonade stand." },
   { id: "pop", name: "Bubble friend", hint: "You shared a bubble wand." },
+  { id: "rainbow", name: "Rainbow hopper", hint: "You hopped the sidewalk rainbow arcs." },
+  { id: "cans", name: "Can walker", hint: "You walked between the watering cans." },
+  { id: "towels", name: "Towel walker", hint: "You ducked under the tea-towel umbrella." },
+  { id: "coolers", name: "Cooler walker", hint: "You squeezed past the picnic coolers." },
+  { id: "mud", name: "Mud hopper", hint: "You hopped the park-edge mud stones." },
+  { id: "charm", name: "Bracelet friend", hint: "You shared a friendship bracelet." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -586,12 +650,18 @@ export const CHEERS = {
   wicket: "The garden gate swung hello!",
   lemon: "Duck under the lemonade shade!",
   pop: "Bubbles for a neighbor. Kind!",
+  rainbow: "Rainbow hops on the sidewalk!",
+  cans: "Friendly watering cans said hello!",
+  towels: "Tea towels waved you under!",
+  coolers: "A friendly squeeze past the coolers!",
+  mud: "Soft hops on the muddy stones!",
+  charm: "A friendship bracelet to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet"];
 
 export function defaultStickers() {
   return {
@@ -649,6 +719,12 @@ export function defaultStickers() {
     wicket: false,
     lemon: false,
     pop: false,
+    rainbow: false,
+    cans: false,
+    towels: false,
+    coolers: false,
+    mud: false,
+    charm: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -851,6 +927,26 @@ export function onLemonGap(x, y) {
   return inRect(x, y, LEMON_GAP);
 }
 
+export function onRainbow(x, y) {
+  return RAINBOW.some((arc) => inRect(x, y, arc));
+}
+
+export function onCanLane(x, y) {
+  return inRect(x, y, CAN_ZONE) && !CAN_BLOCKS.some((can) => inRect(x, y, can));
+}
+
+export function onTowelGap(x, y) {
+  return inRect(x, y, TOWEL_GAP);
+}
+
+export function onCoolerGap(x, y) {
+  return inRect(x, y, COOLER_GAP);
+}
+
+export function onMudStone(x, y) {
+  return MUD_STONES.some((stone) => Math.hypot(x - stone.x, y - stone.y) <= MUD_RADIUS);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -892,6 +988,11 @@ export function townPathAt(x, y) {
   if (onBathPad(x, y)) return "bath";
   if (onWicketGap(x, y)) return "wicket";
   if (onLemonGap(x, y)) return "lemon";
+  if (onRainbow(x, y)) return "rainbow";
+  if (onCanLane(x, y)) return "cans";
+  if (onTowelGap(x, y)) return "towels";
+  if (onCoolerGap(x, y)) return "coolers";
+  if (onMudStone(x, y)) return "mud";
   return "";
 }
 
@@ -1095,6 +1196,28 @@ export function blockedByLemon(x, y) {
   return LEMON_POSTS.some((post) => inRect(x, y, post)) || LEMON_WALLS.some((wall) => inRect(x, y, wall));
 }
 
+export function blockedByRainbow(x, y) {
+  return inRect(x, y, RAINBOW_ZONE) && !onRainbow(x, y);
+}
+
+export function blockedByCans(x, y) {
+  return CAN_BLOCKS.some((can) => inRect(x, y, can));
+}
+
+export function blockedByTowels(x, y) {
+  if (onTowelGap(x, y)) return false;
+  return TOWEL_POSTS.some((post) => inRect(x, y, post)) || TOWEL_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByCoolers(x, y) {
+  if (onCoolerGap(x, y)) return false;
+  return COOLER_POSTS.some((post) => inRect(x, y, post)) || COOLER_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByMud(x, y) {
+  return inRect(x, y, MUD_BED) && !onMudStone(x, y);
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -1140,7 +1263,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByKites(x, y) ||
     blockedByBath(x, y) ||
     blockedByWicket(x, y) ||
-    blockedByLemon(x, y)
+    blockedByLemon(x, y) ||
+    blockedByRainbow(x, y) ||
+    blockedByCans(x, y) ||
+    blockedByTowels(x, y) ||
+    blockedByCoolers(x, y) ||
+    blockedByMud(x, y)
   );
 }
 
@@ -1235,6 +1363,11 @@ export function applyCrossingProgress(prev, next) {
     ["bath", BATH_BOWL, "y"],
     ["wicket", WICKET_BAND, "y"],
     ["lemon", LEMON_BAND, "y"],
+    ["rainbow", RAINBOW_ZONE, "y"],
+    ["cans", CAN_ZONE, "y"],
+    ["towels", TOWEL_BAND, "y"],
+    ["coolers", COOLER_BAND, "y"],
+    ["mud", MUD_BED, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -1271,7 +1404,9 @@ export function applyCrossingProgress(prev, next) {
       onBoard(next.x, next.y) ||
       onToadstool(next.x, next.y) ||
       onPaintCan(next.x, next.y) ||
-      onBathPad(next.x, next.y),
+      onBathPad(next.x, next.y) ||
+      onRainbow(next.x, next.y) ||
+      onMudStone(next.x, next.y),
   };
 }
 
@@ -1465,6 +1600,22 @@ export function shareBubble(player) {
   });
 }
 
+export function takeBracelet(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "bracelet", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareBracelet(player) {
+  if (player.carry !== "bracelet") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), charm: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -1491,5 +1642,6 @@ export function carryLabel(value) {
   if (value === "balloon") return "Balloon";
   if (value === "pinwheel") return "Pinwheel";
   if (value === "bubble") return "Bubbles";
+  if (value === "bracelet") return "Bracelet";
   return "";
 }
