@@ -530,6 +530,61 @@ export const MUD_RADIUS = 20;
 
 export const BAND_SPOT = { x: 1696, y: 1544 };
 
+export const STEP_BED = { x: 2328, y: 1784, w: 176, h: 84 };
+
+export const STEP_STONES = [
+  { x: 2416, y: 1800 },
+  { x: 2416, y: 1826 },
+  { x: 2416, y: 1852 },
+];
+
+export const STEP_RADIUS = 20;
+
+export const SHRUB_POSTS = [
+  { x: 2368, y: 1464, w: 16, h: 56 },
+  { x: 2480, y: 1464, w: 16, h: 56 },
+];
+
+export const SHRUB_WALLS = [
+  { x: 2384, y: 1488, w: 28, h: 14 },
+  { x: 2436, y: 1488, w: 28, h: 14 },
+];
+
+export const SHRUB_GAP = { x: 2412, y: 1472, w: 24, h: 48 };
+
+export const SHRUB_BAND = { x: 2384, y: 1488, w: 80, h: 14 };
+
+export const SOCK_ZONE = { x: 1768, y: 440, w: 88, h: 120 };
+
+export const SOCKS = [
+  { x: 1776, y: 440, w: 40, h: 36 },
+  { x: 1812, y: 468, w: 40, h: 36 },
+  { x: 1776, y: 496, w: 40, h: 36 },
+  { x: 1812, y: 524, w: 40, h: 36 },
+];
+
+export const DIG_BED = { x: 88, y: 2040, w: 176, h: 84 };
+
+export const DIG_PADS = [
+  { x: 176, y: 2056 },
+  { x: 176, y: 2082 },
+  { x: 176, y: 2108 },
+];
+
+export const DIG_RADIUS = 20;
+
+export const PILE_BED = { x: 2208, y: 468, w: 176, h: 84 };
+
+export const PILE_PADS = [
+  { x: 2296, y: 484 },
+  { x: 2296, y: 510 },
+  { x: 2296, y: 536 },
+];
+
+export const PILE_RADIUS = 20;
+
+export const KIND_SPOT = { x: 560, y: 1608 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -591,6 +646,12 @@ export const STICKERS = [
   { id: "coolers", name: "Cooler walker", hint: "You squeezed past the picnic coolers." },
   { id: "mud", name: "Mud hopper", hint: "You hopped the park-edge mud stones." },
   { id: "charm", name: "Bracelet friend", hint: "You shared a friendship bracelet." },
+  { id: "steps", name: "Stepping-stone hopper", hint: "You hopped the sunny stepping stones." },
+  { id: "shrub", name: "Hedge ducker", hint: "You ducked under the low hedge." },
+  { id: "socks", name: "Laundry walker", hint: "You tip-toed the laundry-line socks." },
+  { id: "digs", name: "Sandbox digger", hint: "You hopped the sandbox dig pads." },
+  { id: "piles", name: "Leaf-pile hopper", hint: "You jumped the crunchy leaf piles." },
+  { id: "kind", name: "Sticker friend", hint: "You shared a kind sticker." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -656,12 +717,18 @@ export const CHEERS = {
   coolers: "A friendly squeeze past the coolers!",
   mud: "Soft hops on the muddy stones!",
   charm: "A friendship bracelet to share. Kind!",
+  steps: "Sunny hops on the stepping stones!",
+  shrub: "Duck under the low leafy hedge!",
+  socks: "Tip-toe on the laundry-line socks!",
+  digs: "Sandy hops on the dig pads!",
+  piles: "Crunchy jumps on the leaf piles!",
+  kind: "A kind sticker to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker"];
 
 export function defaultStickers() {
   return {
@@ -725,6 +792,12 @@ export function defaultStickers() {
     coolers: false,
     mud: false,
     charm: false,
+    steps: false,
+    shrub: false,
+    socks: false,
+    digs: false,
+    piles: false,
+    kind: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -947,6 +1020,26 @@ export function onMudStone(x, y) {
   return MUD_STONES.some((stone) => Math.hypot(x - stone.x, y - stone.y) <= MUD_RADIUS);
 }
 
+export function onStepStone(x, y) {
+  return STEP_STONES.some((stone) => Math.hypot(x - stone.x, y - stone.y) <= STEP_RADIUS);
+}
+
+export function onShrubGap(x, y) {
+  return inRect(x, y, SHRUB_GAP);
+}
+
+export function onSock(x, y) {
+  return SOCKS.some((sock) => inRect(x, y, sock));
+}
+
+export function onDigPad(x, y) {
+  return DIG_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= DIG_RADIUS);
+}
+
+export function onLeafPile(x, y) {
+  return PILE_PADS.some((pile) => Math.hypot(x - pile.x, y - pile.y) <= PILE_RADIUS);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -993,6 +1086,11 @@ export function townPathAt(x, y) {
   if (onTowelGap(x, y)) return "towels";
   if (onCoolerGap(x, y)) return "coolers";
   if (onMudStone(x, y)) return "mud";
+  if (onStepStone(x, y)) return "steps";
+  if (onShrubGap(x, y)) return "shrub";
+  if (onSock(x, y)) return "socks";
+  if (onDigPad(x, y)) return "digs";
+  if (onLeafPile(x, y)) return "piles";
   return "";
 }
 
@@ -1218,6 +1316,27 @@ export function blockedByMud(x, y) {
   return inRect(x, y, MUD_BED) && !onMudStone(x, y);
 }
 
+export function blockedBySteps(x, y) {
+  return inRect(x, y, STEP_BED) && !onStepStone(x, y);
+}
+
+export function blockedByShrub(x, y) {
+  if (onShrubGap(x, y)) return false;
+  return SHRUB_POSTS.some((post) => inRect(x, y, post)) || SHRUB_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedBySocks(x, y) {
+  return inRect(x, y, SOCK_ZONE) && !onSock(x, y);
+}
+
+export function blockedByDigs(x, y) {
+  return inRect(x, y, DIG_BED) && !onDigPad(x, y);
+}
+
+export function blockedByPiles(x, y) {
+  return inRect(x, y, PILE_BED) && !onLeafPile(x, y);
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -1268,7 +1387,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByCans(x, y) ||
     blockedByTowels(x, y) ||
     blockedByCoolers(x, y) ||
-    blockedByMud(x, y)
+    blockedByMud(x, y) ||
+    blockedBySteps(x, y) ||
+    blockedByShrub(x, y) ||
+    blockedBySocks(x, y) ||
+    blockedByDigs(x, y) ||
+    blockedByPiles(x, y)
   );
 }
 
@@ -1368,6 +1492,11 @@ export function applyCrossingProgress(prev, next) {
     ["towels", TOWEL_BAND, "y"],
     ["coolers", COOLER_BAND, "y"],
     ["mud", MUD_BED, "y"],
+    ["steps", STEP_BED, "y"],
+    ["shrub", SHRUB_BAND, "y"],
+    ["socks", SOCK_ZONE, "y"],
+    ["digs", DIG_BED, "y"],
+    ["piles", PILE_BED, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -1406,7 +1535,11 @@ export function applyCrossingProgress(prev, next) {
       onPaintCan(next.x, next.y) ||
       onBathPad(next.x, next.y) ||
       onRainbow(next.x, next.y) ||
-      onMudStone(next.x, next.y),
+      onMudStone(next.x, next.y) ||
+      onStepStone(next.x, next.y) ||
+      onSock(next.x, next.y) ||
+      onDigPad(next.x, next.y) ||
+      onLeafPile(next.x, next.y),
   };
 }
 
@@ -1616,6 +1749,22 @@ export function shareBracelet(player) {
   });
 }
 
+export function takeSticker(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "sticker", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareSticker(player) {
+  if (player.carry !== "sticker") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), kind: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -1643,5 +1792,6 @@ export function carryLabel(value) {
   if (value === "pinwheel") return "Pinwheel";
   if (value === "bubble") return "Bubbles";
   if (value === "bracelet") return "Bracelet";
+  if (value === "sticker") return "Sticker";
   return "";
 }
