@@ -131,6 +131,19 @@ import {
   PILE_BED,
   PILE_PADS,
   KIND_SPOT,
+  SKIP_ZONE,
+  SKIPS,
+  ROPE_GAP,
+  ROPE_POSTS,
+  ROPE_WALLS,
+  TUB_ZONE,
+  TUB_BLOCKS,
+  NOODLE_GAP,
+  NOODLE_POSTS,
+  NOODLE_WALLS,
+  RAMP_BED,
+  RAMP_PADS,
+  PLANE_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -547,6 +560,28 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fillStyle = "#f4d35e";
     oval(ctx, 24, 14, 1.6, 1.6);
     ctx.fill();
+  }
+  if (look.carry === "plane" && !sleeping) {
+    ctx.fillStyle = "#fff8e7";
+    ctx.beginPath();
+    ctx.moveTo(14, 18);
+    ctx.lineTo(32, 10);
+    ctx.lineTo(18, 22);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    ctx.beginPath();
+    ctx.moveTo(18, 18);
+    ctx.lineTo(32, 10);
+    ctx.lineTo(22, 22);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.moveTo(14, 18);
+    ctx.lineTo(32, 10);
+    ctx.stroke();
   }
   ctx.restore();
 }
@@ -2528,6 +2563,214 @@ function drawSharedSticker(ctx, carried) {
   ctx.fillText("Sticker", KIND_SPOT.x - 22, KIND_SPOT.y - 18);
 }
 
+function drawHopscotchPads(ctx) {
+  ctx.fillStyle = "#d8c3a5";
+  roundRect(ctx, SKIP_ZONE.x, SKIP_ZONE.y, SKIP_ZONE.w, SKIP_ZONE.h, 12);
+  ctx.fill();
+  const chalk = ["#5b8def", "#e74c3c", "#f4b942", "#3f9b4a"];
+  SKIPS.forEach((pad, index) => {
+    ctx.fillStyle = chalk[index % chalk.length];
+    ctx.globalAlpha = 0.6;
+    roundRect(ctx, pad.x, pad.y, pad.w, pad.h, 8);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#fff8e7";
+    ctx.font = "700 16px Fredoka, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(String(index + 1), pad.x + pad.w / 2, pad.y + 24);
+  });
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Hopscotch pads", SKIP_ZONE.x - 16, SKIP_ZONE.y - 8);
+}
+
+function drawJumpRope(ctx, time) {
+  const hues = ["#f4a4c4", "#5b8def"];
+  ROPE_POSTS.forEach((post, index) => {
+    ctx.fillStyle = hues[index % hues.length];
+    roundRect(ctx, post.x + 2, post.y + 36, 12, 22, 5);
+    ctx.fill();
+    ctx.fillStyle = "#f3d2b3";
+    oval(ctx, post.x + 8, post.y + 28, 7, 7);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, post.x + 8, post.y + 24, 7, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, post.x + 3, post.y + 56, 5, 12, 2);
+    ctx.fill();
+    roundRect(ctx, post.x + 8, post.y + 56, 5, 12, 2);
+    ctx.fill();
+  });
+  const sway = Math.sin(time * 3.2) * 6;
+  ctx.strokeStyle = "#f4d35e";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(ROPE_POSTS[0].x + 10, ROPE_POSTS[0].y + 40);
+  ctx.quadraticCurveTo(
+    (ROPE_POSTS[0].x + ROPE_POSTS[1].x) / 2 + 8,
+    ROPE_POSTS[0].y + 28 + sway,
+    ROPE_POSTS[1].x + 6,
+    ROPE_POSTS[1].y + 40,
+  );
+  ctx.stroke();
+  for (const wall of ROPE_WALLS) {
+    ctx.fillStyle = "#f4d35e";
+    ctx.globalAlpha = 0.45;
+    roundRect(ctx, wall.x, wall.y - 6, wall.w, 10, 4);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.5 + Math.sin(time * 3) * 0.08;
+  oval(ctx, ROPE_GAP.x + ROPE_GAP.w / 2, ROPE_GAP.y + 16, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Jump rope", ROPE_POSTS[0].x - 4, ROPE_POSTS[0].y - 10);
+}
+
+function drawFlowerBoxes(ctx) {
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, TUB_ZONE.x, TUB_ZONE.y, TUB_ZONE.w, TUB_ZONE.h, 12);
+  ctx.fill();
+  const woods = ["#c45c26", "#8d6e4c", "#e67e22", "#6d5a4a"];
+  const blooms = ["#e74c3c", "#f4a4c4", "#f4d35e", "#5b8def"];
+  TUB_BLOCKS.forEach((box, index) => {
+    const cx = box.x + box.w / 2;
+    const cy = box.y + box.h / 2;
+    ctx.fillStyle = woods[index % woods.length];
+    roundRect(ctx, cx - 12, cy - 4, 24, 18, 4);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, cx, cy - 6, 10, 6);
+    ctx.fill();
+    ctx.fillStyle = blooms[index % blooms.length];
+    oval(ctx, cx - 4, cy - 10, 4, 4);
+    ctx.fill();
+    oval(ctx, cx + 4, cy - 12, 4, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, cy - 8, 2, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Flower boxes", TUB_ZONE.x + 8, TUB_ZONE.y - 8);
+}
+
+function drawPoolNoodles(ctx) {
+  const hues = ["#e74c3c", "#5b8def"];
+  NOODLE_POSTS.forEach((post, index) => {
+    ctx.fillStyle = hues[index % hues.length];
+    roundRect(ctx, post.x + 2, post.y + 4, 12, 40, 6);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, post.x + 8, post.y + 8, 4, 3);
+    ctx.fill();
+    ctx.fillStyle = hues[index % hues.length];
+    oval(ctx, post.x + 8, post.y + 44, 7, 5);
+    ctx.fill();
+  });
+  for (const wall of NOODLE_WALLS) {
+    ctx.fillStyle = "#f4a4c4";
+    roundRect(ctx, wall.x, wall.y - 8, wall.w, 12, 5);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, wall.x + 8, wall.y - 4, 3, 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.45;
+  oval(ctx, NOODLE_GAP.x + NOODLE_GAP.w / 2, NOODLE_GAP.y + 18, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pool noodles", NOODLE_POSTS[0].x - 8, NOODLE_POSTS[0].y - 10);
+}
+
+function drawScooterRamps(ctx) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, RAMP_BED.x, RAMP_BED.y, RAMP_BED.w, RAMP_BED.h, 16);
+  ctx.fill();
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, RAMP_BED.x + 10, RAMP_BED.y + 8, RAMP_BED.w - 20, RAMP_BED.h - 16, 10);
+  ctx.fill();
+  RAMP_PADS.forEach((pad, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#d4a373" : "#e8d5b5";
+    ctx.beginPath();
+    ctx.moveTo(pad.x - 16, pad.y + 8);
+    ctx.lineTo(pad.x + 16, pad.y - 4);
+    ctx.lineTo(pad.x + 16, pad.y + 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, pad.x - 16, pad.y + 6, 32, 5, 2);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x + 6, pad.y, 3, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Scooter ramp", RAMP_BED.x + 8, RAMP_BED.y - 8);
+}
+
+function drawSharedPlane(ctx, carried) {
+  if (!carried) {
+    ctx.fillStyle = "#fff8e7";
+    ctx.beginPath();
+    ctx.moveTo(828, 888);
+    ctx.lineTo(856, 872);
+    ctx.lineTo(836, 892);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    ctx.beginPath();
+    ctx.moveTo(834, 886);
+    ctx.lineTo(856, 872);
+    ctx.lineTo(840, 892);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Airplane", 816, 860);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, PLANE_SPOT.x - 22, PLANE_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, PLANE_SPOT.x - 20, PLANE_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, PLANE_SPOT.x - 16, PLANE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, PLANE_SPOT.x + 10, PLANE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) {
+    ctx.fillStyle = "#fff8e7";
+    ctx.beginPath();
+    ctx.moveTo(PLANE_SPOT.x - 10, PLANE_SPOT.y + 6);
+    ctx.lineTo(PLANE_SPOT.x + 12, PLANE_SPOT.y - 6);
+    ctx.lineTo(PLANE_SPOT.x - 4, PLANE_SPOT.y + 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    ctx.beginPath();
+    ctx.moveTo(PLANE_SPOT.x - 4, PLANE_SPOT.y + 4);
+    ctx.lineTo(PLANE_SPOT.x + 12, PLANE_SPOT.y - 6);
+    ctx.lineTo(PLANE_SPOT.x, PLANE_SPOT.y + 10);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Airplane", PLANE_SPOT.x - 26, PLANE_SPOT.y - 18);
+}
+
 function drawSharedFlower(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#3f9b4a";
@@ -2754,6 +2997,12 @@ export function drawTown(ctx, player, time) {
   drawDigPads(ctx);
   drawLeafPiles(ctx);
   drawSharedSticker(ctx, player.carry === "sticker");
+  drawHopscotchPads(ctx);
+  drawJumpRope(ctx, time);
+  drawFlowerBoxes(ctx);
+  drawPoolNoodles(ctx);
+  drawScooterRamps(ctx);
+  drawSharedPlane(ctx, player.carry === "plane");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
