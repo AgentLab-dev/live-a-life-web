@@ -585,6 +585,64 @@ export const PILE_RADIUS = 20;
 
 export const KIND_SPOT = { x: 560, y: 1608 };
 
+export const SKIP_ZONE = { x: 720, y: 736, w: 88, h: 120 };
+
+export const SKIPS = [
+  { x: 728, y: 736, w: 40, h: 36 },
+  { x: 764, y: 764, w: 40, h: 36 },
+  { x: 728, y: 792, w: 40, h: 36 },
+  { x: 764, y: 820, w: 40, h: 36 },
+];
+
+export const ROPE_POSTS = [
+  { x: 88, y: 1900, w: 16, h: 128 },
+  { x: 208, y: 1900, w: 16, h: 128 },
+];
+
+export const ROPE_WALLS = [
+  { x: 104, y: 1944, w: 36, h: 14 },
+  { x: 172, y: 1944, w: 36, h: 14 },
+];
+
+export const ROPE_GAP = { x: 140, y: 1928, w: 32, h: 48 };
+
+export const ROPE_BAND = { x: 104, y: 1944, w: 104, h: 14 };
+
+export const TUB_ZONE = { x: 2240, y: 620, w: 268, h: 64 };
+
+export const TUB_BLOCKS = [
+  { x: 2260, y: 620, w: 28, h: 64 },
+  { x: 2330, y: 620, w: 28, h: 64 },
+  { x: 2400, y: 620, w: 28, h: 64 },
+  { x: 2470, y: 620, w: 28, h: 64 },
+];
+
+export const NOODLE_POSTS = [
+  { x: 2320, y: 2148, w: 16, h: 56 },
+  { x: 2432, y: 2148, w: 16, h: 56 },
+];
+
+export const NOODLE_WALLS = [
+  { x: 2336, y: 2172, w: 28, h: 14 },
+  { x: 2388, y: 2172, w: 28, h: 14 },
+];
+
+export const NOODLE_GAP = { x: 2364, y: 2156, w: 24, h: 48 };
+
+export const NOODLE_BAND = { x: 2336, y: 2172, w: 80, h: 14 };
+
+export const RAMP_BED = { x: 1480, y: 2140, w: 176, h: 84 };
+
+export const RAMP_PADS = [
+  { x: 1568, y: 2156 },
+  { x: 1568, y: 2182 },
+  { x: 1568, y: 2208 },
+];
+
+export const RAMP_RADIUS = 20;
+
+export const PLANE_SPOT = { x: 2100, y: 1608 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -652,6 +710,12 @@ export const STICKERS = [
   { id: "digs", name: "Sandbox digger", hint: "You hopped the sandbox dig pads." },
   { id: "piles", name: "Leaf-pile hopper", hint: "You jumped the crunchy leaf piles." },
   { id: "kind", name: "Sticker friend", hint: "You shared a kind sticker." },
+  { id: "skips", name: "Sidewalk hopper", hint: "You hopped the quiet hopscotch pads." },
+  { id: "rope", name: "Jump-rope walker", hint: "You ducked under the soft jump rope." },
+  { id: "tubs", name: "Flower-box walker", hint: "You walked between the garden flower boxes." },
+  { id: "noodles", name: "Noodle walker", hint: "You squeezed between the soft foam noodles." },
+  { id: "ramps", name: "Ramp hopper", hint: "You hopped the tiny scooter ramp." },
+  { id: "glide", name: "Airplane friend", hint: "You shared a paper airplane." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -723,12 +787,18 @@ export const CHEERS = {
   digs: "Sandy hops on the dig pads!",
   piles: "Crunchy jumps on the leaf piles!",
   kind: "A kind sticker to share. Kind!",
+  skips: "Quiet hopscotch hops. One two three!",
+  rope: "Duck under the swishy jump rope!",
+  tubs: "Pretty flower boxes said hello!",
+  noodles: "A friendly squeeze between the noodles!",
+  ramps: "Tiny ramp hops. Soft wood!",
+  glide: "A paper airplane to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane"];
 
 export function defaultStickers() {
   return {
@@ -798,6 +868,12 @@ export function defaultStickers() {
     digs: false,
     piles: false,
     kind: false,
+    skips: false,
+    rope: false,
+    tubs: false,
+    noodles: false,
+    ramps: false,
+    glide: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -1040,6 +1116,26 @@ export function onLeafPile(x, y) {
   return PILE_PADS.some((pile) => Math.hypot(x - pile.x, y - pile.y) <= PILE_RADIUS);
 }
 
+export function onSkip(x, y) {
+  return SKIPS.some((pad) => inRect(x, y, pad));
+}
+
+export function onRopeGap(x, y) {
+  return inRect(x, y, ROPE_GAP);
+}
+
+export function onTubLane(x, y) {
+  return inRect(x, y, TUB_ZONE) && !TUB_BLOCKS.some((box) => inRect(x, y, box));
+}
+
+export function onNoodleGap(x, y) {
+  return inRect(x, y, NOODLE_GAP);
+}
+
+export function onRampPad(x, y) {
+  return RAMP_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= RAMP_RADIUS);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -1091,6 +1187,11 @@ export function townPathAt(x, y) {
   if (onSock(x, y)) return "socks";
   if (onDigPad(x, y)) return "digs";
   if (onLeafPile(x, y)) return "piles";
+  if (onSkip(x, y)) return "skips";
+  if (onRopeGap(x, y)) return "rope";
+  if (onTubLane(x, y)) return "tubs";
+  if (onNoodleGap(x, y)) return "noodles";
+  if (onRampPad(x, y)) return "ramps";
   return "";
 }
 
@@ -1337,6 +1438,28 @@ export function blockedByPiles(x, y) {
   return inRect(x, y, PILE_BED) && !onLeafPile(x, y);
 }
 
+export function blockedBySkips(x, y) {
+  return inRect(x, y, SKIP_ZONE) && !onSkip(x, y);
+}
+
+export function blockedByRope(x, y) {
+  if (onRopeGap(x, y)) return false;
+  return ROPE_POSTS.some((post) => inRect(x, y, post)) || ROPE_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByTubs(x, y) {
+  return TUB_BLOCKS.some((box) => inRect(x, y, box));
+}
+
+export function blockedByNoodles(x, y) {
+  if (onNoodleGap(x, y)) return false;
+  return NOODLE_POSTS.some((post) => inRect(x, y, post)) || NOODLE_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByRamps(x, y) {
+  return inRect(x, y, RAMP_BED) && !onRampPad(x, y);
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -1392,7 +1515,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByShrub(x, y) ||
     blockedBySocks(x, y) ||
     blockedByDigs(x, y) ||
-    blockedByPiles(x, y)
+    blockedByPiles(x, y) ||
+    blockedBySkips(x, y) ||
+    blockedByRope(x, y) ||
+    blockedByTubs(x, y) ||
+    blockedByNoodles(x, y) ||
+    blockedByRamps(x, y)
   );
 }
 
@@ -1497,6 +1625,11 @@ export function applyCrossingProgress(prev, next) {
     ["socks", SOCK_ZONE, "y"],
     ["digs", DIG_BED, "y"],
     ["piles", PILE_BED, "y"],
+    ["skips", SKIP_ZONE, "y"],
+    ["rope", ROPE_BAND, "y"],
+    ["tubs", TUB_ZONE, "y"],
+    ["noodles", NOODLE_BAND, "y"],
+    ["ramps", RAMP_BED, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -1539,7 +1672,9 @@ export function applyCrossingProgress(prev, next) {
       onStepStone(next.x, next.y) ||
       onSock(next.x, next.y) ||
       onDigPad(next.x, next.y) ||
-      onLeafPile(next.x, next.y),
+      onLeafPile(next.x, next.y) ||
+      onSkip(next.x, next.y) ||
+      onRampPad(next.x, next.y),
   };
 }
 
@@ -1765,6 +1900,22 @@ export function shareSticker(player) {
   });
 }
 
+export function takePlane(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "plane", pose: "idle", actionBeatMs: 0 });
+}
+
+export function sharePlane(player) {
+  if (player.carry !== "plane") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), glide: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -1793,5 +1944,6 @@ export function carryLabel(value) {
   if (value === "bubble") return "Bubbles";
   if (value === "bracelet") return "Bracelet";
   if (value === "sticker") return "Sticker";
+  if (value === "plane") return "Airplane";
   return "";
 }
