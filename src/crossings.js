@@ -643,6 +643,62 @@ export const RAMP_RADIUS = 20;
 
 export const PLANE_SPOT = { x: 2100, y: 1608 };
 
+export const BEAM_BED = { x: 1880, y: 440, w: 176, h: 84 };
+
+export const BEAM_PADS = [
+  { x: 1968, y: 456 },
+  { x: 1968, y: 482 },
+  { x: 1968, y: 508 },
+];
+
+export const BEAM_RADIUS = 20;
+
+export const BOUNCE_BED = { x: 2020, y: 580, w: 176, h: 84 };
+
+export const BOUNCE_PADS = [
+  { x: 2108, y: 596 },
+  { x: 2108, y: 622 },
+  { x: 2108, y: 648 },
+];
+
+export const BOUNCE_RADIUS = 20;
+
+export const COIL_POSTS = [
+  { x: 2368, y: 980, w: 16, h: 128 },
+  { x: 2488, y: 980, w: 16, h: 128 },
+];
+
+export const COIL_WALLS = [
+  { x: 2384, y: 1024, w: 36, h: 14 },
+  { x: 2452, y: 1024, w: 36, h: 14 },
+];
+
+export const COIL_GAP = { x: 2420, y: 1008, w: 32, h: 48 };
+
+export const COIL_BAND = { x: 2384, y: 1024, w: 104, h: 14 };
+
+export const ARROW_ZONE = { x: 600, y: 2040, w: 88, h: 120 };
+
+export const ARROWS = [
+  { x: 608, y: 2040, w: 40, h: 36 },
+  { x: 644, y: 2068, w: 40, h: 36 },
+  { x: 608, y: 2096, w: 40, h: 36 },
+  { x: 644, y: 2124, w: 40, h: 36 },
+];
+
+export const BLANKET_BED = { x: 2104, y: 1892, w: 160, h: 84 };
+
+export const BLANKET_PADS = [
+  { x: 2132, y: 1912 },
+  { x: 2236, y: 1912 },
+  { x: 2132, y: 1952 },
+  { x: 2236, y: 1952 },
+];
+
+export const BLANKET_RADIUS = 22;
+
+export const SHELL_SPOT = { x: 800, y: 2140 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -716,6 +772,12 @@ export const STICKERS = [
   { id: "noodles", name: "Noodle walker", hint: "You squeezed between the soft foam noodles." },
   { id: "ramps", name: "Ramp hopper", hint: "You hopped the tiny scooter ramp." },
   { id: "glide", name: "Airplane friend", hint: "You shared a paper airplane." },
+  { id: "beam", name: "Beam hopper", hint: "You hopped the low wooden balance beam." },
+  { id: "bounce", name: "Swing hopper", hint: "You bounced along the tire swing pads." },
+  { id: "coils", name: "Coil walker", hint: "You stepped over the coiled garden hose." },
+  { id: "arrows", name: "Arrow hopper", hint: "You followed the sidewalk chalk arrows." },
+  { id: "corners", name: "Blanket hopper", hint: "You hopped the picnic blanket corners." },
+  { id: "shell", name: "Shell friend", hint: "You shared a kind seashell." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -793,12 +855,18 @@ export const CHEERS = {
   noodles: "A friendly squeeze between the noodles!",
   ramps: "Tiny ramp hops. Soft wood!",
   glide: "A paper airplane to share. Kind!",
+  beam: "Soft hops on the wooden beam!",
+  bounce: "Bouncy hops on the tire swing path!",
+  coils: "Soft steps over the coiled hose!",
+  arrows: "Follow the chalk arrows. Hop!",
+  corners: "Soft hops on the blanket corners!",
+  shell: "A kind seashell to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell"];
 
 export function defaultStickers() {
   return {
@@ -874,6 +942,12 @@ export function defaultStickers() {
     noodles: false,
     ramps: false,
     glide: false,
+    beam: false,
+    bounce: false,
+    coils: false,
+    arrows: false,
+    corners: false,
+    shell: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -1136,6 +1210,26 @@ export function onRampPad(x, y) {
   return RAMP_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= RAMP_RADIUS);
 }
 
+export function onBeamPad(x, y) {
+  return BEAM_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= BEAM_RADIUS);
+}
+
+export function onBouncePad(x, y) {
+  return BOUNCE_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= BOUNCE_RADIUS);
+}
+
+export function onCoilGap(x, y) {
+  return inRect(x, y, COIL_GAP);
+}
+
+export function onArrow(x, y) {
+  return ARROWS.some((pad) => inRect(x, y, pad));
+}
+
+export function onBlanketPad(x, y) {
+  return BLANKET_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= BLANKET_RADIUS);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -1192,6 +1286,11 @@ export function townPathAt(x, y) {
   if (onTubLane(x, y)) return "tubs";
   if (onNoodleGap(x, y)) return "noodles";
   if (onRampPad(x, y)) return "ramps";
+  if (onBeamPad(x, y)) return "beam";
+  if (onBouncePad(x, y)) return "bounce";
+  if (onCoilGap(x, y)) return "coils";
+  if (onArrow(x, y)) return "arrows";
+  if (onBlanketPad(x, y)) return "corners";
   return "";
 }
 
@@ -1460,6 +1559,27 @@ export function blockedByRamps(x, y) {
   return inRect(x, y, RAMP_BED) && !onRampPad(x, y);
 }
 
+export function blockedByBeam(x, y) {
+  return inRect(x, y, BEAM_BED) && !onBeamPad(x, y);
+}
+
+export function blockedByBounce(x, y) {
+  return inRect(x, y, BOUNCE_BED) && !onBouncePad(x, y);
+}
+
+export function blockedByCoils(x, y) {
+  if (onCoilGap(x, y)) return false;
+  return COIL_POSTS.some((post) => inRect(x, y, post)) || COIL_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByArrows(x, y) {
+  return inRect(x, y, ARROW_ZONE) && !onArrow(x, y);
+}
+
+export function blockedByBlanket(x, y) {
+  return inRect(x, y, BLANKET_BED) && !onBlanketPad(x, y);
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -1520,7 +1640,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByRope(x, y) ||
     blockedByTubs(x, y) ||
     blockedByNoodles(x, y) ||
-    blockedByRamps(x, y)
+    blockedByRamps(x, y) ||
+    blockedByBeam(x, y) ||
+    blockedByBounce(x, y) ||
+    blockedByCoils(x, y) ||
+    blockedByArrows(x, y) ||
+    blockedByBlanket(x, y)
   );
 }
 
@@ -1630,6 +1755,11 @@ export function applyCrossingProgress(prev, next) {
     ["tubs", TUB_ZONE, "y"],
     ["noodles", NOODLE_BAND, "y"],
     ["ramps", RAMP_BED, "y"],
+    ["beam", BEAM_BED, "y"],
+    ["bounce", BOUNCE_BED, "y"],
+    ["coils", COIL_BAND, "y"],
+    ["arrows", ARROW_ZONE, "y"],
+    ["corners", BLANKET_BED, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -1674,7 +1804,11 @@ export function applyCrossingProgress(prev, next) {
       onDigPad(next.x, next.y) ||
       onLeafPile(next.x, next.y) ||
       onSkip(next.x, next.y) ||
-      onRampPad(next.x, next.y),
+      onRampPad(next.x, next.y) ||
+      onBeamPad(next.x, next.y) ||
+      onBouncePad(next.x, next.y) ||
+      onArrow(next.x, next.y) ||
+      onBlanketPad(next.x, next.y),
   };
 }
 
@@ -1916,6 +2050,22 @@ export function sharePlane(player) {
   });
 }
 
+export function takeShell(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "shell", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareShell(player) {
+  if (player.carry !== "shell") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), shell: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -1945,5 +2095,6 @@ export function carryLabel(value) {
   if (value === "bracelet") return "Bracelet";
   if (value === "sticker") return "Sticker";
   if (value === "plane") return "Airplane";
+  if (value === "shell") return "Seashell";
   return "";
 }

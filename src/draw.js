@@ -144,6 +144,18 @@ import {
   RAMP_BED,
   RAMP_PADS,
   PLANE_SPOT,
+  BEAM_BED,
+  BEAM_PADS,
+  BOUNCE_BED,
+  BOUNCE_PADS,
+  COIL_GAP,
+  COIL_POSTS,
+  COIL_WALLS,
+  ARROW_ZONE,
+  ARROWS,
+  BLANKET_BED,
+  BLANKET_PADS,
+  SHELL_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -581,6 +593,20 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.beginPath();
     ctx.moveTo(14, 18);
     ctx.lineTo(32, 10);
+    ctx.stroke();
+  }
+  if (look.carry === "shell" && !sleeping) {
+    ctx.fillStyle = "#f4a4c4";
+    ctx.beginPath();
+    ctx.moveTo(16, 20);
+    ctx.quadraticCurveTo(24, 6, 34, 18);
+    ctx.quadraticCurveTo(24, 16, 16, 20);
+    ctx.fill();
+    ctx.strokeStyle = "#fff8e7";
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.moveTo(20, 18);
+    ctx.quadraticCurveTo(24, 12, 30, 17);
     ctx.stroke();
   }
   ctx.restore();
@@ -2771,6 +2797,178 @@ function drawSharedPlane(ctx, carried) {
   ctx.fillText("Airplane", PLANE_SPOT.x - 26, PLANE_SPOT.y - 18);
 }
 
+function drawBalanceBeam(ctx) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, BEAM_BED.x, BEAM_BED.y, BEAM_BED.w, BEAM_BED.h, 16);
+  ctx.fill();
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, BEAM_BED.x + 10, BEAM_BED.y + 8, BEAM_BED.w - 20, BEAM_BED.h - 16, 10);
+  ctx.fill();
+  BEAM_PADS.forEach((pad, index) => {
+    ctx.fillStyle = index % 2 === 0 ? "#c45c26" : "#d4a373";
+    roundRect(ctx, pad.x - 18, pad.y - 8, 36, 16, 4);
+    ctx.fill();
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, pad.x - 18, pad.y + 4, 36, 4, 2);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x - 8, pad.y - 2, 2, 1.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Balance beam", BEAM_BED.x + 8, BEAM_BED.y - 8);
+}
+
+function drawTireSwingPads(ctx) {
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, BOUNCE_BED.x, BOUNCE_BED.y, BOUNCE_BED.w, BOUNCE_BED.h, 16);
+  ctx.fill();
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, BOUNCE_BED.x + 10, BOUNCE_BED.y + 8, BOUNCE_BED.w - 20, BOUNCE_BED.h - 16, 10);
+  ctx.fill();
+  BOUNCE_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#2b1b14";
+    oval(ctx, pad.x, pad.y, 16, 12);
+    ctx.fill();
+    ctx.fillStyle = index % 2 === 0 ? "#5b8def" : "#f4d35e";
+    oval(ctx, pad.x, pad.y, 8, 6);
+    ctx.fill();
+    ctx.strokeStyle = "#6d5a4a";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(pad.x, pad.y - 12);
+    ctx.lineTo(pad.x, pad.y - 20);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Tire swing", BOUNCE_BED.x + 8, BOUNCE_BED.y - 8);
+}
+
+function drawHoseCoils(ctx) {
+  const hues = ["#3f9b4a", "#2f8a40"];
+  COIL_POSTS.forEach((post, index) => {
+    const cx = post.x + 8;
+    const cy = post.y + 64;
+    ctx.strokeStyle = hues[index % hues.length];
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 14, 0.4, Math.PI * 1.7);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, cy, 8, 0.2, Math.PI * 1.8);
+    ctx.stroke();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, cx, cy, 3, 3);
+    ctx.fill();
+  });
+  for (const wall of COIL_WALLS) {
+    ctx.strokeStyle = "#3f9b4a";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(wall.x, wall.y + 4);
+    ctx.quadraticCurveTo(wall.x + wall.w / 2, wall.y - 8, wall.x + wall.w, wall.y + 4);
+    ctx.stroke();
+    ctx.fillStyle = "#7ec24f";
+    oval(ctx, wall.x + 8, wall.y + 2, 4, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#8fd36a";
+  ctx.globalAlpha = 0.45;
+  oval(ctx, COIL_GAP.x + COIL_GAP.w / 2, COIL_GAP.y + 18, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Hose coils", COIL_POSTS[0].x - 8, COIL_POSTS[0].y - 10);
+}
+
+function drawChalkArrows(ctx) {
+  ctx.fillStyle = "#d8c3a5";
+  roundRect(ctx, ARROW_ZONE.x, ARROW_ZONE.y, ARROW_ZONE.w, ARROW_ZONE.h, 12);
+  ctx.fill();
+  const chalk = ["#5b8def", "#e74c3c", "#f4b942", "#3f9b4a"];
+  ARROWS.forEach((pad, index) => {
+    ctx.fillStyle = chalk[index % chalk.length];
+    ctx.globalAlpha = 0.75;
+    ctx.beginPath();
+    ctx.moveTo(pad.x + 6, pad.y + 6);
+    ctx.lineTo(pad.x + pad.w - 6, pad.y + 6);
+    ctx.lineTo(pad.x + pad.w / 2, pad.y + pad.h - 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Chalk arrows", ARROW_ZONE.x - 16, ARROW_ZONE.y - 8);
+}
+
+function drawBlanketCorners(ctx) {
+  ctx.fillStyle = "#e74c3c";
+  ctx.globalAlpha = 0.35;
+  roundRect(ctx, BLANKET_BED.x, BLANKET_BED.y, BLANKET_BED.w, BLANKET_BED.h, 12);
+  ctx.fill();
+  ctx.globalAlpha = 0.55;
+  for (let i = 0; i < 4; i += 1) {
+    ctx.fillRect(BLANKET_BED.x + i * 40, BLANKET_BED.y, 20, BLANKET_BED.h);
+  }
+  ctx.globalAlpha = 1;
+  BLANKET_PADS.forEach((pad) => {
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x, pad.y, 16, 12);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, pad.x, pad.y, 7, 5);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Blanket corners", BLANKET_BED.x + 4, BLANKET_BED.y - 8);
+}
+
+function drawSharedShell(ctx, carried) {
+  function shellAt(x, y) {
+    ctx.fillStyle = "#f4a4c4";
+    ctx.beginPath();
+    ctx.moveTo(x - 10, y + 8);
+    ctx.quadraticCurveTo(x, y - 12, x + 12, y + 6);
+    ctx.quadraticCurveTo(x, y + 2, x - 10, y + 8);
+    ctx.fill();
+    ctx.strokeStyle = "#fff8e7";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y + 6);
+    ctx.quadraticCurveTo(x, y - 4, x + 6, y + 4);
+    ctx.stroke();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, x + 1, y + 2, 2, 2);
+    ctx.fill();
+  }
+  if (!carried) {
+    shellAt(1280, 868);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Seashell", 1248, 848);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, SHELL_SPOT.x - 22, SHELL_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, SHELL_SPOT.x - 20, SHELL_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, SHELL_SPOT.x - 16, SHELL_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, SHELL_SPOT.x + 10, SHELL_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) shellAt(SHELL_SPOT.x, SHELL_SPOT.y);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Seashell", SHELL_SPOT.x - 28, SHELL_SPOT.y - 18);
+}
+
 function drawSharedFlower(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#3f9b4a";
@@ -3003,6 +3201,12 @@ export function drawTown(ctx, player, time) {
   drawPoolNoodles(ctx);
   drawScooterRamps(ctx);
   drawSharedPlane(ctx, player.carry === "plane");
+  drawBalanceBeam(ctx);
+  drawTireSwingPads(ctx);
+  drawHoseCoils(ctx);
+  drawChalkArrows(ctx);
+  drawBlanketCorners(ctx);
+  drawSharedShell(ctx, player.carry === "shell");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
