@@ -156,6 +156,19 @@ import {
   BLANKET_BED,
   BLANKET_PADS,
   SHELL_SPOT,
+  HOOP_BED,
+  HOOP_PADS,
+  WHEEL_ZONE,
+  WHEEL_BLOCKS,
+  BOX_GAP,
+  BOX_POSTS,
+  BOX_WALLS,
+  UMBRELLA_GAP,
+  UMBRELLA_POSTS,
+  UMBRELLA_WALLS,
+  BEACH_BED,
+  BEACH_PADS,
+  CRAYON_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -608,6 +621,24 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.moveTo(20, 18);
     ctx.quadraticCurveTo(24, 12, 30, 17);
     ctx.stroke();
+  }
+  if (look.carry === "crayon" && !sleeping) {
+    ctx.fillStyle = "#e74c3c";
+    roundRect(ctx, 18, 8, 6, 18, 2);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, 18, 14, 6, 5, 1);
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    roundRect(ctx, 18, 19, 6, 5, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    ctx.beginPath();
+    ctx.moveTo(18, 8);
+    ctx.lineTo(24, 8);
+    ctx.lineTo(21, 3);
+    ctx.closePath();
+    ctx.fill();
   }
   ctx.restore();
 }
@@ -2969,6 +3000,213 @@ function drawSharedShell(ctx, carried) {
   ctx.fillText("Seashell", SHELL_SPOT.x - 28, SHELL_SPOT.y - 18);
 }
 
+function drawHulaHoops(ctx) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, HOOP_BED.x, HOOP_BED.y, HOOP_BED.w, HOOP_BED.h, 16);
+  ctx.fill();
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, HOOP_BED.x + 10, HOOP_BED.y + 8, HOOP_BED.w - 20, HOOP_BED.h - 16, 10);
+  ctx.fill();
+  const hoops = ["#e74c3c", "#f4d35e", "#5b8def"];
+  HOOP_PADS.forEach((pad, index) => {
+    ctx.strokeStyle = hoops[index % hoops.length];
+    ctx.lineWidth = 5;
+    oval(ctx, pad.x, pad.y, 16, 9);
+    ctx.stroke();
+    ctx.strokeStyle = "#fff8e7";
+    ctx.lineWidth = 1.6;
+    oval(ctx, pad.x, pad.y, 10, 5);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Hula hoops", HOOP_BED.x + 16, HOOP_BED.y - 8);
+}
+
+function drawWagonWheels(ctx) {
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, WHEEL_ZONE.x, WHEEL_ZONE.y, WHEEL_ZONE.w, WHEEL_ZONE.h, 12);
+  ctx.fill();
+  const rims = ["#c45c26", "#5b8def", "#e74c3c", "#f4d35e"];
+  WHEEL_BLOCKS.forEach((wheel, index) => {
+    const cx = wheel.x + wheel.w / 2;
+    const cy = wheel.y + 32;
+    ctx.fillStyle = "#6d5a4a";
+    oval(ctx, cx, cy, 14, 22);
+    ctx.fill();
+    ctx.fillStyle = rims[index % rims.length];
+    oval(ctx, cx, cy, 9, 16);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 16);
+    ctx.lineTo(cx, cy + 16);
+    ctx.moveTo(cx - 8, cy);
+    ctx.lineTo(cx + 8, cy);
+    ctx.stroke();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, cy, 2.4, 2.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Wagon wheels", WHEEL_ZONE.x + 8, WHEEL_ZONE.y - 8);
+}
+
+function drawBoxTunnel(ctx) {
+  const hues = ["#d4a373", "#c45c26"];
+  BOX_POSTS.forEach((post, index) => {
+    ctx.fillStyle = hues[index % hues.length];
+    roundRect(ctx, post.x, post.y + 6, post.w, 40, 3);
+    ctx.fill();
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(post.x + 2, post.y + 16);
+    ctx.lineTo(post.x + post.w - 2, post.y + 16);
+    ctx.moveTo(post.x + post.w / 2, post.y + 8);
+    ctx.lineTo(post.x + post.w / 2, post.y + 42);
+    ctx.stroke();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, post.x + 8, post.y + 10, 2, 2);
+    ctx.fill();
+  });
+  for (const wall of BOX_WALLS) {
+    ctx.fillStyle = "#e8d5b5";
+    roundRect(ctx, wall.x, wall.y - 6, wall.w, 16, 3);
+    ctx.fill();
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(wall.x + 4, wall.y);
+    ctx.lineTo(wall.x + wall.w - 4, wall.y);
+    ctx.stroke();
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.45;
+  oval(ctx, BOX_GAP.x + BOX_GAP.w / 2, BOX_GAP.y + 18, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Box tunnel", BOX_POSTS[0].x - 8, BOX_POSTS[0].y - 10);
+}
+
+function drawUmbrellaArch(ctx, time) {
+  for (const post of UMBRELLA_POSTS) {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, post.x + 4, post.y + 18, 8, post.h - 18, 3);
+    ctx.fill();
+  }
+  const midX = (UMBRELLA_POSTS[0].x + UMBRELLA_POSTS[1].x) / 2 + 8;
+  const panels = ["#e74c3c", "#f4d35e", "#5b8def", "#3f9b4a", "#f4a4c4"];
+  panels.forEach((color, index) => {
+    const start = Math.PI + (index / panels.length) * Math.PI;
+    const end = Math.PI + ((index + 1) / panels.length) * Math.PI;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(midX, UMBRELLA_POSTS[0].y + 22);
+    ctx.arc(midX, UMBRELLA_POSTS[0].y + 22, 62, start, end);
+    ctx.closePath();
+    ctx.fill();
+  });
+  ctx.fillStyle = "#fff8e7";
+  oval(ctx, midX, UMBRELLA_POSTS[0].y + 22, 4, 3);
+  ctx.fill();
+  const sway = Math.sin(time * 2) * 2;
+  ctx.strokeStyle = "#8d6e4c";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(midX, UMBRELLA_POSTS[0].y + 22);
+  ctx.lineTo(midX + sway, UMBRELLA_POSTS[0].y + 46);
+  ctx.stroke();
+  for (const wall of UMBRELLA_WALLS) {
+    ctx.fillStyle = "#f4a4c4";
+    roundRect(ctx, wall.x, wall.y - 6, wall.w, 10, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.5 + Math.sin(time * 3) * 0.08;
+  oval(ctx, UMBRELLA_GAP.x + UMBRELLA_GAP.w / 2, UMBRELLA_GAP.y + 16, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Umbrella", UMBRELLA_POSTS[0].x - 4, UMBRELLA_POSTS[0].y - 10);
+}
+
+function drawBeachBalls(ctx) {
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, BEACH_BED.x, BEACH_BED.y, BEACH_BED.w, BEACH_BED.h, 16);
+  ctx.fill();
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, BEACH_BED.x + 10, BEACH_BED.y + 8, BEACH_BED.w - 20, BEACH_BED.h - 16, 10);
+  ctx.fill();
+  const panels = ["#e74c3c", "#fff8e7", "#5b8def", "#f4d35e"];
+  BEACH_PADS.forEach((pad, index) => {
+    ctx.fillStyle = panels[index % panels.length];
+    oval(ctx, pad.x, pad.y, 16, 12);
+    ctx.fill();
+    ctx.fillStyle = panels[(index + 1) % panels.length];
+    ctx.beginPath();
+    ctx.moveTo(pad.x, pad.y - 12);
+    ctx.lineTo(pad.x + 8, pad.y);
+    ctx.lineTo(pad.x, pad.y + 12);
+    ctx.lineTo(pad.x - 8, pad.y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, pad.x, pad.y, 3, 3);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Beach balls", BEACH_BED.x + 16, BEACH_BED.y - 8);
+}
+
+function drawSharedCrayon(ctx, carried) {
+  function crayonAt(x, y) {
+    ctx.fillStyle = "#e74c3c";
+    roundRect(ctx, x - 4, y - 12, 8, 20, 2);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, x - 4, y - 4, 8, 5, 1);
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    roundRect(ctx, x - 4, y + 1, 8, 5, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    ctx.beginPath();
+    ctx.moveTo(x - 4, y - 12);
+    ctx.lineTo(x + 4, y - 12);
+    ctx.lineTo(x, y - 18);
+    ctx.closePath();
+    ctx.fill();
+  }
+  if (!carried) {
+    crayonAt(1680, 868);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Crayon", 1652, 848);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, CRAYON_SPOT.x - 22, CRAYON_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, CRAYON_SPOT.x - 20, CRAYON_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, CRAYON_SPOT.x - 16, CRAYON_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, CRAYON_SPOT.x + 10, CRAYON_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) crayonAt(CRAYON_SPOT.x, CRAYON_SPOT.y);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Crayon", CRAYON_SPOT.x - 22, CRAYON_SPOT.y - 18);
+}
+
 function drawSharedFlower(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#3f9b4a";
@@ -3207,6 +3445,12 @@ export function drawTown(ctx, player, time) {
   drawChalkArrows(ctx);
   drawBlanketCorners(ctx);
   drawSharedShell(ctx, player.carry === "shell");
+  drawHulaHoops(ctx);
+  drawWagonWheels(ctx);
+  drawBoxTunnel(ctx);
+  drawUmbrellaArch(ctx, time);
+  drawBeachBalls(ctx);
+  drawSharedCrayon(ctx, player.carry === "crayon");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

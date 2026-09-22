@@ -33,6 +33,8 @@ import {
   sharePlane,
   takeShell,
   shareShell,
+  takeCrayon,
+  shareCrayon,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -355,6 +357,18 @@ export function startGame(root) {
     if (id === "share-shell") {
       const before = player.stickers;
       player = shareShell(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-crayon") {
+      player = takeCrayon(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-crayon") {
+      const before = player.stickers;
+      player = shareCrayon(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
