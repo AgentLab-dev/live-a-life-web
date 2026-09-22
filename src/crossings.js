@@ -699,6 +699,65 @@ export const BLANKET_RADIUS = 22;
 
 export const SHELL_SPOT = { x: 800, y: 2140 };
 
+export const HOOP_BED = { x: 48, y: 300, w: 176, h: 84 };
+
+export const HOOP_PADS = [
+  { x: 136, y: 316 },
+  { x: 136, y: 342 },
+  { x: 136, y: 368 },
+];
+
+export const HOOP_RADIUS = 20;
+
+export const WHEEL_ZONE = { x: 1588, y: 300, w: 268, h: 64 };
+
+export const WHEEL_BLOCKS = [
+  { x: 1608, y: 300, w: 28, h: 64 },
+  { x: 1678, y: 300, w: 28, h: 64 },
+  { x: 1748, y: 300, w: 28, h: 64 },
+  { x: 1818, y: 300, w: 28, h: 64 },
+];
+
+export const BOX_POSTS = [
+  { x: 280, y: 2148, w: 16, h: 56 },
+  { x: 392, y: 2148, w: 16, h: 56 },
+];
+
+export const BOX_WALLS = [
+  { x: 296, y: 2172, w: 28, h: 14 },
+  { x: 348, y: 2172, w: 28, h: 14 },
+];
+
+export const BOX_GAP = { x: 324, y: 2156, w: 24, h: 48 };
+
+export const BOX_BAND = { x: 296, y: 2172, w: 80, h: 14 };
+
+export const UMBRELLA_POSTS = [
+  { x: 1880, y: 160, w: 16, h: 128 },
+  { x: 2000, y: 160, w: 16, h: 128 },
+];
+
+export const UMBRELLA_WALLS = [
+  { x: 1896, y: 204, w: 36, h: 14 },
+  { x: 1964, y: 204, w: 36, h: 14 },
+];
+
+export const UMBRELLA_GAP = { x: 1932, y: 188, w: 32, h: 48 };
+
+export const UMBRELLA_BAND = { x: 1896, y: 204, w: 104, h: 14 };
+
+export const BEACH_BED = { x: 900, y: 2140, w: 176, h: 84 };
+
+export const BEACH_PADS = [
+  { x: 988, y: 2156 },
+  { x: 988, y: 2182 },
+  { x: 988, y: 2208 },
+];
+
+export const BEACH_RADIUS = 20;
+
+export const CRAYON_SPOT = { x: 160, y: 450 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -778,6 +837,12 @@ export const STICKERS = [
   { id: "arrows", name: "Arrow hopper", hint: "You followed the sidewalk chalk arrows." },
   { id: "corners", name: "Blanket hopper", hint: "You hopped the picnic blanket corners." },
   { id: "shell", name: "Shell friend", hint: "You shared a kind seashell." },
+  { id: "hoops", name: "Hoop hopper", hint: "You hopped the colorful hula hoops." },
+  { id: "wheels", name: "Wheel walker", hint: "You walked between the pretend wagon wheels." },
+  { id: "carton", name: "Box walker", hint: "You squeezed through the cardboard-box tunnel." },
+  { id: "shade", name: "Umbrella walker", hint: "You ducked under the colorful umbrella." },
+  { id: "beach", name: "Beach hopper", hint: "You hopped the soft beach-ball pads." },
+  { id: "draw", name: "Crayon friend", hint: "You shared a kind crayon." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -861,12 +926,18 @@ export const CHEERS = {
   arrows: "Follow the chalk arrows. Hop!",
   corners: "Soft hops on the blanket corners!",
   shell: "A kind seashell to share. Kind!",
+  hoops: "Colorful hops on the hula hoops!",
+  wheels: "Friendly wagon wheels said hello!",
+  carton: "A friendly squeeze through the cardboard tunnel!",
+  shade: "Duck under the colorful umbrella!",
+  beach: "Soft hops on the beach-ball pads!",
+  draw: "A kind crayon to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon"];
 
 export function defaultStickers() {
   return {
@@ -948,6 +1019,12 @@ export function defaultStickers() {
     arrows: false,
     corners: false,
     shell: false,
+    hoops: false,
+    wheels: false,
+    carton: false,
+    shade: false,
+    beach: false,
+    draw: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -1230,6 +1307,26 @@ export function onBlanketPad(x, y) {
   return BLANKET_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= BLANKET_RADIUS);
 }
 
+export function onHoopPad(x, y) {
+  return HOOP_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= HOOP_RADIUS);
+}
+
+export function onWheelLane(x, y) {
+  return inRect(x, y, WHEEL_ZONE) && !WHEEL_BLOCKS.some((wheel) => inRect(x, y, wheel));
+}
+
+export function onBoxGap(x, y) {
+  return inRect(x, y, BOX_GAP);
+}
+
+export function onUmbrellaGap(x, y) {
+  return inRect(x, y, UMBRELLA_GAP);
+}
+
+export function onBeachPad(x, y) {
+  return BEACH_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= BEACH_RADIUS);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -1291,6 +1388,11 @@ export function townPathAt(x, y) {
   if (onCoilGap(x, y)) return "coils";
   if (onArrow(x, y)) return "arrows";
   if (onBlanketPad(x, y)) return "corners";
+  if (onHoopPad(x, y)) return "hoops";
+  if (onWheelLane(x, y)) return "wheels";
+  if (onBoxGap(x, y)) return "carton";
+  if (onUmbrellaGap(x, y)) return "shade";
+  if (onBeachPad(x, y)) return "beach";
   return "";
 }
 
@@ -1580,6 +1682,28 @@ export function blockedByBlanket(x, y) {
   return inRect(x, y, BLANKET_BED) && !onBlanketPad(x, y);
 }
 
+export function blockedByHoops(x, y) {
+  return inRect(x, y, HOOP_BED) && !onHoopPad(x, y);
+}
+
+export function blockedByWheels(x, y) {
+  return WHEEL_BLOCKS.some((wheel) => inRect(x, y, wheel));
+}
+
+export function blockedByCarton(x, y) {
+  if (onBoxGap(x, y)) return false;
+  return BOX_POSTS.some((post) => inRect(x, y, post)) || BOX_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByShade(x, y) {
+  if (onUmbrellaGap(x, y)) return false;
+  return UMBRELLA_POSTS.some((post) => inRect(x, y, post)) || UMBRELLA_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByBeach(x, y) {
+  return inRect(x, y, BEACH_BED) && !onBeachPad(x, y);
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -1645,7 +1769,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByBounce(x, y) ||
     blockedByCoils(x, y) ||
     blockedByArrows(x, y) ||
-    blockedByBlanket(x, y)
+    blockedByBlanket(x, y) ||
+    blockedByHoops(x, y) ||
+    blockedByWheels(x, y) ||
+    blockedByCarton(x, y) ||
+    blockedByShade(x, y) ||
+    blockedByBeach(x, y)
   );
 }
 
@@ -1760,6 +1889,11 @@ export function applyCrossingProgress(prev, next) {
     ["coils", COIL_BAND, "y"],
     ["arrows", ARROW_ZONE, "y"],
     ["corners", BLANKET_BED, "y"],
+    ["hoops", HOOP_BED, "y"],
+    ["wheels", WHEEL_ZONE, "y"],
+    ["carton", BOX_BAND, "y"],
+    ["shade", UMBRELLA_BAND, "y"],
+    ["beach", BEACH_BED, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -1808,7 +1942,9 @@ export function applyCrossingProgress(prev, next) {
       onBeamPad(next.x, next.y) ||
       onBouncePad(next.x, next.y) ||
       onArrow(next.x, next.y) ||
-      onBlanketPad(next.x, next.y),
+      onBlanketPad(next.x, next.y) ||
+      onHoopPad(next.x, next.y) ||
+      onBeachPad(next.x, next.y),
   };
 }
 
@@ -2066,6 +2202,22 @@ export function shareShell(player) {
   });
 }
 
+export function takeCrayon(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "crayon", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareCrayon(player) {
+  if (player.carry !== "crayon") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), draw: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -2096,5 +2248,6 @@ export function carryLabel(value) {
   if (value === "sticker") return "Sticker";
   if (value === "plane") return "Airplane";
   if (value === "shell") return "Seashell";
+  if (value === "crayon") return "Crayon";
   return "";
 }
