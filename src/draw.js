@@ -169,6 +169,18 @@ import {
   BEACH_BED,
   BEACH_PADS,
   CRAYON_SPOT,
+  TRAMP_BED,
+  TRAMP_PADS,
+  BIKE_ZONE,
+  BIKE_BLOCKS,
+  TABLE_GAP,
+  TABLE_POSTS,
+  TABLE_WALLS,
+  GNOME_ZONE,
+  GNOMES,
+  CIRCLE_BED,
+  CIRCLE_PADS,
+  BOW_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -639,6 +651,25 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.lineTo(21, 3);
     ctx.closePath();
     ctx.fill();
+  }
+  if (look.carry === "ribbon" && !sleeping) {
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, 18, 14, 6, 5);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, 28, 14, 6, 5);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 23, 14, 3, 3);
+    ctx.fill();
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(23, 16);
+    ctx.lineTo(20, 24);
+    ctx.moveTo(23, 16);
+    ctx.lineTo(27, 24);
+    ctx.stroke();
   }
   ctx.restore();
 }
@@ -3207,6 +3238,195 @@ function drawSharedCrayon(ctx, carried) {
   ctx.fillText("Crayon", CRAYON_SPOT.x - 22, CRAYON_SPOT.y - 18);
 }
 
+function drawTrampolines(ctx) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, TRAMP_BED.x, TRAMP_BED.y, TRAMP_BED.w, TRAMP_BED.h, 16);
+  ctx.fill();
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, TRAMP_BED.x + 10, TRAMP_BED.y + 8, TRAMP_BED.w - 20, TRAMP_BED.h - 16, 10);
+  ctx.fill();
+  const tops = ["#5b8def", "#f4a4c4", "#f4d35e"];
+  TRAMP_PADS.forEach((pad, index) => {
+    ctx.strokeStyle = "#6d5a4a";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(pad.x - 12, pad.y + 8);
+    ctx.lineTo(pad.x - 8, pad.y + 2);
+    ctx.lineTo(pad.x - 4, pad.y + 8);
+    ctx.moveTo(pad.x + 4, pad.y + 8);
+    ctx.lineTo(pad.x + 8, pad.y + 2);
+    ctx.lineTo(pad.x + 12, pad.y + 8);
+    ctx.stroke();
+    ctx.fillStyle = tops[index % tops.length];
+    oval(ctx, pad.x, pad.y, 16, 8);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x, pad.y - 1, 8, 3);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Trampolines", TRAMP_BED.x + 16, TRAMP_BED.y - 8);
+}
+
+function drawBikeRacks(ctx) {
+  ctx.fillStyle = "#d9d3c7";
+  roundRect(ctx, BIKE_ZONE.x, BIKE_ZONE.y, BIKE_ZONE.w, BIKE_ZONE.h, 12);
+  ctx.fill();
+  const bars = ["#5b8def", "#e74c3c", "#3f9b4a", "#f4d35e"];
+  BIKE_BLOCKS.forEach((rack, index) => {
+    const cx = rack.x + rack.w / 2;
+    ctx.strokeStyle = bars[index % bars.length];
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(cx, rack.y + 54);
+    ctx.lineTo(cx, rack.y + 18);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(cx, rack.y + 18, 10, Math.PI, 0);
+    ctx.stroke();
+    ctx.fillStyle = "#6d5a4a";
+    oval(ctx, cx - 6, rack.y + 54, 3, 2);
+    ctx.fill();
+    oval(ctx, cx + 6, rack.y + 54, 3, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Bike racks", BIKE_ZONE.x + 8, BIKE_ZONE.y - 8);
+}
+
+function drawPicnicTable(ctx) {
+  const left = TABLE_POSTS[0];
+  const right = TABLE_POSTS[1];
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, left.x + 2, left.y + 18, 10, 34, 2);
+  ctx.fill();
+  roundRect(ctx, right.x + 2, right.y + 18, 10, 34, 2);
+  ctx.fill();
+  ctx.fillStyle = "#e8d5b5";
+  roundRect(ctx, left.x - 4, left.y + 8, right.x - left.x + 24, 14, 4);
+  ctx.fill();
+  ctx.fillStyle = "#d4a373";
+  roundRect(ctx, left.x, left.y + 12, right.x - left.x + 16, 4, 2);
+  ctx.fill();
+  for (const wall of TABLE_WALLS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, wall.x, wall.y + 6, wall.w, 8, 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.45;
+  oval(ctx, TABLE_GAP.x + TABLE_GAP.w / 2, TABLE_GAP.y + 28, 8, 6);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Picnic table", left.x - 8, left.y - 8);
+}
+
+function drawGardenGnomes(ctx) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, GNOME_ZONE.x, GNOME_ZONE.y, GNOME_ZONE.w, GNOME_ZONE.h, 12);
+  ctx.fill();
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, GNOME_ZONE.x + 6, GNOME_ZONE.y + 6, GNOME_ZONE.w - 12, GNOME_ZONE.h - 12, 8);
+  ctx.fill();
+  const hats = ["#e74c3c", "#5b8def", "#f4d35e", "#f4a4c4"];
+  GNOMES.forEach((gnome, index) => {
+    const cx = gnome.x + gnome.w / 2;
+    const cy = gnome.y + 18;
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, cx, cy + 8, 12, 5);
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    roundRect(ctx, cx - 6, cy - 2, 12, 12, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f3c7a1";
+    oval(ctx, cx, cy - 4, 5, 5);
+    ctx.fill();
+    ctx.fillStyle = hats[index % hats.length];
+    ctx.beginPath();
+    ctx.moveTo(cx - 7, cy - 6);
+    ctx.lineTo(cx + 7, cy - 6);
+    ctx.lineTo(cx, cy - 16);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, cy - 2, 1.2, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Gnomes", GNOME_ZONE.x + 8, GNOME_ZONE.y - 8);
+}
+
+function drawChalkCircles(ctx) {
+  ctx.fillStyle = "#d9d3c7";
+  roundRect(ctx, CIRCLE_BED.x, CIRCLE_BED.y, CIRCLE_BED.w, CIRCLE_BED.h, 12);
+  ctx.fill();
+  ctx.fillStyle = "#cfc6b8";
+  roundRect(ctx, CIRCLE_BED.x + 8, CIRCLE_BED.y + 8, CIRCLE_BED.w - 16, CIRCLE_BED.h - 16, 8);
+  ctx.fill();
+  const chalk = ["#e74c3c", "#f4d35e", "#5b8def"];
+  CIRCLE_PADS.forEach((pad, index) => {
+    ctx.strokeStyle = chalk[index % chalk.length];
+    ctx.lineWidth = 4;
+    oval(ctx, pad.x, pad.y, 16, 12);
+    ctx.stroke();
+    ctx.strokeStyle = "#fff8e7";
+    ctx.lineWidth = 1.4;
+    oval(ctx, pad.x, pad.y, 8, 5);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Chalk circles", CIRCLE_BED.x + 16, CIRCLE_BED.y - 8);
+}
+
+function drawSharedRibbon(ctx, carried) {
+  function bowAt(x, y) {
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, x - 8, y, 7, 5);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, x + 8, y, 7, 5);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, x, y, 3.5, 3.5);
+    ctx.fill();
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(x, y + 2);
+    ctx.lineTo(x - 6, y + 12);
+    ctx.moveTo(x, y + 2);
+    ctx.lineTo(x + 6, y + 12);
+    ctx.stroke();
+  }
+  if (!carried) {
+    bowAt(1216, 688);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Ribbon", 1188, 668);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, BOW_SPOT.x - 22, BOW_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, BOW_SPOT.x - 20, BOW_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, BOW_SPOT.x - 16, BOW_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, BOW_SPOT.x + 10, BOW_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) bowAt(BOW_SPOT.x, BOW_SPOT.y);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Ribbon", BOW_SPOT.x - 22, BOW_SPOT.y - 18);
+}
+
 function drawSharedFlower(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#3f9b4a";
@@ -3451,6 +3671,12 @@ export function drawTown(ctx, player, time) {
   drawUmbrellaArch(ctx, time);
   drawBeachBalls(ctx);
   drawSharedCrayon(ctx, player.carry === "crayon");
+  drawTrampolines(ctx);
+  drawBikeRacks(ctx);
+  drawPicnicTable(ctx);
+  drawGardenGnomes(ctx);
+  drawChalkCircles(ctx);
+  drawSharedRibbon(ctx, player.carry === "ribbon");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
