@@ -758,6 +758,60 @@ export const BEACH_RADIUS = 20;
 
 export const CRAYON_SPOT = { x: 160, y: 450 };
 
+export const TRAMP_BED = { x: 48, y: 400, w: 100, h: 84 };
+
+export const TRAMP_PADS = [
+  { x: 98, y: 416 },
+  { x: 98, y: 442 },
+  { x: 98, y: 468 },
+];
+
+export const TRAMP_RADIUS = 20;
+
+export const BIKE_ZONE = { x: 2352, y: 1332, w: 164, h: 64 };
+
+export const BIKE_BLOCKS = [
+  { x: 2360, y: 1332, w: 20, h: 64 },
+  { x: 2400, y: 1332, w: 20, h: 64 },
+  { x: 2440, y: 1332, w: 20, h: 64 },
+  { x: 2480, y: 1332, w: 20, h: 64 },
+];
+
+export const TABLE_POSTS = [
+  { x: 2360, y: 1900, w: 16, h: 56 },
+  { x: 2472, y: 1900, w: 16, h: 56 },
+];
+
+export const TABLE_WALLS = [
+  { x: 2376, y: 1924, w: 28, h: 14 },
+  { x: 2428, y: 1924, w: 28, h: 14 },
+];
+
+export const TABLE_GAP = { x: 2404, y: 1908, w: 24, h: 48 };
+
+export const TABLE_BAND = { x: 2376, y: 1924, w: 80, h: 14 };
+
+export const GNOME_ZONE = { x: 740, y: 1880, w: 88, h: 120 };
+
+export const GNOMES = [
+  { x: 748, y: 1880, w: 40, h: 36 },
+  { x: 784, y: 1908, w: 40, h: 36 },
+  { x: 748, y: 1936, w: 40, h: 36 },
+  { x: 784, y: 1964, w: 40, h: 36 },
+];
+
+export const CIRCLE_BED = { x: 540, y: 748, w: 176, h: 84 };
+
+export const CIRCLE_PADS = [
+  { x: 628, y: 764 },
+  { x: 628, y: 790 },
+  { x: 628, y: 816 },
+];
+
+export const CIRCLE_RADIUS = 20;
+
+export const BOW_SPOT = { x: 900, y: 1416 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -843,6 +897,12 @@ export const STICKERS = [
   { id: "shade", name: "Umbrella walker", hint: "You ducked under the colorful umbrella." },
   { id: "beach", name: "Beach hopper", hint: "You hopped the soft beach-ball pads." },
   { id: "draw", name: "Crayon friend", hint: "You shared a kind crayon." },
+  { id: "spring", name: "Trampoline hopper", hint: "You bounced on the lawn trampolines." },
+  { id: "bikes", name: "Bike-rack walker", hint: "You walked between the bike racks." },
+  { id: "table", name: "Table ducker", hint: "You ducked under the picnic table." },
+  { id: "gnomes", name: "Gnome tip-toer", hint: "You tip-toed the garden gnomes." },
+  { id: "circles", name: "Circle hopper", hint: "You hopped the sidewalk chalk circles." },
+  { id: "bow", name: "Ribbon friend", hint: "You shared a kind ribbon." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -932,12 +992,18 @@ export const CHEERS = {
   shade: "Duck under the colorful umbrella!",
   beach: "Soft hops on the beach-ball pads!",
   draw: "A kind crayon to share. Kind!",
+  spring: "Boing! The trampolines like you!",
+  bikes: "Friendly bike racks said hello!",
+  table: "Duck under the picnic table!",
+  gnomes: "Tip-toe past the garden gnomes!",
+  circles: "Chalk circle hops on the sidewalk!",
+  bow: "A kind ribbon to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon"];
 
 export function defaultStickers() {
   return {
@@ -1025,6 +1091,12 @@ export function defaultStickers() {
     shade: false,
     beach: false,
     draw: false,
+    spring: false,
+    bikes: false,
+    table: false,
+    gnomes: false,
+    circles: false,
+    bow: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -1327,6 +1399,26 @@ export function onBeachPad(x, y) {
   return BEACH_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= BEACH_RADIUS);
 }
 
+export function onTrampPad(x, y) {
+  return TRAMP_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= TRAMP_RADIUS);
+}
+
+export function onBikeLane(x, y) {
+  return inRect(x, y, BIKE_ZONE) && !BIKE_BLOCKS.some((rack) => inRect(x, y, rack));
+}
+
+export function onTableGap(x, y) {
+  return inRect(x, y, TABLE_GAP);
+}
+
+export function onGnome(x, y) {
+  return GNOMES.some((gnome) => inRect(x, y, gnome));
+}
+
+export function onCirclePad(x, y) {
+  return CIRCLE_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= CIRCLE_RADIUS);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -1393,6 +1485,11 @@ export function townPathAt(x, y) {
   if (onBoxGap(x, y)) return "carton";
   if (onUmbrellaGap(x, y)) return "shade";
   if (onBeachPad(x, y)) return "beach";
+  if (onTrampPad(x, y)) return "spring";
+  if (onBikeLane(x, y)) return "bikes";
+  if (onTableGap(x, y)) return "table";
+  if (onGnome(x, y)) return "gnomes";
+  if (onCirclePad(x, y)) return "circles";
   return "";
 }
 
@@ -1704,6 +1801,27 @@ export function blockedByBeach(x, y) {
   return inRect(x, y, BEACH_BED) && !onBeachPad(x, y);
 }
 
+export function blockedByTramp(x, y) {
+  return inRect(x, y, TRAMP_BED) && !onTrampPad(x, y);
+}
+
+export function blockedByBikes(x, y) {
+  return BIKE_BLOCKS.some((rack) => inRect(x, y, rack));
+}
+
+export function blockedByTable(x, y) {
+  if (onTableGap(x, y)) return false;
+  return TABLE_POSTS.some((post) => inRect(x, y, post)) || TABLE_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByGnomes(x, y) {
+  return inRect(x, y, GNOME_ZONE) && !onGnome(x, y);
+}
+
+export function blockedByCircles(x, y) {
+  return inRect(x, y, CIRCLE_BED) && !onCirclePad(x, y);
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -1774,7 +1892,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByWheels(x, y) ||
     blockedByCarton(x, y) ||
     blockedByShade(x, y) ||
-    blockedByBeach(x, y)
+    blockedByBeach(x, y) ||
+    blockedByTramp(x, y) ||
+    blockedByBikes(x, y) ||
+    blockedByTable(x, y) ||
+    blockedByGnomes(x, y) ||
+    blockedByCircles(x, y)
   );
 }
 
@@ -1894,6 +2017,11 @@ export function applyCrossingProgress(prev, next) {
     ["carton", BOX_BAND, "y"],
     ["shade", UMBRELLA_BAND, "y"],
     ["beach", BEACH_BED, "y"],
+    ["spring", TRAMP_BED, "y"],
+    ["bikes", BIKE_ZONE, "y"],
+    ["table", TABLE_BAND, "y"],
+    ["gnomes", GNOME_ZONE, "y"],
+    ["circles", CIRCLE_BED, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -1944,7 +2072,10 @@ export function applyCrossingProgress(prev, next) {
       onArrow(next.x, next.y) ||
       onBlanketPad(next.x, next.y) ||
       onHoopPad(next.x, next.y) ||
-      onBeachPad(next.x, next.y),
+      onBeachPad(next.x, next.y) ||
+      onTrampPad(next.x, next.y) ||
+      onGnome(next.x, next.y) ||
+      onCirclePad(next.x, next.y),
   };
 }
 
@@ -2218,6 +2349,22 @@ export function shareCrayon(player) {
   });
 }
 
+export function takeRibbon(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "ribbon", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareRibbon(player) {
+  if (player.carry !== "ribbon") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), bow: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -2249,5 +2396,6 @@ export function carryLabel(value) {
   if (value === "plane") return "Airplane";
   if (value === "shell") return "Seashell";
   if (value === "crayon") return "Crayon";
+  if (value === "ribbon") return "Ribbon";
   return "";
 }
