@@ -181,6 +181,18 @@ import {
   CIRCLE_BED,
   CIRCLE_PADS,
   BOW_SPOT,
+  SPRAY_GAP,
+  SPRAY_POSTS,
+  SPRAY_WALLS,
+  PYLON_ZONE,
+  PYLON_BLOCKS,
+  STOOP_BED,
+  STOOP_PADS,
+  CROW_ZONE,
+  CROWS,
+  CROQUET_ZONE,
+  CROQUET_BLOCKS,
+  ACORN_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -670,6 +682,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.moveTo(23, 16);
     ctx.lineTo(27, 24);
     ctx.stroke();
+  }
+  if (look.carry === "acorn" && !sleeping) {
+    ctx.fillStyle = "#8d6e4c";
+    oval(ctx, 24, 16, 7, 8);
+    ctx.fill();
+    ctx.fillStyle = "#c45c26";
+    oval(ctx, 24, 18, 4, 5);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, 24, 8, 5, 3);
+    ctx.fill();
   }
   ctx.restore();
 }
@@ -3427,6 +3450,206 @@ function drawSharedRibbon(ctx, carried) {
   ctx.fillText("Ribbon", BOW_SPOT.x - 22, BOW_SPOT.y - 18);
 }
 
+function drawSprinkler(ctx, time) {
+  for (const post of SPRAY_POSTS) {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, post.x + 4, post.y + 36, 8, post.h - 36, 3);
+    ctx.fill();
+  }
+  const headX = (SPRAY_POSTS[0].x + SPRAY_POSTS[1].x) / 2 + 8;
+  const headY = SPRAY_POSTS[0].y + 78;
+  ctx.fillStyle = "#5b8def";
+  roundRect(ctx, headX - 10, headY - 6, 20, 14, 4);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, headX, headY - 2, 3, 3);
+  ctx.fill();
+  const arcs = ["#7ec8e3", "#5b8def", "#9ad7f0"];
+  arcs.forEach((color, index) => {
+    const sway = Math.sin(time * 3 + index) * 3;
+    ctx.strokeStyle = color;
+    ctx.globalAlpha = 0.75;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(headX + sway, headY, 28 + index * 14, Math.PI * 1.15, Math.PI * 1.85);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  });
+  for (const wall of SPRAY_WALLS) {
+    ctx.strokeStyle = "#7ec8e3";
+    ctx.lineWidth = 3;
+    ctx.globalAlpha = 0.85;
+    ctx.beginPath();
+    ctx.moveTo(wall.x, wall.y + 4);
+    ctx.quadraticCurveTo(wall.x + wall.w / 2, wall.y - 10, wall.x + wall.w, wall.y + 4);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+  ctx.fillStyle = "#f4d35e";
+  ctx.globalAlpha = 0.45 + Math.sin(time * 4) * 0.08;
+  oval(ctx, SPRAY_GAP.x + SPRAY_GAP.w / 2, SPRAY_GAP.y + 20, 10, 8);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Sprinkler", SPRAY_POSTS[0].x - 4, SPRAY_POSTS[0].y - 8);
+}
+
+function drawPlayCones(ctx) {
+  ctx.fillStyle = "#d9d3c7";
+  roundRect(ctx, PYLON_ZONE.x, PYLON_ZONE.y, PYLON_ZONE.w, PYLON_ZONE.h, 12);
+  ctx.fill();
+  PYLON_BLOCKS.forEach((cone, index) => {
+    const cx = cone.x + cone.w / 2;
+    ctx.fillStyle = index % 2 === 0 ? "#f39c12" : "#e67e22";
+    ctx.beginPath();
+    ctx.moveTo(cx, cone.y + 8);
+    ctx.lineTo(cx + 9, cone.y + 52);
+    ctx.lineTo(cx - 9, cone.y + 52);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    ctx.fillRect(cx - 7, cone.y + 24, 14, 5);
+    ctx.fillRect(cx - 5, cone.y + 36, 10, 4);
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, cx - 8, cone.y + 50, 16, 5, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Play cones", PYLON_ZONE.x + 16, PYLON_ZONE.y - 8);
+}
+
+function drawPorchSteps(ctx) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, STOOP_BED.x, STOOP_BED.y, STOOP_BED.w, STOOP_BED.h, 12);
+  ctx.fill();
+  const woods = ["#c45c26", "#e8d5b5", "#d4a373"];
+  STOOP_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, pad.x - 16, pad.y + 4, 32, 6, 2);
+    ctx.fill();
+    ctx.fillStyle = woods[index % woods.length];
+    roundRect(ctx, pad.x - 18, pad.y - 6, 36, 12, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    ctx.globalAlpha = 0.35;
+    roundRect(ctx, pad.x - 12, pad.y - 4, 10, 3, 1);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Porch steps", STOOP_BED.x - 8, STOOP_BED.y - 8);
+}
+
+function drawScarecrows(ctx) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, CROW_ZONE.x, CROW_ZONE.y, CROW_ZONE.w, CROW_ZONE.h, 12);
+  ctx.fill();
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, CROW_ZONE.x + 6, CROW_ZONE.y + 6, CROW_ZONE.w - 12, CROW_ZONE.h - 12, 8);
+  ctx.fill();
+  const hats = ["#e74c3c", "#5b8def", "#f4d35e", "#f4a4c4"];
+  CROWS.forEach((crow, index) => {
+    const cx = crow.x + crow.w / 2;
+    const cy = crow.y + 16;
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - 10, cy + 2);
+    ctx.lineTo(cx + 10, cy + 2);
+    ctx.moveTo(cx, cy - 8);
+    ctx.lineTo(cx, cy + 12);
+    ctx.stroke();
+    ctx.fillStyle = "#f3c7a1";
+    oval(ctx, cx, cy - 8, 5, 5);
+    ctx.fill();
+    ctx.fillStyle = hats[index % hats.length];
+    ctx.beginPath();
+    ctx.moveTo(cx - 7, cy - 10);
+    ctx.lineTo(cx + 7, cy - 10);
+    ctx.lineTo(cx, cy - 20);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx - 2, cy - 8, 1, 1);
+    ctx.fill();
+    oval(ctx, cx + 2, cy - 8, 1, 1);
+    ctx.fill();
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(cx, cy - 6, 2.2, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Scarecrows", CROW_ZONE.x - 8, CROW_ZONE.y - 8);
+}
+
+function drawCroquet(ctx) {
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, CROQUET_ZONE.x, CROQUET_ZONE.y, CROQUET_ZONE.w, CROQUET_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#e74c3c", "#5b8def", "#f4d35e", "#f4a4c4"];
+  CROQUET_BLOCKS.forEach((wicket, index) => {
+    const cx = wicket.x + wicket.w / 2;
+    ctx.strokeStyle = colors[index % colors.length];
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx - 7, wicket.y + 52);
+    ctx.lineTo(cx - 7, wicket.y + 22);
+    ctx.arc(cx, wicket.y + 22, 7, Math.PI, 0);
+    ctx.lineTo(cx + 7, wicket.y + 52);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, CROQUET_ZONE.x + 78, CROQUET_ZONE.y + 36, 5, 4);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Croquet", CROQUET_ZONE.x + 40, CROQUET_ZONE.y - 8);
+}
+
+function drawSharedAcorn(ctx, carried) {
+  function acornAt(x, y) {
+    ctx.fillStyle = "#8d6e4c";
+    oval(ctx, x, y, 7, 8);
+    ctx.fill();
+    ctx.fillStyle = "#c45c26";
+    oval(ctx, x, y + 2, 4, 5);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, x, y - 8, 5, 3);
+    ctx.fill();
+    ctx.fillStyle = "#2d6a4f";
+    roundRect(ctx, x - 1, y - 12, 2, 5, 1);
+    ctx.fill();
+  }
+  if (!carried) {
+    acornAt(1688, 556);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Acorn", 1660, 532);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, ACORN_SPOT.x - 22, ACORN_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, ACORN_SPOT.x - 20, ACORN_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, ACORN_SPOT.x - 16, ACORN_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, ACORN_SPOT.x + 10, ACORN_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) acornAt(ACORN_SPOT.x, ACORN_SPOT.y);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Acorn", ACORN_SPOT.x - 20, ACORN_SPOT.y - 18);
+}
+
 function drawSharedFlower(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#3f9b4a";
@@ -3677,6 +3900,12 @@ export function drawTown(ctx, player, time) {
   drawGardenGnomes(ctx);
   drawChalkCircles(ctx);
   drawSharedRibbon(ctx, player.carry === "ribbon");
+  drawSprinkler(ctx, time);
+  drawPlayCones(ctx);
+  drawPorchSteps(ctx);
+  drawScarecrows(ctx);
+  drawCroquet(ctx);
+  drawSharedAcorn(ctx, player.carry === "acorn");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

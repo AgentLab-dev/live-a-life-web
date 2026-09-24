@@ -1,4 +1,4 @@
-import { applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOW_SPOT, BUBBLE_SPOT, CART, CART_ASIDE, CRAYON_SPOT, FLOWER_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, SHELL_SPOT, SNACK_SPOT } from "./crossings.js";
+import { ACORN_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOW_SPOT, BUBBLE_SPOT, CART, CART_ASIDE, CRAYON_SPOT, FLOWER_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, SHELL_SPOT, SNACK_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -101,6 +101,8 @@ export const ACTIONS = {
     { id: "share-crayon", label: "Share crayon", x: CRAYON_SPOT.x, y: CRAYON_SPOT.y },
     { id: "take-ribbon", label: "Take ribbon", x: 1216, y: 700 },
     { id: "share-ribbon", label: "Share ribbon", x: BOW_SPOT.x, y: BOW_SPOT.y },
+    { id: "take-acorn", label: "Take acorn", x: 1688, y: 568 },
+    { id: "share-acorn", label: "Share acorn", x: ACORN_SPOT.x, y: ACORN_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -299,6 +301,8 @@ export function visibleActions(player) {
     if (action.id === "share-crayon" && player.carry !== "crayon") return false;
     if (action.id === "take-ribbon" && player.carry) return false;
     if (action.id === "share-ribbon" && player.carry !== "ribbon") return false;
+    if (action.id === "take-acorn" && player.carry) return false;
+    if (action.id === "share-acorn" && player.carry !== "acorn") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });
