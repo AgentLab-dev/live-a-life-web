@@ -813,18 +813,18 @@ export const CIRCLE_RADIUS = 20;
 export const BOW_SPOT = { x: 900, y: 1416 };
 
 export const SPRAY_POSTS = [
-  { x: 1584, y: 640, w: 16, h: 128 },
-  { x: 1704, y: 640, w: 16, h: 128 },
+  { x: 1536, y: 800, w: 16, h: 128 },
+  { x: 1656, y: 800, w: 16, h: 128 },
 ];
 
 export const SPRAY_WALLS = [
-  { x: 1600, y: 684, w: 36, h: 14 },
-  { x: 1668, y: 684, w: 36, h: 14 },
+  { x: 1552, y: 844, w: 36, h: 14 },
+  { x: 1620, y: 844, w: 36, h: 14 },
 ];
 
-export const SPRAY_GAP = { x: 1636, y: 668, w: 32, h: 48 };
+export const SPRAY_GAP = { x: 1588, y: 828, w: 32, h: 48 };
 
-export const SPRAY_BAND = { x: 1600, y: 684, w: 104, h: 14 };
+export const SPRAY_BAND = { x: 1552, y: 844, w: 104, h: 14 };
 
 export const PYLON_ZONE = { x: 2184, y: 900, w: 164, h: 64 };
 
@@ -835,12 +835,12 @@ export const PYLON_BLOCKS = [
   { x: 2312, y: 900, w: 20, h: 64 },
 ];
 
-export const STOOP_BED = { x: 736, y: 592, w: 100, h: 84 };
+export const STOOP_BED = { x: 1984, y: 1536, w: 100, h: 84 };
 
 export const STOOP_PADS = [
-  { x: 786, y: 608 },
-  { x: 786, y: 634 },
-  { x: 786, y: 660 },
+  { x: 2034, y: 1552 },
+  { x: 2034, y: 1578 },
+  { x: 2034, y: 1604 },
 ];
 
 export const STOOP_RADIUS = 20;

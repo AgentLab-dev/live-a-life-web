@@ -3330,15 +3330,15 @@ describe("thursday town play", () => {
   }
 
   it("names sprinkler, play-cone, porch-step, scarecrow, and croquet paths", () => {
-    expect(townPathAt(1652, 692)).toBe("spray");
-    expect(onSprayGap(1652, 692)).toBe(true);
-    expect(townPathAt(1592, 700)).toBe("");
+    expect(townPathAt(1604, 852)).toBe("spray");
+    expect(onSprayGap(1604, 852)).toBe(true);
+    expect(townPathAt(1544, 860)).toBe("");
     expect(townPathAt(2222, 932)).toBe("pylons");
     expect(onPylonLane(2222, 932)).toBe(true);
     expect(townPathAt(2202, 932)).toBe("");
-    expect(townPathAt(786, 634)).toBe("stoop");
-    expect(onStoopPad(786, 634)).toBe(true);
-    expect(townPathAt(748, 634)).toBe("");
+    expect(townPathAt(2034, 1578)).toBe("stoop");
+    expect(onStoopPad(2034, 1578)).toBe(true);
+    expect(townPathAt(2004, 1578)).toBe("");
     expect(townPathAt(478, 2094)).toBe("crows");
     expect(onCrow(478, 2094)).toBe(true);
     expect(townPathAt(448, 2090)).toBe("");
@@ -3349,18 +3349,18 @@ describe("thursday town play", () => {
   });
 
   it("blocks sprinkler posts, play cones, porch grass, scarecrow lawn, and wickets but not the walk paths", () => {
-    expect(blockedBySpray(1592, 700)).toBe(true);
-    expect(isBlocked("town", 1592, 700)).toBe(true);
-    expect(onSprayGap(1652, 692)).toBe(true);
-    expect(isBlocked("town", 1652, 692)).toBe(false);
+    expect(blockedBySpray(1544, 860)).toBe(true);
+    expect(isBlocked("town", 1544, 860)).toBe(true);
+    expect(onSprayGap(1604, 852)).toBe(true);
+    expect(isBlocked("town", 1604, 852)).toBe(false);
     expect(blockedByPylons(2202, 932)).toBe(true);
     expect(isBlocked("town", 2202, 932)).toBe(true);
     expect(onPylonLane(2222, 932)).toBe(true);
     expect(isBlocked("town", 2222, 932)).toBe(false);
-    expect(blockedByStoop(748, 634)).toBe(true);
-    expect(isBlocked("town", 748, 634)).toBe(true);
-    expect(onStoopPad(786, 634)).toBe(true);
-    expect(isBlocked("town", 786, 634)).toBe(false);
+    expect(blockedByStoop(2004, 1578)).toBe(true);
+    expect(isBlocked("town", 2004, 1578)).toBe(true);
+    expect(onStoopPad(2034, 1578)).toBe(true);
+    expect(isBlocked("town", 2034, 1578)).toBe(false);
     expect(blockedByCrows(448, 2090)).toBe(true);
     expect(isBlocked("town", 448, 2090)).toBe(true);
     expect(onCrow(478, 2094)).toBe(true);
@@ -3373,9 +3373,9 @@ describe("thursday town play", () => {
   });
 
   it("walks the sprinkler, play cones, and porch steps and earns stickers", () => {
-    let player = townKid(1652, 620);
-    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 40);
-    expect(player.y).toBeGreaterThan(698);
+    let player = townKid(1604, 780);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 16);
+    expect(player.y).toBeGreaterThan(862);
     expect(player.stickers.spray).toBe(true);
     expect(player.money).toBeUndefined();
     expect(newSticker(defaultStickers(), player.stickers)).toBe("spray");
@@ -3385,9 +3385,9 @@ describe("thursday town play", () => {
     expect(player.y).toBeGreaterThan(964);
     expect(player.stickers.pylons).toBe(true);
 
-    player = townKid(786, 580);
+    player = townKid(2034, 1524);
     player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 40);
-    expect(player.y).toBeGreaterThan(676);
+    expect(player.y).toBeGreaterThan(1620);
     expect(player.stickers.stoop).toBe(true);
     expect(player.timer).toBeUndefined();
   });
@@ -3406,10 +3406,10 @@ describe("thursday town play", () => {
   });
 
   it("lets tap-to-walk stop at porch grass and scarecrow lawn instead of punishing", () => {
-    const stoopBump = stepToward(townKid(748, 560), { x: 748, y: 700 }, 80);
-    expect(stoopBump.y).toBeLessThan(592);
+    const stoopBump = stepToward(townKid(2004, 1500), { x: 2004, y: 1660 }, 80);
+    expect(stoopBump.y).toBeLessThan(1536);
     expect(stoopBump.stickers).toEqual(defaultStickers());
-    expect(isBlocked("town", 748, 634)).toBe(true);
+    expect(isBlocked("town", 2004, 1578)).toBe(true);
 
     const crowBump = stepToward(townKid(448, 2020), { x: 448, y: 2140 }, 80);
     expect(crowBump.y).toBeLessThan(2048);
@@ -3503,9 +3503,9 @@ describe("thursday town play", () => {
     expect(isBlocked("town", 1920, 1320)).toBe(false);
     expect(isBlocked("town", 420, 980)).toBe(false);
     expect(isBlocked("town", 420, 1400)).toBe(false);
-    expect(isBlocked("town", 1652, 692)).toBe(false);
+    expect(isBlocked("town", 1604, 852)).toBe(false);
     expect(isBlocked("town", 2222, 932)).toBe(false);
-    expect(isBlocked("town", 786, 634)).toBe(false);
+    expect(isBlocked("town", 2034, 1578)).toBe(false);
     expect(isBlocked("town", 478, 2094)).toBe(false);
     expect(isBlocked("town", 1238, 1744)).toBe(false);
     expect(isBlocked("town", 1600, 1748)).toBe(false);
