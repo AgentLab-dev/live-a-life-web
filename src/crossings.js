@@ -812,6 +812,59 @@ export const CIRCLE_RADIUS = 20;
 
 export const BOW_SPOT = { x: 900, y: 1416 };
 
+export const SPRAY_POSTS = [
+  { x: 1536, y: 800, w: 16, h: 128 },
+  { x: 1656, y: 800, w: 16, h: 128 },
+];
+
+export const SPRAY_WALLS = [
+  { x: 1552, y: 844, w: 36, h: 14 },
+  { x: 1620, y: 844, w: 36, h: 14 },
+];
+
+export const SPRAY_GAP = { x: 1588, y: 828, w: 32, h: 48 };
+
+export const SPRAY_BAND = { x: 1552, y: 844, w: 104, h: 14 };
+
+export const PYLON_ZONE = { x: 2184, y: 900, w: 164, h: 64 };
+
+export const PYLON_BLOCKS = [
+  { x: 2192, y: 900, w: 20, h: 64 },
+  { x: 2232, y: 900, w: 20, h: 64 },
+  { x: 2272, y: 900, w: 20, h: 64 },
+  { x: 2312, y: 900, w: 20, h: 64 },
+];
+
+export const STOOP_BED = { x: 1984, y: 1536, w: 100, h: 84 };
+
+export const STOOP_PADS = [
+  { x: 2034, y: 1552 },
+  { x: 2034, y: 1578 },
+  { x: 2034, y: 1604 },
+];
+
+export const STOOP_RADIUS = 20;
+
+export const CROW_ZONE = { x: 432, y: 2048, w: 88, h: 120 };
+
+export const CROWS = [
+  { x: 440, y: 2048, w: 40, h: 36 },
+  { x: 476, y: 2076, w: 40, h: 36 },
+  { x: 440, y: 2104, w: 40, h: 36 },
+  { x: 476, y: 2132, w: 40, h: 36 },
+];
+
+export const CROQUET_ZONE = { x: 1200, y: 1712, w: 164, h: 64 };
+
+export const CROQUET_BLOCKS = [
+  { x: 1208, y: 1712, w: 20, h: 64 },
+  { x: 1248, y: 1712, w: 20, h: 64 },
+  { x: 1288, y: 1712, w: 20, h: 64 },
+  { x: 1328, y: 1712, w: 20, h: 64 },
+];
+
+export const ACORN_SPOT = { x: 1600, y: 1748 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -903,6 +956,12 @@ export const STICKERS = [
   { id: "gnomes", name: "Gnome tip-toer", hint: "You tip-toed the garden gnomes." },
   { id: "circles", name: "Circle hopper", hint: "You hopped the sidewalk chalk circles." },
   { id: "bow", name: "Ribbon friend", hint: "You shared a kind ribbon." },
+  { id: "spray", name: "Sprinkler ducker", hint: "You ducked under the yard sprinkler." },
+  { id: "pylons", name: "Play-cone walker", hint: "You zigzagged the bright play cones." },
+  { id: "stoop", name: "Porch hopper", hint: "You hopped the short porch steps." },
+  { id: "crows", name: "Scarecrow tip-toer", hint: "You tip-toed between the friendly scarecrows." },
+  { id: "croquet", name: "Wicket walker", hint: "You weaved through the croquet wickets." },
+  { id: "nut", name: "Acorn friend", hint: "You shared a kind acorn." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -998,12 +1057,18 @@ export const CHEERS = {
   gnomes: "Tip-toe past the garden gnomes!",
   circles: "Chalk circle hops on the sidewalk!",
   bow: "A kind ribbon to share. Kind!",
+  spray: "Duck under the sprinkler spray!",
+  pylons: "Bright play cones said hello!",
+  stoop: "Soft hops on the porch steps!",
+  crows: "Tip-toe past the friendly scarecrows!",
+  croquet: "Friendly croquet wickets said hello!",
+  nut: "A kind acorn to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn"];
 
 export function defaultStickers() {
   return {
@@ -1097,6 +1162,12 @@ export function defaultStickers() {
     gnomes: false,
     circles: false,
     bow: false,
+    spray: false,
+    pylons: false,
+    stoop: false,
+    crows: false,
+    croquet: false,
+    nut: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -1419,6 +1490,26 @@ export function onCirclePad(x, y) {
   return CIRCLE_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= CIRCLE_RADIUS);
 }
 
+export function onSprayGap(x, y) {
+  return inRect(x, y, SPRAY_GAP);
+}
+
+export function onPylonLane(x, y) {
+  return inRect(x, y, PYLON_ZONE) && !PYLON_BLOCKS.some((cone) => inRect(x, y, cone));
+}
+
+export function onStoopPad(x, y) {
+  return STOOP_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= STOOP_RADIUS);
+}
+
+export function onCrow(x, y) {
+  return CROWS.some((crow) => inRect(x, y, crow));
+}
+
+export function onCroquetLane(x, y) {
+  return inRect(x, y, CROQUET_ZONE) && !CROQUET_BLOCKS.some((wicket) => inRect(x, y, wicket));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -1490,6 +1581,11 @@ export function townPathAt(x, y) {
   if (onTableGap(x, y)) return "table";
   if (onGnome(x, y)) return "gnomes";
   if (onCirclePad(x, y)) return "circles";
+  if (onSprayGap(x, y)) return "spray";
+  if (onPylonLane(x, y)) return "pylons";
+  if (onStoopPad(x, y)) return "stoop";
+  if (onCrow(x, y)) return "crows";
+  if (onCroquetLane(x, y)) return "croquet";
   return "";
 }
 
@@ -1822,6 +1918,27 @@ export function blockedByCircles(x, y) {
   return inRect(x, y, CIRCLE_BED) && !onCirclePad(x, y);
 }
 
+export function blockedBySpray(x, y) {
+  if (onSprayGap(x, y)) return false;
+  return SPRAY_POSTS.some((post) => inRect(x, y, post)) || SPRAY_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByPylons(x, y) {
+  return PYLON_BLOCKS.some((cone) => inRect(x, y, cone));
+}
+
+export function blockedByStoop(x, y) {
+  return inRect(x, y, STOOP_BED) && !onStoopPad(x, y);
+}
+
+export function blockedByCrows(x, y) {
+  return inRect(x, y, CROW_ZONE) && !onCrow(x, y);
+}
+
+export function blockedByCroquet(x, y) {
+  return CROQUET_BLOCKS.some((wicket) => inRect(x, y, wicket));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -1897,7 +2014,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByBikes(x, y) ||
     blockedByTable(x, y) ||
     blockedByGnomes(x, y) ||
-    blockedByCircles(x, y)
+    blockedByCircles(x, y) ||
+    blockedBySpray(x, y) ||
+    blockedByPylons(x, y) ||
+    blockedByStoop(x, y) ||
+    blockedByCrows(x, y) ||
+    blockedByCroquet(x, y)
   );
 }
 
@@ -2022,6 +2144,11 @@ export function applyCrossingProgress(prev, next) {
     ["table", TABLE_BAND, "y"],
     ["gnomes", GNOME_ZONE, "y"],
     ["circles", CIRCLE_BED, "y"],
+    ["spray", SPRAY_BAND, "y"],
+    ["pylons", PYLON_ZONE, "y"],
+    ["stoop", STOOP_BED, "y"],
+    ["crows", CROW_ZONE, "y"],
+    ["croquet", CROQUET_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -2075,7 +2202,9 @@ export function applyCrossingProgress(prev, next) {
       onBeachPad(next.x, next.y) ||
       onTrampPad(next.x, next.y) ||
       onGnome(next.x, next.y) ||
-      onCirclePad(next.x, next.y),
+      onCirclePad(next.x, next.y) ||
+      onStoopPad(next.x, next.y) ||
+      onCrow(next.x, next.y),
   };
 }
 
@@ -2365,6 +2494,22 @@ export function shareRibbon(player) {
   });
 }
 
+export function takeAcorn(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "acorn", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareAcorn(player) {
+  if (player.carry !== "acorn") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), nut: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -2397,5 +2542,6 @@ export function carryLabel(value) {
   if (value === "shell") return "Seashell";
   if (value === "crayon") return "Crayon";
   if (value === "ribbon") return "Ribbon";
+  if (value === "acorn") return "Acorn";
   return "";
 }
