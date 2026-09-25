@@ -193,6 +193,18 @@ import {
   CROQUET_ZONE,
   CROQUET_BLOCKS,
   ACORN_SPOT,
+  ARCH_GAP,
+  ARCH_POSTS,
+  ARCH_WALLS,
+  SUDS_ZONE,
+  SUDS_BLOCKS,
+  BIRD_ZONE,
+  BIRDS,
+  PINE_BED,
+  PINE_PADS,
+  DUCK_ZONE,
+  DUCK_BLOCKS,
+  SUNFLOWER_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -692,6 +704,20 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#3f9b4a";
     oval(ctx, 24, 8, 5, 3);
+    ctx.fill();
+  }
+  if (look.carry === "sunflower" && !sleeping) {
+    ctx.fillStyle = "#3f9b4a";
+    roundRect(ctx, 22, 10, 3, 14, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    for (let i = 0; i < 6; i += 1) {
+      const angle = (Math.PI * 2 * i) / 6;
+      oval(ctx, 23 + Math.cos(angle) * 5, 8 + Math.sin(angle) * 5, 2.4, 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#c45c26";
+    oval(ctx, 23, 8, 2.4, 2.4);
     ctx.fill();
   }
   ctx.restore();
@@ -3650,6 +3676,185 @@ function drawSharedAcorn(ctx, carried) {
   ctx.fillText("Acorn", ACORN_SPOT.x - 20, ACORN_SPOT.y - 18);
 }
 
+function drawHoseArch(ctx) {
+  for (const post of ARCH_POSTS) {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, post.x + 4, post.y + 20, 8, post.h - 20, 3);
+    ctx.fill();
+  }
+  const left = ARCH_POSTS[0].x + 8;
+  const right = ARCH_POSTS[1].x + 8;
+  const base = ARCH_POSTS[0].y + 78;
+  ctx.strokeStyle = "#3f9b4a";
+  ctx.lineWidth = 6;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(left, base);
+  ctx.quadraticCurveTo((left + right) / 2, base - 54, right, base);
+  ctx.stroke();
+  ctx.strokeStyle = "#8fd36a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(left, base - 2);
+  ctx.quadraticCurveTo((left + right) / 2, base - 46, right, base - 2);
+  ctx.stroke();
+  for (const wall of ARCH_WALLS) {
+    ctx.fillStyle = "#2d6a4f";
+    roundRect(ctx, wall.x, wall.y, wall.w, wall.h, 6);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, ARCH_GAP.x + ARCH_GAP.w / 2, ARCH_GAP.y + 20, 8, 6);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Hose arch", ARCH_POSTS[0].x - 4, ARCH_POSTS[0].y - 8);
+}
+
+function drawSoapBuckets(ctx, time) {
+  ctx.fillStyle = "#d9e8f2";
+  roundRect(ctx, SUDS_ZONE.x, SUDS_ZONE.y, SUDS_ZONE.w, SUDS_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#5b8def", "#f4a4c4", "#f4d35e", "#7ec24f"];
+  SUDS_BLOCKS.forEach((bucket, index) => {
+    const cx = bucket.x + bucket.w / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, cx - 9, bucket.y + 24, 18, 28, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, bucket.y + 22, 10, 6);
+    ctx.fill();
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = "#ffffff";
+    const bob = Math.sin(time * 2 + index) * 2;
+    oval(ctx, cx - 4, bucket.y + 12 + bob, 3, 3);
+    ctx.fill();
+    oval(ctx, cx + 5, bucket.y + 8 + bob, 2.4, 2.4);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Soap buckets", SUDS_ZONE.x + 16, SUDS_ZONE.y - 8);
+}
+
+function drawBirdhouses(ctx) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, BIRD_ZONE.x, BIRD_ZONE.y, BIRD_ZONE.w, BIRD_ZONE.h, 12);
+  ctx.fill();
+  ctx.fillStyle = "#8fd36a";
+  roundRect(ctx, BIRD_ZONE.x + 6, BIRD_ZONE.y + 6, BIRD_ZONE.w - 12, BIRD_ZONE.h - 12, 8);
+  ctx.fill();
+  const colors = ["#e74c3c", "#5b8def", "#f4d35e", "#c45c26"];
+  BIRDS.forEach((bird, index) => {
+    const cx = bird.x + bird.w / 2;
+    const top = bird.y + 8;
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, cx - 2, top + 10, 4, 16, 1);
+    ctx.fill();
+    ctx.fillStyle = colors[index % colors.length];
+    ctx.beginPath();
+    ctx.moveTo(cx - 11, top + 8);
+    ctx.lineTo(cx, top - 4);
+    ctx.lineTo(cx + 11, top + 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, cx - 8, top + 8, 16, 12, 2);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx, top + 14, 2.4, 2.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Birdhouses", BIRD_ZONE.x - 8, BIRD_ZONE.y - 8);
+}
+
+function drawPinecones(ctx) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, PINE_BED.x, PINE_BED.y, PINE_BED.w, PINE_BED.h, 12);
+  ctx.fill();
+  PINE_PADS.forEach((pad) => {
+    ctx.fillStyle = "#c4a574";
+    oval(ctx, pad.x, pad.y + 2, 14, 7);
+    ctx.fill();
+    ctx.fillStyle = "#8d6e4c";
+    for (let i = -2; i <= 2; i += 1) {
+      oval(ctx, pad.x + i * 4, pad.y - 1 + Math.abs(i), 3.5, 5);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pad.x, pad.y - 8, 3, 4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pinecones", PINE_BED.x - 6, PINE_BED.y - 8);
+}
+
+function drawRubberDucks(ctx) {
+  ctx.fillStyle = "#9ad7f0";
+  roundRect(ctx, DUCK_ZONE.x, DUCK_ZONE.y, DUCK_ZONE.w, DUCK_ZONE.h, 12);
+  ctx.fill();
+  DUCK_BLOCKS.forEach((duck) => {
+    const cx = duck.x + duck.w / 2;
+    const cy = duck.y + 34;
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, cx, cy, 9, 7);
+    ctx.fill();
+    oval(ctx, cx + 6, cy - 6, 5, 4);
+    ctx.fill();
+    ctx.fillStyle = "#e67e22";
+    roundRect(ctx, cx + 8, cy - 8, 7, 3, 1);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx + 7, cy - 7, 1, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Rubber ducks", DUCK_ZONE.x + 16, DUCK_ZONE.y - 8);
+}
+
+function drawSharedSunflower(ctx, carried) {
+  function flowerAt(x, y) {
+    ctx.fillStyle = "#3f9b4a";
+    roundRect(ctx, x - 2, y, 4, 16, 1);
+    ctx.fill();
+    for (let i = 0; i < 8; i += 1) {
+      const angle = (Math.PI * 2 * i) / 8;
+      ctx.fillStyle = i % 2 === 0 ? "#f4d35e" : "#ffe08a";
+      oval(ctx, x + Math.cos(angle) * 8, y - 8 + Math.sin(angle) * 8, 4, 3);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#c45c26";
+    oval(ctx, x, y - 8, 4, 4);
+    ctx.fill();
+  }
+  if (!carried) {
+    flowerAt(2104, 240);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Sunflower", 2072, 214);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, SUNFLOWER_SPOT.x - 22, SUNFLOWER_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, SUNFLOWER_SPOT.x - 20, SUNFLOWER_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, SUNFLOWER_SPOT.x - 16, SUNFLOWER_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, SUNFLOWER_SPOT.x + 10, SUNFLOWER_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) flowerAt(SUNFLOWER_SPOT.x, SUNFLOWER_SPOT.y);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Sunflower", SUNFLOWER_SPOT.x - 32, SUNFLOWER_SPOT.y - 18);
+}
+
 function drawSharedFlower(ctx, carried) {
   if (!carried) {
     ctx.fillStyle = "#3f9b4a";
@@ -3906,6 +4111,12 @@ export function drawTown(ctx, player, time) {
   drawScarecrows(ctx);
   drawCroquet(ctx);
   drawSharedAcorn(ctx, player.carry === "acorn");
+  drawHoseArch(ctx);
+  drawSoapBuckets(ctx, time);
+  drawBirdhouses(ctx);
+  drawPinecones(ctx);
+  drawRubberDucks(ctx);
+  drawSharedSunflower(ctx, player.carry === "sunflower");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

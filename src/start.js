@@ -39,6 +39,8 @@ import {
   shareRibbon,
   takeAcorn,
   shareAcorn,
+  takeSunflower,
+  shareSunflower,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -397,6 +399,18 @@ export function startGame(root) {
     if (id === "share-acorn") {
       const before = player.stickers;
       player = shareAcorn(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-sunflower") {
+      player = takeSunflower(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-sunflower") {
+      const before = player.stickers;
+      player = shareSunflower(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

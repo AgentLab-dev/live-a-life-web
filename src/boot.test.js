@@ -77,6 +77,8 @@ describe("Play boot", () => {
     expect(world).toContain("share-ribbon");
     expect(world).toContain("take-acorn");
     expect(world).toContain("share-acorn");
+    expect(world).toContain("take-sunflower");
+    expect(world).toContain("share-sunflower");
     expect(world).toContain("enter-usa");
     expect(start).toContain("takeBook");
     expect(start).toContain("takeCard");
@@ -107,6 +109,8 @@ describe("Play boot", () => {
     expect(start).toContain("shareRibbon");
     expect(start).toContain("takeAcorn");
     expect(start).toContain("shareAcorn");
+    expect(start).toContain("takeSunflower");
+    expect(start).toContain("shareSunflower");
     expect(start).toContain("pushBookCart");
     expect(start).toContain("enterUsaMap");
     expect(start).toContain("startHop");
