@@ -865,6 +865,59 @@ export const CROQUET_BLOCKS = [
 
 export const ACORN_SPOT = { x: 1600, y: 1748 };
 
+export const ARCH_POSTS = [
+  { x: 2268, y: 200, w: 16, h: 128 },
+  { x: 2388, y: 200, w: 16, h: 128 },
+];
+
+export const ARCH_WALLS = [
+  { x: 2284, y: 244, w: 36, h: 14 },
+  { x: 2352, y: 244, w: 36, h: 14 },
+];
+
+export const ARCH_GAP = { x: 2320, y: 228, w: 32, h: 48 };
+
+export const ARCH_BAND = { x: 2284, y: 244, w: 104, h: 14 };
+
+export const SUDS_ZONE = { x: 1024, y: 1088, w: 164, h: 64 };
+
+export const SUDS_BLOCKS = [
+  { x: 1032, y: 1088, w: 20, h: 64 },
+  { x: 1072, y: 1088, w: 20, h: 64 },
+  { x: 1112, y: 1088, w: 20, h: 64 },
+  { x: 1152, y: 1088, w: 20, h: 64 },
+];
+
+export const BIRD_ZONE = { x: 1132, y: 704, w: 88, h: 120 };
+
+export const BIRDS = [
+  { x: 1140, y: 704, w: 40, h: 36 },
+  { x: 1176, y: 732, w: 40, h: 36 },
+  { x: 1140, y: 760, w: 40, h: 36 },
+  { x: 1176, y: 788, w: 40, h: 36 },
+];
+
+export const PINE_BED = { x: 288, y: 1768, w: 100, h: 84 };
+
+export const PINE_PADS = [
+  { x: 338, y: 1784 },
+  { x: 338, y: 1810 },
+  { x: 338, y: 1836 },
+];
+
+export const PINE_RADIUS = 20;
+
+export const DUCK_ZONE = { x: 1520, y: 1252, w: 164, h: 64 };
+
+export const DUCK_BLOCKS = [
+  { x: 1528, y: 1252, w: 20, h: 64 },
+  { x: 1568, y: 1252, w: 20, h: 64 },
+  { x: 1608, y: 1252, w: 20, h: 64 },
+  { x: 1648, y: 1252, w: 20, h: 64 },
+];
+
+export const SUNFLOWER_SPOT = { x: 640, y: 1248 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -962,6 +1015,12 @@ export const STICKERS = [
   { id: "crows", name: "Scarecrow tip-toer", hint: "You tip-toed between the friendly scarecrows." },
   { id: "croquet", name: "Wicket walker", hint: "You weaved through the croquet wickets." },
   { id: "nut", name: "Acorn friend", hint: "You shared a kind acorn." },
+  { id: "arch", name: "Hose-arch ducker", hint: "You ducked under the garden hose arch." },
+  { id: "suds", name: "Soap-bucket walker", hint: "You weaved between the bubbly soap buckets." },
+  { id: "birds", name: "Birdhouse tip-toer", hint: "You tip-toed between the little birdhouses." },
+  { id: "pines", name: "Pinecone hopper", hint: "You hopped the pinecone pads." },
+  { id: "ducks", name: "Duck weaver", hint: "You weaved between the rubber ducks." },
+  { id: "sun", name: "Sunflower friend", hint: "You shared a kind sunflower." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -1063,12 +1122,18 @@ export const CHEERS = {
   crows: "Tip-toe past the friendly scarecrows!",
   croquet: "Friendly croquet wickets said hello!",
   nut: "A kind acorn to share. Kind!",
+  arch: "Duck under the garden hose arch!",
+  suds: "Bubbly soap buckets said hello!",
+  birds: "Tip-toe past the little birdhouses!",
+  pines: "Soft hops on the pinecone pads!",
+  ducks: "Friendly rubber ducks said hello!",
+  sun: "A kind sunflower to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower"];
 
 export function defaultStickers() {
   return {
@@ -1168,6 +1233,12 @@ export function defaultStickers() {
     crows: false,
     croquet: false,
     nut: false,
+    arch: false,
+    suds: false,
+    birds: false,
+    pines: false,
+    ducks: false,
+    sun: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -1510,6 +1581,26 @@ export function onCroquetLane(x, y) {
   return inRect(x, y, CROQUET_ZONE) && !CROQUET_BLOCKS.some((wicket) => inRect(x, y, wicket));
 }
 
+export function onArchGap(x, y) {
+  return inRect(x, y, ARCH_GAP);
+}
+
+export function onSudsLane(x, y) {
+  return inRect(x, y, SUDS_ZONE) && !SUDS_BLOCKS.some((bucket) => inRect(x, y, bucket));
+}
+
+export function onBird(x, y) {
+  return BIRDS.some((bird) => inRect(x, y, bird));
+}
+
+export function onPinePad(x, y) {
+  return PINE_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= PINE_RADIUS);
+}
+
+export function onDuckLane(x, y) {
+  return inRect(x, y, DUCK_ZONE) && !DUCK_BLOCKS.some((duck) => inRect(x, y, duck));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -1586,6 +1677,11 @@ export function townPathAt(x, y) {
   if (onStoopPad(x, y)) return "stoop";
   if (onCrow(x, y)) return "crows";
   if (onCroquetLane(x, y)) return "croquet";
+  if (onArchGap(x, y)) return "arch";
+  if (onSudsLane(x, y)) return "suds";
+  if (onBird(x, y)) return "birds";
+  if (onPinePad(x, y)) return "pines";
+  if (onDuckLane(x, y)) return "ducks";
   return "";
 }
 
@@ -1939,6 +2035,27 @@ export function blockedByCroquet(x, y) {
   return CROQUET_BLOCKS.some((wicket) => inRect(x, y, wicket));
 }
 
+export function blockedByArch(x, y) {
+  if (onArchGap(x, y)) return false;
+  return ARCH_POSTS.some((post) => inRect(x, y, post)) || ARCH_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedBySuds(x, y) {
+  return SUDS_BLOCKS.some((bucket) => inRect(x, y, bucket));
+}
+
+export function blockedByBirds(x, y) {
+  return inRect(x, y, BIRD_ZONE) && !onBird(x, y);
+}
+
+export function blockedByPines(x, y) {
+  return inRect(x, y, PINE_BED) && !onPinePad(x, y);
+}
+
+export function blockedByDucks(x, y) {
+  return DUCK_BLOCKS.some((duck) => inRect(x, y, duck));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -2019,7 +2136,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByPylons(x, y) ||
     blockedByStoop(x, y) ||
     blockedByCrows(x, y) ||
-    blockedByCroquet(x, y)
+    blockedByCroquet(x, y) ||
+    blockedByArch(x, y) ||
+    blockedBySuds(x, y) ||
+    blockedByBirds(x, y) ||
+    blockedByPines(x, y) ||
+    blockedByDucks(x, y)
   );
 }
 
@@ -2149,6 +2271,11 @@ export function applyCrossingProgress(prev, next) {
     ["stoop", STOOP_BED, "y"],
     ["crows", CROW_ZONE, "y"],
     ["croquet", CROQUET_ZONE, "y"],
+    ["arch", ARCH_BAND, "y"],
+    ["suds", SUDS_ZONE, "y"],
+    ["birds", BIRD_ZONE, "y"],
+    ["pines", PINE_BED, "y"],
+    ["ducks", DUCK_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -2204,7 +2331,9 @@ export function applyCrossingProgress(prev, next) {
       onGnome(next.x, next.y) ||
       onCirclePad(next.x, next.y) ||
       onStoopPad(next.x, next.y) ||
-      onCrow(next.x, next.y),
+      onCrow(next.x, next.y) ||
+      onBird(next.x, next.y) ||
+      onPinePad(next.x, next.y),
   };
 }
 
@@ -2510,6 +2639,22 @@ export function shareAcorn(player) {
   });
 }
 
+export function takeSunflower(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "sunflower", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareSunflower(player) {
+  if (player.carry !== "sunflower") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), sun: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -2543,5 +2688,6 @@ export function carryLabel(value) {
   if (value === "crayon") return "Crayon";
   if (value === "ribbon") return "Ribbon";
   if (value === "acorn") return "Acorn";
+  if (value === "sunflower") return "Sunflower";
   return "";
 }
