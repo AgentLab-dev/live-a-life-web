@@ -918,6 +918,60 @@ export const DUCK_BLOCKS = [
 
 export const SUNFLOWER_SPOT = { x: 640, y: 1248 };
 
+export const PIN_ZONE = { x: 722, y: 148, w: 164, h: 64 };
+
+export const PIN_BLOCKS = [
+  { x: 730, y: 148, w: 20, h: 64 },
+  { x: 770, y: 148, w: 20, h: 64 },
+  { x: 810, y: 148, w: 20, h: 64 },
+  { x: 850, y: 148, w: 20, h: 64 },
+];
+
+export const RAIN_BED = { x: 1394, y: 136, w: 100, h: 84 };
+
+export const RAIN_PADS = [
+  { x: 1444, y: 152 },
+  { x: 1444, y: 178 },
+  { x: 1444, y: 204 },
+];
+
+export const RAIN_RADIUS = 20;
+
+export const SLOT_ZONE = { x: 434, y: 690, w: 88, h: 120 };
+
+export const SLOTS = [
+  { x: 442, y: 690, w: 40, h: 36 },
+  { x: 478, y: 718, w: 40, h: 36 },
+  { x: 442, y: 746, w: 40, h: 36 },
+  { x: 478, y: 774, w: 40, h: 36 },
+];
+
+export const FOAM_POSTS = [
+  { x: 922, y: 140, w: 16, h: 128 },
+  { x: 1042, y: 140, w: 16, h: 128 },
+];
+
+export const FOAM_WALLS = [
+  { x: 938, y: 184, w: 36, h: 14 },
+  { x: 1006, y: 184, w: 36, h: 14 },
+];
+
+export const FOAM_GAP = { x: 974, y: 168, w: 32, h: 48 };
+
+export const FOAM_BAND = { x: 938, y: 184, w: 104, h: 14 };
+
+export const CUSHION_BED = { x: 690, y: 2030, w: 100, h: 84 };
+
+export const CUSHION_PADS = [
+  { x: 740, y: 2046 },
+  { x: 740, y: 2072 },
+  { x: 740, y: 2098 },
+];
+
+export const CUSHION_RADIUS = 20;
+
+export const BUTTERFLY_SPOT = { x: 1100, y: 2140 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -1021,6 +1075,12 @@ export const STICKERS = [
   { id: "pines", name: "Pinecone hopper", hint: "You hopped the pinecone pads." },
   { id: "ducks", name: "Duck weaver", hint: "You weaved between the rubber ducks." },
   { id: "sun", name: "Sunflower friend", hint: "You shared a kind sunflower." },
+  { id: "pins", name: "Clothespin weaver", hint: "You weaved between the hanging shirts." },
+  { id: "rain", name: "Puddle hopper", hint: "You hopped the rain puddle pads." },
+  { id: "slots", name: "Mailbox tip-toer", hint: "You tip-toed past the little mailboxes." },
+  { id: "foam", name: "Bubble-machine ducker", hint: "You ducked under the bubble machine." },
+  { id: "cushions", name: "Cushion hopper", hint: "You hopped the wagon cushions." },
+  { id: "wing", name: "Butterfly friend", hint: "You shared a kind butterfly." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -1128,12 +1188,18 @@ export const CHEERS = {
   pines: "Soft hops on the pinecone pads!",
   ducks: "Friendly rubber ducks said hello!",
   sun: "A kind sunflower to share. Kind!",
+  pins: "Hanging shirts said hello!",
+  rain: "Soft hops across the rain puddles!",
+  slots: "Tip-toe past the little mailboxes!",
+  foam: "Duck under the bubbly machine!",
+  cushions: "Soft hops on the wagon cushions!",
+  wing: "A kind butterfly to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly"];
 
 export function defaultStickers() {
   return {
@@ -1239,6 +1305,12 @@ export function defaultStickers() {
     pines: false,
     ducks: false,
     sun: false,
+    pins: false,
+    rain: false,
+    slots: false,
+    foam: false,
+    cushions: false,
+    wing: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -1601,6 +1673,26 @@ export function onDuckLane(x, y) {
   return inRect(x, y, DUCK_ZONE) && !DUCK_BLOCKS.some((duck) => inRect(x, y, duck));
 }
 
+export function onPinLane(x, y) {
+  return inRect(x, y, PIN_ZONE) && !PIN_BLOCKS.some((pin) => inRect(x, y, pin));
+}
+
+export function onRainPad(x, y) {
+  return RAIN_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= RAIN_RADIUS);
+}
+
+export function onSlot(x, y) {
+  return SLOTS.some((slot) => inRect(x, y, slot));
+}
+
+export function onFoamGap(x, y) {
+  return inRect(x, y, FOAM_GAP);
+}
+
+export function onCushionPad(x, y) {
+  return CUSHION_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= CUSHION_RADIUS);
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -1682,6 +1774,11 @@ export function townPathAt(x, y) {
   if (onBird(x, y)) return "birds";
   if (onPinePad(x, y)) return "pines";
   if (onDuckLane(x, y)) return "ducks";
+  if (onPinLane(x, y)) return "pins";
+  if (onRainPad(x, y)) return "rain";
+  if (onSlot(x, y)) return "slots";
+  if (onFoamGap(x, y)) return "foam";
+  if (onCushionPad(x, y)) return "cushions";
   return "";
 }
 
@@ -2056,6 +2153,27 @@ export function blockedByDucks(x, y) {
   return DUCK_BLOCKS.some((duck) => inRect(x, y, duck));
 }
 
+export function blockedByPins(x, y) {
+  return PIN_BLOCKS.some((pin) => inRect(x, y, pin));
+}
+
+export function blockedByRain(x, y) {
+  return inRect(x, y, RAIN_BED) && !onRainPad(x, y);
+}
+
+export function blockedBySlots(x, y) {
+  return inRect(x, y, SLOT_ZONE) && !onSlot(x, y);
+}
+
+export function blockedByFoam(x, y) {
+  if (onFoamGap(x, y)) return false;
+  return FOAM_POSTS.some((post) => inRect(x, y, post)) || FOAM_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByCushions(x, y) {
+  return inRect(x, y, CUSHION_BED) && !onCushionPad(x, y);
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -2141,7 +2259,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedBySuds(x, y) ||
     blockedByBirds(x, y) ||
     blockedByPines(x, y) ||
-    blockedByDucks(x, y)
+    blockedByDucks(x, y) ||
+    blockedByPins(x, y) ||
+    blockedByRain(x, y) ||
+    blockedBySlots(x, y) ||
+    blockedByFoam(x, y) ||
+    blockedByCushions(x, y)
   );
 }
 
@@ -2276,6 +2399,11 @@ export function applyCrossingProgress(prev, next) {
     ["birds", BIRD_ZONE, "y"],
     ["pines", PINE_BED, "y"],
     ["ducks", DUCK_ZONE, "y"],
+    ["pins", PIN_ZONE, "y"],
+    ["rain", RAIN_BED, "y"],
+    ["slots", SLOT_ZONE, "y"],
+    ["foam", FOAM_BAND, "y"],
+    ["cushions", CUSHION_BED, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -2333,7 +2461,10 @@ export function applyCrossingProgress(prev, next) {
       onStoopPad(next.x, next.y) ||
       onCrow(next.x, next.y) ||
       onBird(next.x, next.y) ||
-      onPinePad(next.x, next.y),
+      onPinePad(next.x, next.y) ||
+      onRainPad(next.x, next.y) ||
+      onSlot(next.x, next.y) ||
+      onCushionPad(next.x, next.y),
   };
 }
 
@@ -2655,6 +2786,22 @@ export function shareSunflower(player) {
   });
 }
 
+export function takeButterfly(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "butterfly", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareButterfly(player) {
+  if (player.carry !== "butterfly") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), wing: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -2689,5 +2836,6 @@ export function carryLabel(value) {
   if (value === "ribbon") return "Ribbon";
   if (value === "acorn") return "Acorn";
   if (value === "sunflower") return "Sunflower";
+  if (value === "butterfly") return "Butterfly";
   return "";
 }
