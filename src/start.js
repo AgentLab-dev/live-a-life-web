@@ -43,6 +43,8 @@ import {
   shareSunflower,
   takeButterfly,
   shareButterfly,
+  takeFeather,
+  shareFeather,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -425,6 +427,18 @@ export function startGame(root) {
     if (id === "share-butterfly") {
       const before = player.stickers;
       player = shareButterfly(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-feather") {
+      player = takeFeather(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-feather") {
+      const before = player.stickers;
+      player = shareFeather(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
