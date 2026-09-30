@@ -229,6 +229,18 @@ import {
   ROLL_ZONE,
   ROLL_BLOCKS,
   FEATHER_SPOT,
+  SCOOT_ZONE,
+  SCOOT_BLOCKS,
+  POGO_BED,
+  POGO_PADS,
+  KENNEL_GAP,
+  KENNEL_POSTS,
+  KENNEL_WALLS,
+  MILL_ZONE,
+  MILLS,
+  STOOL_ZONE,
+  STOOL_BLOCKS,
+  BOAT_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -768,6 +780,24 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.moveTo(24, 4);
     ctx.lineTo(24, 20);
     ctx.stroke();
+  }
+  if (look.carry === "boat" && !sleeping) {
+    ctx.fillStyle = "#fff8e7";
+    ctx.beginPath();
+    ctx.moveTo(14, 16);
+    ctx.lineTo(24, 22);
+    ctx.lineTo(34, 16);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    ctx.fillRect(22, 8, 3, 8);
+    ctx.fillStyle = "#f4a4c4";
+    ctx.beginPath();
+    ctx.moveTo(25, 8);
+    ctx.lineTo(32, 12);
+    ctx.lineTo(25, 16);
+    ctx.closePath();
+    ctx.fill();
   }
   ctx.restore();
 }
@@ -4154,6 +4184,208 @@ function drawTireRolls(ctx) {
   ctx.fillText("Tire rolls", ROLL_ZONE.x + 36, ROLL_ZONE.y - 8);
 }
 
+function drawScooters(ctx) {
+  ctx.fillStyle = "#dcecc8";
+  roundRect(ctx, SCOOT_ZONE.x, SCOOT_ZONE.y, SCOOT_ZONE.w, SCOOT_ZONE.h, 12);
+  ctx.fill();
+  const decks = ["#e74c3c", "#5b8def", "#f4d35e", "#7dcea0"];
+  SCOOT_BLOCKS.forEach((scoot, index) => {
+    const cx = scoot.x + scoot.w / 2;
+    const base = scoot.y + scoot.h - 10;
+    ctx.fillStyle = "#3a3a3a";
+    oval(ctx, cx, base, 7, 7);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, base, 2.5, 2.5);
+    ctx.fill();
+    ctx.strokeStyle = "#6d5a4a";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, base - 4);
+    ctx.lineTo(cx + 4, base + 6);
+    ctx.stroke();
+    ctx.strokeStyle = decks[index % decks.length];
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx, base - 6);
+    ctx.lineTo(cx, base - 28);
+    ctx.stroke();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - 7, base - 28);
+    ctx.lineTo(cx + 7, base - 28);
+    ctx.stroke();
+    ctx.fillStyle = decks[index % decks.length];
+    roundRect(ctx, cx - 8, base - 10, 16, 4, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Scooters", SCOOT_ZONE.x + 42, SCOOT_ZONE.y - 8);
+}
+
+function drawPogos(ctx, time) {
+  ctx.fillStyle = "#7ec24f";
+  roundRect(ctx, POGO_BED.x, POGO_BED.y, POGO_BED.w, POGO_BED.h, 12);
+  ctx.fill();
+  const colors = ["#e74c3c", "#5b8def", "#f4d35e"];
+  POGO_PADS.forEach((pad, index) => {
+    const bounce = Math.sin(time * 4 + index) * 1.5;
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, pad.x - 8, pad.y + 6, 16, 5, 2);
+    ctx.fill();
+    ctx.strokeStyle = colors[index % colors.length];
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(pad.x - 5, pad.y + 4);
+    ctx.lineTo(pad.x + 5, pad.y - 2);
+    ctx.lineTo(pad.x - 5, pad.y - 8);
+    ctx.lineTo(pad.x + 5, pad.y - 14);
+    ctx.stroke();
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, pad.x, pad.y - 16 + bounce, 6, 6);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x - 1, pad.y - 17 + bounce, 2, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pogos", POGO_BED.x + 22, POGO_BED.y - 8);
+}
+
+function drawDoghouse(ctx) {
+  for (const post of KENNEL_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 3, post.y + 18, 10, post.h - 18, 3);
+    ctx.fill();
+  }
+  const left = KENNEL_POSTS[0].x + 8;
+  const right = KENNEL_POSTS[1].x + 8;
+  const base = KENNEL_POSTS[0].y + 70;
+  ctx.fillStyle = "#c45c26";
+  ctx.beginPath();
+  ctx.moveTo(left - 10, base);
+  ctx.lineTo((left + right) / 2, base - 36);
+  ctx.lineTo(right + 10, base);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  roundRect(ctx, left, base, right - left, 36, 4);
+  ctx.fill();
+  for (const wall of KENNEL_WALLS) {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, wall.x, wall.y, wall.w, wall.h, 3);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#5a3820";
+  roundRect(ctx, KENNEL_GAP.x + 6, KENNEL_GAP.y + 22, KENNEL_GAP.w - 12, 18, 8);
+  ctx.fill();
+  ctx.fillStyle = "#f4a4c4";
+  oval(ctx, KENNEL_GAP.x + KENNEL_GAP.w / 2, KENNEL_GAP.y + 30, 4, 3);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Doghouse", KENNEL_POSTS[0].x + 16, KENNEL_POSTS[0].y - 8);
+}
+
+function drawWindmills(ctx, time) {
+  ctx.fillStyle = "#cfe8b0";
+  roundRect(ctx, MILL_ZONE.x, MILL_ZONE.y, MILL_ZONE.w, MILL_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#f4a4c4", "#5b8def", "#f4d35e", "#7dcea0"];
+  MILLS.forEach((mill, index) => {
+    const cx = mill.x + mill.w / 2;
+    const foot = mill.y + mill.h - 4;
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, cx - 2, foot - 18, 4, 18, 1);
+    ctx.fill();
+    const spin = time * 1.6 + index;
+    ctx.strokeStyle = colors[index % colors.length];
+    ctx.lineWidth = 2;
+    for (let blade = 0; blade < 4; blade += 1) {
+      const angle = spin + (Math.PI / 2) * blade;
+      ctx.beginPath();
+      ctx.moveTo(cx, foot - 18);
+      ctx.lineTo(cx + Math.cos(angle) * 8, foot - 18 + Math.sin(angle) * 8);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, foot - 18, 2.4, 2.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Windmills", MILL_ZONE.x + 4, MILL_ZONE.y - 8);
+}
+
+function drawLemonStools(ctx) {
+  ctx.fillStyle = "#fff3c4";
+  roundRect(ctx, STOOL_ZONE.x, STOOL_ZONE.y, STOOL_ZONE.w, STOOL_ZONE.h, 12);
+  ctx.fill();
+  const seats = ["#e74c3c", "#f4d35e", "#7dcea0", "#5b8def"];
+  STOOL_BLOCKS.forEach((stool, index) => {
+    const cx = stool.x + stool.w / 2;
+    const seat = stool.y + 28;
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - 5, seat + 4);
+    ctx.lineTo(cx - 6, seat + 16);
+    ctx.moveTo(cx + 5, seat + 4);
+    ctx.lineTo(cx + 6, seat + 16);
+    ctx.stroke();
+    ctx.fillStyle = seats[index % seats.length];
+    oval(ctx, cx, seat, 8, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx - 2, seat - 1, 2, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Stools", STOOL_ZONE.x + 52, STOOL_ZONE.y - 8);
+}
+
+function drawSharedBoat(ctx, carried) {
+  function boatAt(x, y) {
+    ctx.fillStyle = "#fff8e7";
+    ctx.beginPath();
+    ctx.moveTo(x - 12, y);
+    ctx.lineTo(x, y + 8);
+    ctx.lineTo(x + 12, y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    roundRect(ctx, x - 1, y - 12, 3, 12, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    ctx.beginPath();
+    ctx.moveTo(x + 2, y - 12);
+    ctx.lineTo(x + 10, y - 6);
+    ctx.lineTo(x + 2, y);
+    ctx.closePath();
+    ctx.fill();
+  }
+  if (!carried) {
+    boatAt(1500, 148);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Paper boat", 1464, 126);
+  }
+  ctx.fillStyle = "#7ec8e3";
+  roundRect(ctx, BOAT_SPOT.x - 24, BOAT_SPOT.y - 6, 48, 18, 8);
+  ctx.fill();
+  ctx.fillStyle = "#8d6e4c";
+  roundRect(ctx, BOAT_SPOT.x - 22, BOAT_SPOT.y + 10, 44, 6, 2);
+  ctx.fill();
+  if (!carried) boatAt(BOAT_SPOT.x, BOAT_SPOT.y);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Paper boat", BOAT_SPOT.x - 36, BOAT_SPOT.y - 16);
+}
+
 function drawSharedFeather(ctx, carried) {
   function featherAt(x, y) {
     ctx.fillStyle = "#7ec8e3";
@@ -4552,6 +4784,12 @@ export function drawTown(ctx, player, time) {
   drawFlamingos(ctx);
   drawTireRolls(ctx);
   drawSharedFeather(ctx, player.carry === "feather");
+  drawScooters(ctx);
+  drawPogos(ctx, time);
+  drawDoghouse(ctx);
+  drawWindmills(ctx, time);
+  drawLemonStools(ctx);
+  drawSharedBoat(ctx, player.carry === "boat");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
