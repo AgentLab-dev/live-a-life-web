@@ -83,6 +83,8 @@ describe("Play boot", () => {
     expect(world).toContain("share-butterfly");
     expect(world).toContain("take-feather");
     expect(world).toContain("share-feather");
+    expect(world).toContain("take-boat");
+    expect(world).toContain("share-boat");
     expect(world).toContain("enter-usa");
     expect(start).toContain("takeBook");
     expect(start).toContain("takeCard");
@@ -119,6 +121,8 @@ describe("Play boot", () => {
     expect(start).toContain("shareButterfly");
     expect(start).toContain("takeFeather");
     expect(start).toContain("shareFeather");
+    expect(start).toContain("takeBoat");
+    expect(start).toContain("shareBoat");
     expect(start).toContain("pushBookCart");
     expect(start).toContain("enterUsaMap");
     expect(start).toContain("startHop");

@@ -1025,6 +1025,59 @@ export const ROLL_BLOCKS = [
 
 export const FEATHER_SPOT = { x: 1800, y: 2140 };
 
+export const SCOOT_ZONE = { x: 2040, y: 160, w: 164, h: 64 };
+
+export const SCOOT_BLOCKS = [
+  { x: 2048, y: 160, w: 20, h: 64 },
+  { x: 2088, y: 160, w: 20, h: 64 },
+  { x: 2128, y: 160, w: 20, h: 64 },
+  { x: 2168, y: 160, w: 20, h: 64 },
+];
+
+export const POGO_BED = { x: 820, y: 690, w: 100, h: 84 };
+
+export const POGO_PADS = [
+  { x: 870, y: 706 },
+  { x: 870, y: 732 },
+  { x: 870, y: 758 },
+];
+
+export const POGO_RADIUS = 20;
+
+export const KENNEL_POSTS = [
+  { x: 1820, y: 1548, w: 16, h: 128 },
+  { x: 1940, y: 1548, w: 16, h: 128 },
+];
+
+export const KENNEL_WALLS = [
+  { x: 1836, y: 1592, w: 36, h: 14 },
+  { x: 1904, y: 1592, w: 36, h: 14 },
+];
+
+export const KENNEL_GAP = { x: 1872, y: 1576, w: 32, h: 48 };
+
+export const KENNEL_BAND = { x: 1836, y: 1592, w: 104, h: 14 };
+
+export const MILL_ZONE = { x: 700, y: 1180, w: 88, h: 120 };
+
+export const MILLS = [
+  { x: 708, y: 1180, w: 40, h: 36 },
+  { x: 744, y: 1208, w: 40, h: 36 },
+  { x: 708, y: 1236, w: 40, h: 36 },
+  { x: 744, y: 1264, w: 40, h: 36 },
+];
+
+export const STOOL_ZONE = { x: 1810, y: 880, w: 164, h: 64 };
+
+export const STOOL_BLOCKS = [
+  { x: 1818, y: 880, w: 20, h: 64 },
+  { x: 1858, y: 880, w: 20, h: 64 },
+  { x: 1898, y: 880, w: 20, h: 64 },
+  { x: 1938, y: 880, w: 20, h: 64 },
+];
+
+export const BOAT_SPOT = { x: 2080, y: 2140 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -1140,6 +1193,12 @@ export const STICKERS = [
   { id: "flocks", name: "Flamingo tip-toer", hint: "You tip-toed past the lawn flamingos." },
   { id: "rolls", name: "Tire-roll weaver", hint: "You weaved between the upright tire rolls." },
   { id: "plume", name: "Feather friend", hint: "You shared a kind feather." },
+  { id: "scoots", name: "Scooter weaver", hint: "You weaved between the parked scooters." },
+  { id: "pogos", name: "Pogo hopper", hint: "You bounced on the pogo pads." },
+  { id: "kennel", name: "Doghouse crawler", hint: "You crawled under the friendly doghouse." },
+  { id: "mills", name: "Windmill tip-toer", hint: "You tip-toed past the garden windmills." },
+  { id: "stools", name: "Stool weaver", hint: "You weaved between the lemonade stools." },
+  { id: "sail", name: "Boat friend", hint: "You shared a kind paper boat." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -1259,12 +1318,18 @@ export const CHEERS = {
   flocks: "Tip-toe past the pink flamingos!",
   rolls: "Upright tire rolls said hello!",
   plume: "A kind feather to share. Kind!",
+  scoots: "Parked scooters said hello!",
+  pogos: "Boing! Soft hops on the pogo pads!",
+  kennel: "Crawl under the cozy doghouse!",
+  mills: "Tip-toe past the twirly windmills!",
+  stools: "Friendly lemonade stools said hello!",
+  sail: "A kind paper boat to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat"];
 
 export function defaultStickers() {
   return {
@@ -1382,6 +1447,12 @@ export function defaultStickers() {
     flocks: false,
     rolls: false,
     plume: false,
+    scoots: false,
+    pogos: false,
+    kennel: false,
+    mills: false,
+    stools: false,
+    sail: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -1784,6 +1855,26 @@ export function onRollLane(x, y) {
   return inRect(x, y, ROLL_ZONE) && !ROLL_BLOCKS.some((tire) => inRect(x, y, tire));
 }
 
+export function onScootLane(x, y) {
+  return inRect(x, y, SCOOT_ZONE) && !SCOOT_BLOCKS.some((scoot) => inRect(x, y, scoot));
+}
+
+export function onPogoPad(x, y) {
+  return POGO_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= POGO_RADIUS);
+}
+
+export function onKennelGap(x, y) {
+  return inRect(x, y, KENNEL_GAP);
+}
+
+export function onMill(x, y) {
+  return MILLS.some((mill) => inRect(x, y, mill));
+}
+
+export function onStoolLane(x, y) {
+  return inRect(x, y, STOOL_ZONE) && !STOOL_BLOCKS.some((stool) => inRect(x, y, stool));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -1875,6 +1966,11 @@ export function townPathAt(x, y) {
   if (onTentGap(x, y)) return "flap";
   if (onFlock(x, y)) return "flocks";
   if (onRollLane(x, y)) return "rolls";
+  if (onScootLane(x, y)) return "scoots";
+  if (onPogoPad(x, y)) return "pogos";
+  if (onKennelGap(x, y)) return "kennel";
+  if (onMill(x, y)) return "mills";
+  if (onStoolLane(x, y)) return "stools";
   return "";
 }
 
@@ -2291,6 +2387,27 @@ export function blockedByRolls(x, y) {
   return ROLL_BLOCKS.some((tire) => inRect(x, y, tire));
 }
 
+export function blockedByScoots(x, y) {
+  return SCOOT_BLOCKS.some((scoot) => inRect(x, y, scoot));
+}
+
+export function blockedByPogos(x, y) {
+  return inRect(x, y, POGO_BED) && !onPogoPad(x, y);
+}
+
+export function blockedByKennel(x, y) {
+  if (onKennelGap(x, y)) return false;
+  return KENNEL_POSTS.some((post) => inRect(x, y, post)) || KENNEL_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByMills(x, y) {
+  return inRect(x, y, MILL_ZONE) && !onMill(x, y);
+}
+
+export function blockedByStools(x, y) {
+  return STOOL_BLOCKS.some((stool) => inRect(x, y, stool));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -2386,7 +2503,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByKicks(x, y) ||
     blockedByTent(x, y) ||
     blockedByFlocks(x, y) ||
-    blockedByRolls(x, y)
+    blockedByRolls(x, y) ||
+    blockedByScoots(x, y) ||
+    blockedByPogos(x, y) ||
+    blockedByKennel(x, y) ||
+    blockedByMills(x, y) ||
+    blockedByStools(x, y)
   );
 }
 
@@ -2531,6 +2653,11 @@ export function applyCrossingProgress(prev, next) {
     ["flap", TENT_BAND, "y"],
     ["flocks", FLOCK_ZONE, "y"],
     ["rolls", ROLL_ZONE, "y"],
+    ["scoots", SCOOT_ZONE, "y"],
+    ["pogos", POGO_BED, "y"],
+    ["kennel", KENNEL_BAND, "y"],
+    ["mills", MILL_ZONE, "y"],
+    ["stools", STOOL_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -2593,7 +2720,9 @@ export function applyCrossingProgress(prev, next) {
       onSlot(next.x, next.y) ||
       onCushionPad(next.x, next.y) ||
       onKickPad(next.x, next.y) ||
-      onFlock(next.x, next.y),
+      onFlock(next.x, next.y) ||
+      onPogoPad(next.x, next.y) ||
+      onMill(next.x, next.y),
   };
 }
 
@@ -2947,6 +3076,22 @@ export function shareFeather(player) {
   });
 }
 
+export function takeBoat(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "boat", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareBoat(player) {
+  if (player.carry !== "boat") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), sail: true },
+  });
+}
+
 export function markCheer(player) {
   return { ...player, stickers: { ...sanitizeStickers(player.stickers), cheer: true } };
 }
@@ -2983,5 +3128,6 @@ export function carryLabel(value) {
   if (value === "sunflower") return "Sunflower";
   if (value === "butterfly") return "Butterfly";
   if (value === "feather") return "Feather";
+  if (value === "boat") return "Paper boat";
   return "";
 }

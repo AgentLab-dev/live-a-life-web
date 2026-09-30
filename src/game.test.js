@@ -92,6 +92,11 @@ import {
   blockedByTent,
   blockedByFlocks,
   blockedByRolls,
+  blockedByScoots,
+  blockedByPogos,
+  blockedByKennel,
+  blockedByMills,
+  blockedByStools,
   BOOK_SPOT,
   cheerCrossing,
   closeParkGate,
@@ -112,6 +117,7 @@ import {
   SUNFLOWER_SPOT,
   BUTTERFLY_SPOT,
   FEATHER_SPOT,
+  BOAT_SPOT,
   newSticker,
   townPathAt,
   nudgeBookCart,
@@ -207,6 +213,11 @@ import {
   onTentGap,
   onFlock,
   onRollLane,
+  onScootLane,
+  onPogoPad,
+  onKennelGap,
+  onMill,
+  onStoolLane,
   openParkGate,
   pushBookCart,
   shareBalloon,
@@ -228,6 +239,7 @@ import {
   shareSunflower,
   shareButterfly,
   shareFeather,
+  shareBoat,
   SNACK_SPOT,
   takeBook,
   takeCard,
@@ -248,6 +260,7 @@ import {
   takeSunflower,
   takeButterfly,
   takeFeather,
+  takeBoat,
 } from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -4178,6 +4191,216 @@ describe("tuesday backyard play", () => {
     expect(isBlocked("town", 466, 1788)).toBe(false);
     expect(isBlocked("town", 1134, 180)).toBe(false);
     expect(isBlocked("town", 1800, 2140)).toBe(false);
+    expect(isBlocked("town", 136, 342)).toBe(false);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
+  });
+});
+
+describe("wednesday yard play", () => {
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  function townKid(x, y, extra = {}) {
+    return {
+      room: "town",
+      x,
+      y,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      carry: "",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("names scooter, pogo, doghouse, windmill, and stool paths", () => {
+    expect(townPathAt(2078, 192)).toBe("scoots");
+    expect(onScootLane(2078, 192)).toBe(true);
+    expect(townPathAt(2058, 192)).toBe("");
+    expect(townPathAt(870, 732)).toBe("pogos");
+    expect(onPogoPad(870, 732)).toBe(true);
+    expect(townPathAt(840, 732)).toBe("");
+    expect(townPathAt(1888, 1600)).toBe("kennel");
+    expect(onKennelGap(1888, 1600)).toBe(true);
+    expect(townPathAt(1828, 1600)).toBe("");
+    expect(townPathAt(746, 1240)).toBe("mills");
+    expect(onMill(746, 1240)).toBe(true);
+    expect(townPathAt(716, 1222)).toBe("");
+    expect(townPathAt(1848, 912)).toBe("stools");
+    expect(onStoolLane(1848, 912)).toBe(true);
+    expect(townPathAt(1828, 912)).toBe("");
+    expect(townPathAt(1500, 160)).toBe("");
+  });
+
+  it("blocks scooters, pogo grass, doghouse walls, windmill lawn, and stools but not the walk paths", () => {
+    expect(blockedByScoots(2058, 192)).toBe(true);
+    expect(isBlocked("town", 2058, 192)).toBe(true);
+    expect(onScootLane(2078, 192)).toBe(true);
+    expect(isBlocked("town", 2078, 192)).toBe(false);
+    expect(blockedByPogos(840, 732)).toBe(true);
+    expect(isBlocked("town", 840, 732)).toBe(true);
+    expect(onPogoPad(870, 732)).toBe(true);
+    expect(isBlocked("town", 870, 732)).toBe(false);
+    expect(blockedByKennel(1828, 1600)).toBe(true);
+    expect(isBlocked("town", 1828, 1600)).toBe(true);
+    expect(onKennelGap(1888, 1600)).toBe(true);
+    expect(isBlocked("town", 1888, 1600)).toBe(false);
+    expect(blockedByMills(716, 1222)).toBe(true);
+    expect(isBlocked("town", 716, 1222)).toBe(true);
+    expect(onMill(746, 1240)).toBe(true);
+    expect(isBlocked("town", 746, 1240)).toBe(false);
+    expect(blockedByStools(1828, 912)).toBe(true);
+    expect(isBlocked("town", 1828, 912)).toBe(true);
+    expect(onStoolLane(1848, 912)).toBe(true);
+    expect(isBlocked("town", 1848, 912)).toBe(false);
+    expect(isBlocked("town", 1500, 160)).toBe(false);
+  });
+
+  it("walks the scooters, pogos, and doghouse and earns stickers", () => {
+    let player = townKid(2078, 140);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 20);
+    expect(player.y).toBeGreaterThan(228);
+    expect(player.stickers.scoots).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(defaultStickers(), player.stickers)).toBe("scoots");
+
+    player = townKid(870, 670);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 20);
+    expect(player.y).toBeGreaterThan(778);
+    expect(player.stickers.pogos).toBe(true);
+
+    player = townKid(1888, 1528);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 16);
+    expect(player.y).toBeGreaterThan(1610);
+    expect(player.stickers.kennel).toBe(true);
+    expect(player.timer).toBeUndefined();
+  });
+
+  it("walks the windmills and lemonade stools without a fail state", () => {
+    let player = townKid(746, 1164);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 28);
+    expect(player.y).toBeGreaterThan(1304);
+    expect(player.stickers.mills).toBe(true);
+
+    player = townKid(1848, 868);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 20);
+    expect(player.y).toBeGreaterThan(948);
+    expect(player.stickers.stools).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets tap-to-walk stop at pogo grass and windmill lawn instead of punishing", () => {
+    const pogoBump = stepToward(townKid(840, 660), { x: 840, y: 820 }, 80);
+    expect(pogoBump.y).toBeLessThan(690);
+    expect(pogoBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 840, 732)).toBe(true);
+
+    const millBump = stepToward(townKid(716, 1160), { x: 716, y: 1320 }, 80);
+    expect(millBump.y).toBeLessThan(1180);
+    expect(millBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 716, 1222)).toBe(true);
+  });
+
+  it("takes and shares a paper boat without money or a timer", () => {
+    const helper = takeBoat({ room: "town", carry: "", stickers: defaultStickers(), money: 2 });
+    expect(helper.carry).toBe("boat");
+    expect(helper.money).toBeUndefined();
+    expect(
+      visibleActions({ ...helper, x: 1500, y: 160, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+        (action) => action.id === "take-boat",
+      ),
+    ).toBe(false);
+    const shared = shareBoat({ ...helper, room: "town", x: BOAT_SPOT.x, y: BOAT_SPOT.y });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("look");
+    expect(shared.stickers.sail).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+    expect(takePicnic({ ...helper, carry: "boat" }).carry).toBe("boat");
+    expect(takeFeather({ ...helper, carry: "boat" }).carry).toBe("boat");
+  });
+
+  it("cheers a nearby neighbor after a wednesday yard crossing", () => {
+    const people = createPeople();
+    const pip = people.find((person) => person.id === "pip");
+    const next = cheerCrossing(people, "sail", pip.x, pip.y);
+    expect(next.find((person) => person.id === "pip").line).toMatch(/boat|kind/i);
+    expect(next.find((person) => person.id === "pip").bubbleMs).toBe(2400);
+  });
+
+  it("persists wednesday yard stickers and a carried paper boat", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      carry: "boat",
+      stickers: { scoots: true, pogos: true, kennel: true, mills: true, stools: true, sail: true, coins: 8 },
+      money: 5,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.carry).toBe("boat");
+    expect(loaded.stickers.scoots).toBe(true);
+    expect(loaded.stickers.pogos).toBe(true);
+    expect(loaded.stickers.kennel).toBe(true);
+    expect(loaded.stickers.mills).toBe(true);
+    expect(loaded.stickers.stools).toBe(true);
+    expect(loaded.stickers.sail).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.carry).toBe("boat");
+  });
+
+  it("shows paper boat actions without hiding house or shop buttons", () => {
+    const atYard = townKid(1500, 160, { pose: "idle", job: "none" });
+    const ids = visibleActions(atYard).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["take-boat", "stickers"]));
+    expect(ids).not.toContain("share-boat");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+    const withBoat = townKid(BOAT_SPOT.x, BOAT_SPOT.y, { carry: "boat", pose: "idle", job: "none" });
+    expect(visibleActions(withBoat).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["share-boat", "stickers"]),
+    );
+    expect(isBlocked("town", BOAT_SPOT.x, BOAT_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 1500, 160)).toBe(false);
+    expect(isBlocked("town", 480, 660)).toBe(false);
+  });
+
+  it("keeps the house, shop, park, PWA, and USA map paths open around the new crossings", () => {
+    let player = townKid(560, 920);
+    player = walkFrames(player, { x: 460, y: 980 }, 80);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    player = walkFrames(player, { x: 480, y: 720 }, 120);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(canEnter("town", "bakery")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(canEnter("town", "usa")).toBe(true);
+    expect(isBlocked("town", 1920, 1320)).toBe(false);
+    expect(isBlocked("town", 420, 980)).toBe(false);
+    expect(isBlocked("town", 420, 1400)).toBe(false);
+    expect(isBlocked("town", 2078, 192)).toBe(false);
+    expect(isBlocked("town", 870, 732)).toBe(false);
+    expect(isBlocked("town", 1888, 1600)).toBe(false);
+    expect(isBlocked("town", 746, 1240)).toBe(false);
+    expect(isBlocked("town", 1848, 912)).toBe(false);
+    expect(isBlocked("town", 2080, 2140)).toBe(false);
     expect(isBlocked("town", 136, 342)).toBe(false);
     expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
   });
