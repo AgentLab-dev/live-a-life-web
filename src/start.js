@@ -47,6 +47,8 @@ import {
   shareFeather,
   takeBoat,
   shareBoat,
+  takeApple,
+  shareApple,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -453,6 +455,18 @@ export function startGame(root) {
     if (id === "share-boat") {
       const before = player.stickers;
       player = shareBoat(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-apple") {
+      player = takeApple(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-apple") {
+      const before = player.stickers;
+      player = shareApple(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

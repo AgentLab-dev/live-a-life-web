@@ -241,6 +241,17 @@ import {
   STOOL_ZONE,
   STOOL_BLOCKS,
   BOAT_SPOT,
+  PUMP_ZONE,
+  PUMP_BLOCKS,
+  HAY_BED,
+  HAY_PADS,
+  BARROW_POSTS,
+  BARROW_WALLS,
+  OWL_ZONE,
+  OWLS,
+  STALK_ZONE,
+  STALK_BLOCKS,
+  APPLE_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -798,6 +809,20 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.lineTo(25, 16);
     ctx.closePath();
     ctx.fill();
+  }
+  if (look.carry === "apple" && !sleeping) {
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, 24, 14, 7, 7);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, 22, 12, 2, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#3f9b4a";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(24, 8);
+    ctx.lineTo(28, 4);
+    ctx.stroke();
   }
   ctx.restore();
 }
@@ -4386,6 +4411,181 @@ function drawSharedBoat(ctx, carried) {
   ctx.fillText("Paper boat", BOAT_SPOT.x - 36, BOAT_SPOT.y - 16);
 }
 
+function drawPumpkins(ctx) {
+  ctx.fillStyle = "#e7d3a1";
+  roundRect(ctx, PUMP_ZONE.x, PUMP_ZONE.y, PUMP_ZONE.w, PUMP_ZONE.h, 12);
+  ctx.fill();
+  const skins = ["#e67e22", "#d35400", "#f39c12", "#e74c3c"];
+  PUMP_BLOCKS.forEach((pumpkin, index) => {
+    const cx = pumpkin.x + pumpkin.w / 2;
+    const cy = pumpkin.y + 34;
+    ctx.fillStyle = skins[index % skins.length];
+    oval(ctx, cx, cy, 9, 8);
+    ctx.fill();
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 7);
+    ctx.lineTo(cx, cy + 7);
+    ctx.stroke();
+    ctx.strokeStyle = "#3f9b4a";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 8);
+    ctx.lineTo(cx + 4, cy - 13);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pumpkins", PUMP_ZONE.x + 40, PUMP_ZONE.y - 8);
+}
+
+function drawHayBales(ctx) {
+  ctx.fillStyle = "#d4e39a";
+  roundRect(ctx, HAY_BED.x, HAY_BED.y, HAY_BED.w, HAY_BED.h, 12);
+  ctx.fill();
+  HAY_PADS.forEach((pad) => {
+    ctx.fillStyle = "#e6b325";
+    roundRect(ctx, pad.x - 12, pad.y - 8, 24, 16, 4);
+    ctx.fill();
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, pad.x - 12, pad.y - 2, 24, 3, 1);
+    ctx.fill();
+    ctx.fillStyle = "#fff3c4";
+    roundRect(ctx, pad.x - 8, pad.y - 6, 6, 3, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Hay", HAY_BED.x + 34, HAY_BED.y - 8);
+}
+
+function drawWheelbarrow(ctx) {
+  for (const post of BARROW_POSTS) {
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(post.x + 8, post.y + 6);
+    ctx.lineTo(post.x + 8, post.y + post.h - 6);
+    ctx.stroke();
+  }
+  for (const wall of BARROW_WALLS) {
+    ctx.fillStyle = "#e67e22";
+    roundRect(ctx, wall.x, wall.y - 16, wall.w, 16, 4);
+    ctx.fill();
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, wall.x, wall.y, wall.w, wall.h, 3);
+    ctx.fill();
+  }
+  const wheelX = BARROW_POSTS[1].x + 8;
+  const wheelY = BARROW_POSTS[1].y + BARROW_POSTS[1].h - 4;
+  ctx.fillStyle = "#5a3820";
+  oval(ctx, wheelX, wheelY, 7, 7);
+  ctx.fill();
+  ctx.fillStyle = "#fff8e7";
+  oval(ctx, wheelX, wheelY, 3, 3);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Wheelbarrow", BARROW_POSTS[0].x + 4, BARROW_POSTS[0].y - 8);
+}
+
+function drawOwls(ctx) {
+  ctx.fillStyle = "#cfe8b0";
+  roundRect(ctx, OWL_ZONE.x, OWL_ZONE.y, OWL_ZONE.w, OWL_ZONE.h, 12);
+  ctx.fill();
+  const bodies = ["#c4a574", "#8d6e4c", "#d7ccc8", "#a67c52"];
+  OWLS.forEach((owl, index) => {
+    const cx = owl.x + owl.w / 2;
+    const cy = owl.y + 18;
+    ctx.fillStyle = bodies[index % bodies.length];
+    oval(ctx, cx, cy, 8, 10);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx - 3, cy - 2, 3, 3);
+    ctx.fill();
+    oval(ctx, cx + 3, cy - 2, 3, 3);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx - 3, cy - 2, 1.3, 1.3);
+    ctx.fill();
+    oval(ctx, cx + 3, cy - 2, 1.3, 1.3);
+    ctx.fill();
+    ctx.fillStyle = "#e67e22";
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + 1);
+    ctx.lineTo(cx - 2, cy + 4);
+    ctx.lineTo(cx + 2, cy + 4);
+    ctx.closePath();
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Owls", OWL_ZONE.x + 22, OWL_ZONE.y - 8);
+}
+
+function drawCornStalks(ctx) {
+  ctx.fillStyle = "#dcecc8";
+  roundRect(ctx, STALK_ZONE.x, STALK_ZONE.y, STALK_ZONE.w, STALK_ZONE.h, 12);
+  ctx.fill();
+  STALK_BLOCKS.forEach((stalk) => {
+    const cx = stalk.x + stalk.w / 2;
+    ctx.strokeStyle = "#3f9b4a";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx, stalk.y + 10);
+    ctx.lineTo(cx, stalk.y + stalk.h - 8);
+    ctx.stroke();
+    ctx.fillStyle = "#7dcea0";
+    oval(ctx, cx - 6, stalk.y + 22, 5, 3);
+    ctx.fill();
+    oval(ctx, cx + 6, stalk.y + 34, 5, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, cx, stalk.y + 28, 4, 6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Corn", STALK_ZONE.x + 60, STALK_ZONE.y - 8);
+}
+
+function drawSharedApple(ctx, carried) {
+  function appleAt(x, y) {
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, x, y, 8, 8);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, x - 2, y - 2, 2, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#3f9b4a";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(x, y - 8);
+    ctx.lineTo(x + 6, y - 14);
+    ctx.stroke();
+    ctx.fillStyle = "#7dcea0";
+    oval(ctx, x + 5, y - 12, 4, 2);
+    ctx.fill();
+  }
+  if (!carried) {
+    appleAt(660, 176);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Apple", 636, 154);
+  }
+  ctx.fillStyle = "#c45c26";
+  roundRect(ctx, APPLE_SPOT.x - 16, APPLE_SPOT.y - 4, 32, 16, 4);
+  ctx.fill();
+  ctx.fillStyle = "#8d6e4c";
+  roundRect(ctx, APPLE_SPOT.x - 18, APPLE_SPOT.y + 10, 36, 6, 2);
+  ctx.fill();
+  if (!carried) appleAt(APPLE_SPOT.x, APPLE_SPOT.y);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Apple", APPLE_SPOT.x - 18, APPLE_SPOT.y - 16);
+}
+
 function drawSharedFeather(ctx, carried) {
   function featherAt(x, y) {
     ctx.fillStyle = "#7ec8e3";
@@ -4790,6 +4990,12 @@ export function drawTown(ctx, player, time) {
   drawWindmills(ctx, time);
   drawLemonStools(ctx);
   drawSharedBoat(ctx, player.carry === "boat");
+  drawPumpkins(ctx);
+  drawHayBales(ctx);
+  drawWheelbarrow(ctx);
+  drawOwls(ctx);
+  drawCornStalks(ctx);
+  drawSharedApple(ctx, player.carry === "apple");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

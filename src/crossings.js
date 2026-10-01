@@ -1078,6 +1078,59 @@ export const STOOL_BLOCKS = [
 
 export const BOAT_SPOT = { x: 2080, y: 2140 };
 
+export const PUMP_ZONE = { x: 232, y: 148, w: 164, h: 64 };
+
+export const PUMP_BLOCKS = [
+  { x: 240, y: 148, w: 20, h: 64 },
+  { x: 280, y: 148, w: 20, h: 64 },
+  { x: 320, y: 148, w: 20, h: 64 },
+  { x: 360, y: 148, w: 20, h: 64 },
+];
+
+export const HAY_BED = { x: 2408, y: 360, w: 100, h: 84 };
+
+export const HAY_PADS = [
+  { x: 2458, y: 376 },
+  { x: 2458, y: 402 },
+  { x: 2458, y: 428 },
+];
+
+export const HAY_RADIUS = 20;
+
+export const BARROW_POSTS = [
+  { x: 2204, y: 988, w: 16, h: 72 },
+  { x: 2304, y: 988, w: 16, h: 72 },
+];
+
+export const BARROW_WALLS = [
+  { x: 2220, y: 1016, w: 28, h: 14 },
+  { x: 2276, y: 1016, w: 28, h: 14 },
+];
+
+export const BARROW_GAP = { x: 2248, y: 1000, w: 28, h: 48 };
+
+export const BARROW_BAND = { x: 2220, y: 1016, w: 84, h: 14 };
+
+export const OWL_ZONE = { x: 56, y: 1588, w: 88, h: 120 };
+
+export const OWLS = [
+  { x: 64, y: 1588, w: 40, h: 36 },
+  { x: 100, y: 1616, w: 40, h: 36 },
+  { x: 64, y: 1644, w: 40, h: 36 },
+  { x: 100, y: 1672, w: 40, h: 36 },
+];
+
+export const STALK_ZONE = { x: 2056, y: 300, w: 164, h: 64 };
+
+export const STALK_BLOCKS = [
+  { x: 2064, y: 300, w: 20, h: 64 },
+  { x: 2104, y: 300, w: 20, h: 64 },
+  { x: 2144, y: 300, w: 20, h: 64 },
+  { x: 2184, y: 300, w: 20, h: 64 },
+];
+
+export const APPLE_SPOT = { x: 640, y: 1860 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -1199,6 +1252,12 @@ export const STICKERS = [
   { id: "mills", name: "Windmill tip-toer", hint: "You tip-toed past the garden windmills." },
   { id: "stools", name: "Stool weaver", hint: "You weaved between the lemonade stools." },
   { id: "sail", name: "Boat friend", hint: "You shared a kind paper boat." },
+  { id: "gourds", name: "Pumpkin weaver", hint: "You weaved between the pumpkin row." },
+  { id: "bales", name: "Hay hopper", hint: "You hopped the hay-bale pads." },
+  { id: "barrow", name: "Wheelbarrow duck", hint: "You ducked under the friendly wheelbarrow." },
+  { id: "owls", name: "Owl tip-toer", hint: "You tip-toed past the garden owls." },
+  { id: "stalks", name: "Corn weaver", hint: "You weaved between the corn stalks." },
+  { id: "apple", name: "Apple friend", hint: "You shared a kind apple." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -1324,12 +1383,18 @@ export const CHEERS = {
   mills: "Tip-toe past the twirly windmills!",
   stools: "Friendly lemonade stools said hello!",
   sail: "A kind paper boat to share. Kind!",
+  gourds: "Friendly pumpkins said hello!",
+  bales: "Boing! Soft hops on the hay bales!",
+  barrow: "Duck under the cozy wheelbarrow!",
+  owls: "Tip-toe past the gentle owls!",
+  stalks: "Tall corn stalks said hello!",
+  apple: "A kind apple to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple"];
 
 export function defaultStickers() {
   return {
@@ -1453,6 +1518,12 @@ export function defaultStickers() {
     mills: false,
     stools: false,
     sail: false,
+    gourds: false,
+    bales: false,
+    barrow: false,
+    owls: false,
+    stalks: false,
+    apple: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -1875,6 +1946,26 @@ export function onStoolLane(x, y) {
   return inRect(x, y, STOOL_ZONE) && !STOOL_BLOCKS.some((stool) => inRect(x, y, stool));
 }
 
+export function onPumpLane(x, y) {
+  return inRect(x, y, PUMP_ZONE) && !PUMP_BLOCKS.some((pumpkin) => inRect(x, y, pumpkin));
+}
+
+export function onHayPad(x, y) {
+  return HAY_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= HAY_RADIUS);
+}
+
+export function onBarrowGap(x, y) {
+  return inRect(x, y, BARROW_GAP);
+}
+
+export function onOwl(x, y) {
+  return OWLS.some((owl) => inRect(x, y, owl));
+}
+
+export function onStalkLane(x, y) {
+  return inRect(x, y, STALK_ZONE) && !STALK_BLOCKS.some((stalk) => inRect(x, y, stalk));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -1971,6 +2062,11 @@ export function townPathAt(x, y) {
   if (onKennelGap(x, y)) return "kennel";
   if (onMill(x, y)) return "mills";
   if (onStoolLane(x, y)) return "stools";
+  if (onPumpLane(x, y)) return "gourds";
+  if (onHayPad(x, y)) return "bales";
+  if (onBarrowGap(x, y)) return "barrow";
+  if (onOwl(x, y)) return "owls";
+  if (onStalkLane(x, y)) return "stalks";
   return "";
 }
 
@@ -2408,6 +2504,27 @@ export function blockedByStools(x, y) {
   return STOOL_BLOCKS.some((stool) => inRect(x, y, stool));
 }
 
+export function blockedByPumps(x, y) {
+  return PUMP_BLOCKS.some((pumpkin) => inRect(x, y, pumpkin));
+}
+
+export function blockedByHay(x, y) {
+  return inRect(x, y, HAY_BED) && !onHayPad(x, y);
+}
+
+export function blockedByBarrow(x, y) {
+  if (onBarrowGap(x, y)) return false;
+  return BARROW_POSTS.some((post) => inRect(x, y, post)) || BARROW_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByOwls(x, y) {
+  return inRect(x, y, OWL_ZONE) && !onOwl(x, y);
+}
+
+export function blockedByStalks(x, y) {
+  return STALK_BLOCKS.some((stalk) => inRect(x, y, stalk));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -2508,7 +2625,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByPogos(x, y) ||
     blockedByKennel(x, y) ||
     blockedByMills(x, y) ||
-    blockedByStools(x, y)
+    blockedByStools(x, y) ||
+    blockedByPumps(x, y) ||
+    blockedByHay(x, y) ||
+    blockedByBarrow(x, y) ||
+    blockedByOwls(x, y) ||
+    blockedByStalks(x, y)
   );
 }
 
@@ -2658,6 +2780,11 @@ export function applyCrossingProgress(prev, next) {
     ["kennel", KENNEL_BAND, "y"],
     ["mills", MILL_ZONE, "y"],
     ["stools", STOOL_ZONE, "y"],
+    ["gourds", PUMP_ZONE, "y"],
+    ["bales", HAY_BED, "y"],
+    ["barrow", BARROW_BAND, "y"],
+    ["owls", OWL_ZONE, "y"],
+    ["stalks", STALK_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -2722,7 +2849,9 @@ export function applyCrossingProgress(prev, next) {
       onKickPad(next.x, next.y) ||
       onFlock(next.x, next.y) ||
       onPogoPad(next.x, next.y) ||
-      onMill(next.x, next.y),
+      onMill(next.x, next.y) ||
+      onHayPad(next.x, next.y) ||
+      onOwl(next.x, next.y),
   };
 }
 
@@ -3076,6 +3205,22 @@ export function shareFeather(player) {
   });
 }
 
+export function takeApple(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "apple", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareApple(player) {
+  if (player.carry !== "apple") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), apple: true },
+  });
+}
+
 export function takeBoat(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "boat", pose: "idle", actionBeatMs: 0 });
@@ -3129,5 +3274,6 @@ export function carryLabel(value) {
   if (value === "butterfly") return "Butterfly";
   if (value === "feather") return "Feather";
   if (value === "boat") return "Paper boat";
+  if (value === "apple") return "Apple";
   return "";
 }
