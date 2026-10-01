@@ -35,6 +35,7 @@ This is a Vite 2D canvas game. Open on a phone or computer. No login. Tap **Play
 - Friday town play: a garden hose-arch duck-under on the north-east lawn, a soap-bucket weave on the plaza grass, birdhouse tip-toes on the main sidewalk, pinecone hops on the south-west lawn, a rubber-duck weave above the lower sidewalk, and a kind sunflower share from the north-east lawn to a west plaza bench
 - Monday town play: a clothespin-line weave on the north lawn, rain-puddle hops east of that line, a bubble-machine duck-under north of Next Door, mailbox tip-toes on the front walk, wagon-cushion hops on the south-west lawn, and a kind paper-butterfly share from the front yard to a park-south bench
 - Tuesday backyard play: a flower-pot weave on the north-west lawn, kickball bounce pads above the house, a tent-flap duck-under east of Friends, flamingo tip-toes on the south-west lawn, a tire-roll weave on the north lawn, and a kind feather share from the north-east lawn to a park-south bench
+- Thursday autumn play: a pumpkin-row weave on the north lawn, hay-bale hops on the east lawn, a wheelbarrow duck-under north of Honey Cafe, owl tip-toes on the west lawn, a corn-stalk weave below the parked scooters, and a kind apple share from the north lawn to the west park lawn
 - USA geography play: a cartoon USA map with all 50 states plus D.C., capitals labeled as "Austin, Texas", a state-wide map to visit, and hops from capital to capital (the jumper is a teal letter I)
 - Drawn in the original 2D kid-and-house style. No 3D, no chat, no money, no cars, no multiplayer
 

@@ -1,4 +1,4 @@
-import { ACORN_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CRAYON_SPOT, FEATHER_SPOT, FLOWER_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, SHELL_SPOT, SNACK_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
+import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CRAYON_SPOT, FEATHER_SPOT, FLOWER_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, SHELL_SPOT, SNACK_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -111,6 +111,8 @@ export const ACTIONS = {
     { id: "share-feather", label: "Share feather", x: FEATHER_SPOT.x, y: FEATHER_SPOT.y },
     { id: "take-boat", label: "Take paper boat", x: 1500, y: 160 },
     { id: "share-boat", label: "Share paper boat", x: BOAT_SPOT.x, y: BOAT_SPOT.y },
+    { id: "take-apple", label: "Take apple", x: 660, y: 188 },
+    { id: "share-apple", label: "Share apple", x: APPLE_SPOT.x, y: APPLE_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -319,6 +321,8 @@ export function visibleActions(player) {
     if (action.id === "share-feather" && player.carry !== "feather") return false;
     if (action.id === "take-boat" && player.carry) return false;
     if (action.id === "share-boat" && player.carry !== "boat") return false;
+    if (action.id === "take-apple" && player.carry) return false;
+    if (action.id === "share-apple" && player.carry !== "apple") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });
