@@ -252,6 +252,18 @@ import {
   STALK_ZONE,
   STALK_BLOCKS,
   APPLE_SPOT,
+  CAP_ZONE,
+  CAP_BLOCKS,
+  MAPLE_BED,
+  MAPLE_PADS,
+  HAMPER_POSTS,
+  HAMPER_WALLS,
+  HAMPER_GAP,
+  FROG_ZONE,
+  FROGS,
+  BUSH_ZONE,
+  BUSH_BLOCKS,
+  MAPLE_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -822,6 +834,28 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.beginPath();
     ctx.moveTo(24, 8);
     ctx.lineTo(28, 4);
+    ctx.stroke();
+  }
+  if (look.carry === "maple" && !sleeping) {
+    ctx.fillStyle = "#c0392b";
+    ctx.beginPath();
+    ctx.moveTo(24, 4);
+    ctx.lineTo(28, 10);
+    ctx.lineTo(34, 9);
+    ctx.lineTo(29, 14);
+    ctx.lineTo(32, 20);
+    ctx.lineTo(24, 16);
+    ctx.lineTo(16, 20);
+    ctx.lineTo(19, 14);
+    ctx.lineTo(14, 9);
+    ctx.lineTo(20, 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "#f4d35e";
+    ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    ctx.moveTo(24, 6);
+    ctx.lineTo(24, 18);
     ctx.stroke();
   }
   ctx.restore();
@@ -4586,6 +4620,191 @@ function drawSharedApple(ctx, carried) {
   ctx.fillText("Apple", APPLE_SPOT.x - 18, APPLE_SPOT.y - 16);
 }
 
+function paintMapleLeaf(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#c0392b";
+  ctx.beginPath();
+  ctx.moveTo(0, -12);
+  ctx.lineTo(5, -4);
+  ctx.lineTo(12, -6);
+  ctx.lineTo(6, 1);
+  ctx.lineTo(10, 9);
+  ctx.lineTo(0, 4);
+  ctx.lineTo(-10, 9);
+  ctx.lineTo(-6, 1);
+  ctx.lineTo(-12, -6);
+  ctx.lineTo(-5, -4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "#f4d35e";
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(0, -10);
+  ctx.lineTo(0, 7);
+  ctx.stroke();
+  ctx.fillStyle = "#e67e22";
+  oval(ctx, -3, -2, 2, 1.4);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawMushroomCaps(ctx) {
+  ctx.fillStyle = "#efe2c0";
+  roundRect(ctx, CAP_ZONE.x, CAP_ZONE.y, CAP_ZONE.w, CAP_ZONE.h, 12);
+  ctx.fill();
+  const caps = ["#e74c3c", "#c0392b", "#e67e22", "#d35400"];
+  CAP_BLOCKS.forEach((cap, index) => {
+    const cx = cap.x + cap.w / 2;
+    const cy = cap.y + 36;
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, cx - 3, cy, 6, 14, 2);
+    ctx.fill();
+    ctx.fillStyle = caps[index % caps.length];
+    oval(ctx, cx, cy - 2, 9, 6);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx - 3, cy - 4, 2, 1.4);
+    ctx.fill();
+    oval(ctx, cx + 3, cy - 1, 1.5, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Mushrooms", CAP_ZONE.x + 36, CAP_ZONE.y - 8);
+}
+
+function drawMaplePads(ctx) {
+  ctx.fillStyle = "#dcecc8";
+  roundRect(ctx, MAPLE_BED.x, MAPLE_BED.y, MAPLE_BED.w, MAPLE_BED.h, 12);
+  ctx.fill();
+  MAPLE_PADS.forEach((pad) => {
+    paintMapleLeaf(ctx, pad.x, pad.y, 0.85);
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Maple", MAPLE_BED.x + 26, MAPLE_BED.y - 8);
+}
+
+function drawLaundryBasket(ctx) {
+  for (const post of HAMPER_POSTS) {
+    ctx.fillStyle = "#c4a574";
+    roundRect(ctx, post.x + 4, post.y + 8, 8, post.h - 16, 3);
+    ctx.fill();
+  }
+  for (const wall of HAMPER_WALLS) {
+    ctx.fillStyle = "#e6b325";
+    roundRect(ctx, wall.x, wall.y - 18, wall.w, 22, 4);
+    ctx.fill();
+    ctx.strokeStyle = "#8d6e4c";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(wall.x + 4, wall.y - 14);
+    ctx.lineTo(wall.x + wall.w - 4, wall.y - 14);
+    ctx.moveTo(wall.x + 4, wall.y - 8);
+    ctx.lineTo(wall.x + wall.w - 4, wall.y - 8);
+    ctx.stroke();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, wall.x + wall.w / 2, wall.y - 12, 4, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#8d6e4c";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(HAMPER_GAP.x + 2, HAMPER_GAP.y + 8);
+  ctx.quadraticCurveTo(HAMPER_GAP.x + HAMPER_GAP.w / 2, HAMPER_GAP.y - 16, HAMPER_GAP.x + HAMPER_GAP.w - 2, HAMPER_GAP.y + 8);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Laundry", HAMPER_POSTS[0].x + 18, HAMPER_POSTS[0].y - 8);
+}
+
+function drawFrogs(ctx) {
+  ctx.fillStyle = "#cfe8b0";
+  roundRect(ctx, FROG_ZONE.x, FROG_ZONE.y, FROG_ZONE.w, FROG_ZONE.h, 12);
+  ctx.fill();
+  const skins = ["#7dcea0", "#3f9b4a", "#58d68d", "#27ae60"];
+  FROGS.forEach((frog, index) => {
+    const cx = frog.x + frog.w / 2;
+    const cy = frog.y + 18;
+    ctx.fillStyle = skins[index % skins.length];
+    oval(ctx, cx, cy + 2, 8, 6);
+    ctx.fill();
+    oval(ctx, cx - 5, cy - 2, 3.5, 3);
+    ctx.fill();
+    oval(ctx, cx + 5, cy - 2, 3.5, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx - 5, cy - 3, 1.8, 1.8);
+    ctx.fill();
+    oval(ctx, cx + 5, cy - 3, 1.8, 1.8);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx - 5, cy - 3, 0.8, 0.8);
+    ctx.fill();
+    oval(ctx, cx + 5, cy - 3, 0.8, 0.8);
+    ctx.fill();
+    ctx.strokeStyle = "#2d6a4f";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(cx, cy + 3, 2.2, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Frogs", FROG_ZONE.x + 18, FROG_ZONE.y - 8);
+}
+
+function drawShrubs(ctx) {
+  ctx.fillStyle = "#e7f0c8";
+  roundRect(ctx, BUSH_ZONE.x, BUSH_ZONE.y, BUSH_ZONE.w, BUSH_ZONE.h, 12);
+  ctx.fill();
+  const greens = ["#3f9b4a", "#2d6a4f", "#7dcea0", "#58d68d"];
+  BUSH_BLOCKS.forEach((bush, index) => {
+    const cx = bush.x + bush.w / 2;
+    const cy = bush.y + 34;
+    ctx.fillStyle = greens[index % greens.length];
+    oval(ctx, cx, cy, 9, 8);
+    ctx.fill();
+    ctx.fillStyle = greens[(index + 1) % greens.length];
+    oval(ctx, cx - 4, cy - 4, 5, 4);
+    ctx.fill();
+    oval(ctx, cx + 4, cy - 2, 4, 4);
+    ctx.fill();
+    ctx.fillStyle = "#f4a4c4";
+    oval(ctx, cx + 2, cy + 2, 1.6, 1.6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Shrubs", BUSH_ZONE.x + 52, BUSH_ZONE.y - 8);
+}
+
+function drawSharedMaple(ctx, carried) {
+  if (!carried) {
+    paintMapleLeaf(ctx, 448, 176, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Maple", 424, 152);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, MAPLE_SPOT.x - 22, MAPLE_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c0392b";
+  roundRect(ctx, MAPLE_SPOT.x - 20, MAPLE_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, MAPLE_SPOT.x - 16, MAPLE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, MAPLE_SPOT.x + 10, MAPLE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintMapleLeaf(ctx, MAPLE_SPOT.x, MAPLE_SPOT.y, 0.75);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Maple", MAPLE_SPOT.x - 20, MAPLE_SPOT.y - 16);
+}
+
 function drawSharedFeather(ctx, carried) {
   function featherAt(x, y) {
     ctx.fillStyle = "#7ec8e3";
@@ -4996,6 +5215,12 @@ export function drawTown(ctx, player, time) {
   drawOwls(ctx);
   drawCornStalks(ctx);
   drawSharedApple(ctx, player.carry === "apple");
+  drawMushroomCaps(ctx);
+  drawMaplePads(ctx);
+  drawLaundryBasket(ctx);
+  drawFrogs(ctx);
+  drawShrubs(ctx);
+  drawSharedMaple(ctx, player.carry === "maple");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
