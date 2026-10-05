@@ -264,6 +264,18 @@ import {
   BUSH_ZONE,
   BUSH_BLOCKS,
   MAPLE_SPOT,
+  BARREL_ZONE,
+  BARREL_BLOCKS,
+  BERRY_BED,
+  BERRY_PADS,
+  RAKE_POSTS,
+  RAKE_WALLS,
+  RAKE_GAP,
+  SQUIRREL_ZONE,
+  SQUIRRELS,
+  SHEAF_ZONE,
+  SHEAF_BLOCKS,
+  PEAR_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -857,6 +869,23 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.moveTo(24, 6);
     ctx.lineTo(24, 18);
     ctx.stroke();
+  }
+  if (look.carry === "pear" && !sleeping) {
+    ctx.fillStyle = "#d4e157";
+    oval(ctx, 24, 14, 6, 8);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 22, 12, 2, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#6b4f2a";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(24, 6);
+    ctx.lineTo(27, 2);
+    ctx.stroke();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, 28, 4, 3, 1.6);
+    ctx.fill();
   }
   ctx.restore();
 }
@@ -4781,6 +4810,190 @@ function drawShrubs(ctx) {
   ctx.fillText("Shrubs", BUSH_ZONE.x + 52, BUSH_ZONE.y - 8);
 }
 
+function drawCiderBarrels(ctx) {
+  ctx.fillStyle = "#f3e2b0";
+  roundRect(ctx, BARREL_ZONE.x, BARREL_ZONE.y, BARREL_ZONE.w, BARREL_ZONE.h, 12);
+  ctx.fill();
+  const woods = ["#c48a3a", "#a86b2a", "#d4a054", "#8d5520"];
+  BARREL_BLOCKS.forEach((barrel, index) => {
+    const cx = barrel.x + barrel.w / 2;
+    const cy = barrel.y + 32;
+    ctx.fillStyle = woods[index % woods.length];
+    oval(ctx, cx, cy, 9, 14);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(cx - 8, cy - 6);
+    ctx.lineTo(cx + 8, cy - 6);
+    ctx.moveTo(cx - 8, cy + 6);
+    ctx.lineTo(cx + 8, cy + 6);
+    ctx.stroke();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, cx, cy - 1, 2, 1.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Cider", BARREL_ZONE.x + 58, BARREL_ZONE.y - 8);
+}
+
+function drawCranberryPads(ctx) {
+  ctx.fillStyle = "#e7c1cf";
+  roundRect(ctx, BERRY_BED.x, BERRY_BED.y, BERRY_BED.w, BERRY_BED.h, 12);
+  ctx.fill();
+  const reds = ["#c0392b", "#e74c3c", "#a93226"];
+  BERRY_PADS.forEach((pad, index) => {
+    ctx.fillStyle = reds[index % reds.length];
+    oval(ctx, pad.x, pad.y, 10, 8);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x - 3, pad.y - 2, 2, 1.4);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pad.x + 4, pad.y - 5, 3, 1.5);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Cranberry", BERRY_BED.x + 8, BERRY_BED.y - 8);
+}
+
+function drawGardenRake(ctx) {
+  for (const post of RAKE_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y + 8, 8, post.h - 16, 3);
+    ctx.fill();
+  }
+  for (const wall of RAKE_WALLS) {
+    ctx.fillStyle = "#c4a574";
+    roundRect(ctx, wall.x, wall.y - 6, wall.w, 10, 3);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.4;
+    for (let i = 0; i < 3; i += 1) {
+      const tx = wall.x + 6 + i * 8;
+      ctx.beginPath();
+      ctx.moveTo(tx, wall.y - 6);
+      ctx.lineTo(tx, wall.y - 16);
+      ctx.stroke();
+    }
+  }
+  ctx.strokeStyle = "#8d6e4c";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(RAKE_GAP.x + 2, RAKE_GAP.y + 10);
+  ctx.quadraticCurveTo(RAKE_GAP.x + RAKE_GAP.w / 2, RAKE_GAP.y - 18, RAKE_GAP.x + RAKE_GAP.w - 2, RAKE_GAP.y + 10);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Rake", RAKE_POSTS[0].x + 28, RAKE_POSTS[0].y - 8);
+}
+
+function drawSquirrels(ctx) {
+  ctx.fillStyle = "#efe2c0";
+  roundRect(ctx, SQUIRREL_ZONE.x, SQUIRREL_ZONE.y, SQUIRREL_ZONE.w, SQUIRREL_ZONE.h, 12);
+  ctx.fill();
+  const furs = ["#c48a3a", "#a86b2a", "#d4a054", "#8d5520"];
+  SQUIRRELS.forEach((squirrel, index) => {
+    const cx = squirrel.x + squirrel.w / 2;
+    const cy = squirrel.y + 18;
+    ctx.fillStyle = furs[index % furs.length];
+    oval(ctx, cx, cy + 2, 7, 5);
+    ctx.fill();
+    oval(ctx, cx + 2, cy - 4, 4, 3.5);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx + 6, cy);
+    ctx.quadraticCurveTo(cx + 14, cy - 10, cx + 6, cy - 8);
+    ctx.quadraticCurveTo(cx + 10, cy - 2, cx + 6, cy + 2);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx + 3, cy - 5, 1.4, 1.4);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx + 3, cy - 5, 0.6, 0.6);
+    ctx.fill();
+    ctx.fillStyle = "#e8b86d";
+    oval(ctx, cx - 6, cy + 2, 2.2, 2.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Squirrels", SQUIRREL_ZONE.x + 4, SQUIRREL_ZONE.y - 8);
+}
+
+function drawWheatSheaves(ctx) {
+  ctx.fillStyle = "#f6e7a8";
+  roundRect(ctx, SHEAF_ZONE.x, SHEAF_ZONE.y, SHEAF_ZONE.w, SHEAF_ZONE.h, 12);
+  ctx.fill();
+  const golds = ["#e6b325", "#f4d35e", "#d4a017", "#c48a3a"];
+  SHEAF_BLOCKS.forEach((sheaf, index) => {
+    const cx = sheaf.x + sheaf.w / 2;
+    const cy = sheaf.y + 34;
+    ctx.strokeStyle = golds[index % golds.length];
+    ctx.lineWidth = 2;
+    for (let i = -2; i <= 2; i += 1) {
+      ctx.beginPath();
+      ctx.moveTo(cx + i * 2, cy + 10);
+      ctx.quadraticCurveTo(cx + i * 4, cy, cx + i * 3, cy - 16);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, cx - 5, cy + 2, 10, 5, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Wheat", SHEAF_ZONE.x + 58, SHEAF_ZONE.y - 8);
+}
+
+function paintPear(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#d4e157";
+  oval(ctx, 0, 2, 8, 10);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, -2, -1, 2.4, 2);
+  ctx.fill();
+  ctx.strokeStyle = "#6b4f2a";
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(0, -8);
+  ctx.lineTo(4, -14);
+  ctx.stroke();
+  ctx.fillStyle = "#3f9b4a";
+  oval(ctx, 6, -12, 4, 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedPear(ctx, carried) {
+  if (!carried) {
+    paintPear(ctx, 200, 236, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Pear", 182, 210);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, PEAR_SPOT.x - 22, PEAR_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#d4e157";
+  roundRect(ctx, PEAR_SPOT.x - 20, PEAR_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, PEAR_SPOT.x - 16, PEAR_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, PEAR_SPOT.x + 10, PEAR_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintPear(ctx, PEAR_SPOT.x, PEAR_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pear", PEAR_SPOT.x - 16, PEAR_SPOT.y - 16);
+}
+
 function drawSharedMaple(ctx, carried) {
   if (!carried) {
     paintMapleLeaf(ctx, 448, 176, 0.9);
@@ -5221,6 +5434,12 @@ export function drawTown(ctx, player, time) {
   drawFrogs(ctx);
   drawShrubs(ctx);
   drawSharedMaple(ctx, player.carry === "maple");
+  drawCiderBarrels(ctx);
+  drawCranberryPads(ctx);
+  drawGardenRake(ctx);
+  drawSquirrels(ctx);
+  drawWheatSheaves(ctx);
+  drawSharedPear(ctx, player.carry === "pear");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
