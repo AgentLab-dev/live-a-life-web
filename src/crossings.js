@@ -1184,6 +1184,59 @@ export const BUSH_BLOCKS = [
 
 export const MAPLE_SPOT = { x: 1500, y: 1496 };
 
+export const BARREL_ZONE = { x: 1728, y: 1080, w: 164, h: 64 };
+
+export const BARREL_BLOCKS = [
+  { x: 1736, y: 1080, w: 20, h: 64 },
+  { x: 1776, y: 1080, w: 20, h: 64 },
+  { x: 1816, y: 1080, w: 20, h: 64 },
+  { x: 1856, y: 1080, w: 20, h: 64 },
+];
+
+export const BERRY_BED = { x: 732, y: 320, w: 100, h: 84 };
+
+export const BERRY_PADS = [
+  { x: 782, y: 336 },
+  { x: 782, y: 362 },
+  { x: 782, y: 388 },
+];
+
+export const BERRY_RADIUS = 20;
+
+export const RAKE_POSTS = [
+  { x: 2128, y: 1568, w: 16, h: 72 },
+  { x: 2228, y: 1568, w: 16, h: 72 },
+];
+
+export const RAKE_WALLS = [
+  { x: 2144, y: 1596, w: 28, h: 14 },
+  { x: 2200, y: 1596, w: 28, h: 14 },
+];
+
+export const RAKE_GAP = { x: 2172, y: 1580, w: 28, h: 48 };
+
+export const RAKE_BAND = { x: 2144, y: 1596, w: 84, h: 14 };
+
+export const SQUIRREL_ZONE = { x: 1168, y: 260, w: 88, h: 120 };
+
+export const SQUIRRELS = [
+  { x: 1176, y: 260, w: 40, h: 36 },
+  { x: 1212, y: 288, w: 40, h: 36 },
+  { x: 1176, y: 316, w: 40, h: 36 },
+  { x: 1212, y: 344, w: 40, h: 36 },
+];
+
+export const SHEAF_ZONE = { x: 1268, y: 1280, w: 164, h: 64 };
+
+export const SHEAF_BLOCKS = [
+  { x: 1276, y: 1280, w: 20, h: 64 },
+  { x: 1316, y: 1280, w: 20, h: 64 },
+  { x: 1356, y: 1280, w: 20, h: 64 },
+  { x: 1396, y: 1280, w: 20, h: 64 },
+];
+
+export const PEAR_SPOT = { x: 400, y: 2100 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -1317,6 +1370,12 @@ export const STICKERS = [
   { id: "frogs", name: "Frog tip-toer", hint: "You tip-toed past the friendly frogs." },
   { id: "bushes", name: "Shrub weaver", hint: "You weaved between the shrubs." },
   { id: "maple", name: "Maple friend", hint: "You shared a kind maple leaf." },
+  { id: "barrels", name: "Cider weaver", hint: "You weaved between the apple-cider barrels." },
+  { id: "berries", name: "Cranberry hopper", hint: "You hopped the cranberry pads." },
+  { id: "rake", name: "Rake ducker", hint: "You ducked under the garden rake." },
+  { id: "squirrels", name: "Squirrel tip-toer", hint: "You tip-toed past the friendly squirrels." },
+  { id: "sheaves", name: "Wheat weaver", hint: "You weaved between the wheat sheaves." },
+  { id: "pear", name: "Pear friend", hint: "You shared a kind pear." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -1454,12 +1513,18 @@ export const CHEERS = {
   frogs: "Tip-toe past the friendly frogs!",
   bushes: "Friendly shrubs said hello!",
   maple: "A kind maple leaf to share. Kind!",
+  barrels: "Friendly apple-cider barrels said hello!",
+  berries: "Boing! Soft hops on the cranberries!",
+  rake: "Duck under the cozy garden rake!",
+  squirrels: "Tip-toe past the friendly squirrels!",
+  sheaves: "Golden wheat sheaves said hello!",
+  pear: "A kind pear to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear"];
 
 export function defaultStickers() {
   return {
@@ -1595,6 +1660,12 @@ export function defaultStickers() {
     frogs: false,
     bushes: false,
     maple: false,
+    barrels: false,
+    berries: false,
+    rake: false,
+    squirrels: false,
+    sheaves: false,
+    pear: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -2057,6 +2128,26 @@ export function onBushLane(x, y) {
   return inRect(x, y, BUSH_ZONE) && !BUSH_BLOCKS.some((bush) => inRect(x, y, bush));
 }
 
+export function onBarrelLane(x, y) {
+  return inRect(x, y, BARREL_ZONE) && !BARREL_BLOCKS.some((barrel) => inRect(x, y, barrel));
+}
+
+export function onBerryPad(x, y) {
+  return BERRY_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= BERRY_RADIUS);
+}
+
+export function onRakeGap(x, y) {
+  return inRect(x, y, RAKE_GAP);
+}
+
+export function onSquirrel(x, y) {
+  return SQUIRRELS.some((squirrel) => inRect(x, y, squirrel));
+}
+
+export function onSheafLane(x, y) {
+  return inRect(x, y, SHEAF_ZONE) && !SHEAF_BLOCKS.some((sheaf) => inRect(x, y, sheaf));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -2163,6 +2254,11 @@ export function townPathAt(x, y) {
   if (onHamperGap(x, y)) return "hamper";
   if (onFrog(x, y)) return "frogs";
   if (onBushLane(x, y)) return "bushes";
+  if (onBarrelLane(x, y)) return "barrels";
+  if (onBerryPad(x, y)) return "berries";
+  if (onRakeGap(x, y)) return "rake";
+  if (onSquirrel(x, y)) return "squirrels";
+  if (onSheafLane(x, y)) return "sheaves";
   return "";
 }
 
@@ -2642,6 +2738,27 @@ export function blockedByBushes(x, y) {
   return BUSH_BLOCKS.some((bush) => inRect(x, y, bush));
 }
 
+export function blockedByBarrels(x, y) {
+  return BARREL_BLOCKS.some((barrel) => inRect(x, y, barrel));
+}
+
+export function blockedByBerries(x, y) {
+  return inRect(x, y, BERRY_BED) && !onBerryPad(x, y);
+}
+
+export function blockedByRake(x, y) {
+  if (onRakeGap(x, y)) return false;
+  return RAKE_POSTS.some((post) => inRect(x, y, post)) || RAKE_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedBySquirrels(x, y) {
+  return inRect(x, y, SQUIRREL_ZONE) && !onSquirrel(x, y);
+}
+
+export function blockedBySheaves(x, y) {
+  return SHEAF_BLOCKS.some((sheaf) => inRect(x, y, sheaf));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -2752,7 +2869,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByMaples(x, y) ||
     blockedByHamper(x, y) ||
     blockedByFrogs(x, y) ||
-    blockedByBushes(x, y)
+    blockedByBushes(x, y) ||
+    blockedByBarrels(x, y) ||
+    blockedByBerries(x, y) ||
+    blockedByRake(x, y) ||
+    blockedBySquirrels(x, y) ||
+    blockedBySheaves(x, y)
   );
 }
 
@@ -2912,6 +3034,11 @@ export function applyCrossingProgress(prev, next) {
     ["hamper", HAMPER_BAND, "y"],
     ["frogs", FROG_ZONE, "y"],
     ["bushes", BUSH_ZONE, "y"],
+    ["barrels", BARREL_ZONE, "y"],
+    ["berries", BERRY_BED, "y"],
+    ["rake", RAKE_BAND, "y"],
+    ["squirrels", SQUIRREL_ZONE, "y"],
+    ["sheaves", SHEAF_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -2980,7 +3107,9 @@ export function applyCrossingProgress(prev, next) {
       onHayPad(next.x, next.y) ||
       onOwl(next.x, next.y) ||
       onMaplePad(next.x, next.y) ||
-      onFrog(next.x, next.y),
+      onFrog(next.x, next.y) ||
+      onBerryPad(next.x, next.y) ||
+      onSquirrel(next.x, next.y),
   };
 }
 
@@ -3334,6 +3463,22 @@ export function shareFeather(player) {
   });
 }
 
+export function takePear(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "pear", pose: "idle", actionBeatMs: 0 });
+}
+
+export function sharePear(player) {
+  if (player.carry !== "pear") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), pear: true },
+  });
+}
+
 export function takeMaple(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "maple", pose: "idle", actionBeatMs: 0 });
@@ -3421,5 +3566,6 @@ export function carryLabel(value) {
   if (value === "boat") return "Paper boat";
   if (value === "apple") return "Apple";
   if (value === "maple") return "Maple leaf";
+  if (value === "pear") return "Pear";
   return "";
 }
