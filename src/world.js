@@ -1,4 +1,4 @@
-import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CRAYON_SPOT, FEATHER_SPOT, FLOWER_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, SHELL_SPOT, SNACK_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
+import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CRAYON_SPOT, FEATHER_SPOT, FLOWER_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -117,6 +117,8 @@ export const ACTIONS = {
     { id: "share-maple", label: "Share maple leaf", x: MAPLE_SPOT.x, y: MAPLE_SPOT.y },
     { id: "take-pear", label: "Take pear", x: 200, y: 250 },
     { id: "share-pear", label: "Share pear", x: PEAR_SPOT.x, y: PEAR_SPOT.y },
+    { id: "take-plum", label: "Take plum", x: 1320, y: 180 },
+    { id: "share-plum", label: "Share plum", x: PLUM_SPOT.x, y: PLUM_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -331,6 +333,8 @@ export function visibleActions(player) {
     if (action.id === "share-maple" && player.carry !== "maple") return false;
     if (action.id === "take-pear" && player.carry) return false;
     if (action.id === "share-pear" && player.carry !== "pear") return false;
+    if (action.id === "take-plum" && player.carry) return false;
+    if (action.id === "share-plum" && player.carry !== "plum") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });
