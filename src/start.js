@@ -53,6 +53,8 @@ import {
   shareMaple,
   takePear,
   sharePear,
+  takePlum,
+  sharePlum,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -495,6 +497,18 @@ export function startGame(root) {
     if (id === "share-pear") {
       const before = player.stickers;
       player = sharePear(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-plum") {
+      player = takePlum(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-plum") {
+      const before = player.stickers;
+      player = sharePlum(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

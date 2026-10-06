@@ -276,6 +276,18 @@ import {
   SHEAF_ZONE,
   SHEAF_BLOCKS,
   PEAR_SPOT,
+  TWIG_ZONE,
+  TWIG_BLOCKS,
+  CHESTNUT_BED,
+  CHESTNUT_PADS,
+  BROOM_POSTS,
+  BROOM_WALLS,
+  BROOM_GAP,
+  CARDINAL_ZONE,
+  CARDINALS,
+  TIN_ZONE,
+  TIN_BLOCKS,
+  PLUM_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -882,6 +894,23 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.beginPath();
     ctx.moveTo(24, 6);
     ctx.lineTo(27, 2);
+    ctx.stroke();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, 28, 4, 3, 1.6);
+    ctx.fill();
+  }
+  if (look.carry === "plum" && !sleeping) {
+    ctx.fillStyle = "#8e4585";
+    oval(ctx, 24, 14, 7, 8);
+    ctx.fill();
+    ctx.fillStyle = "#c39bd3";
+    oval(ctx, 22, 12, 2, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(24, 6);
+    ctx.lineTo(26, 2);
     ctx.stroke();
     ctx.fillStyle = "#3f9b4a";
     oval(ctx, 28, 4, 3, 1.6);
@@ -4970,6 +4999,190 @@ function paintPear(ctx, x, y, scale = 1) {
   ctx.restore();
 }
 
+function drawTwigBundles(ctx) {
+  ctx.fillStyle = "#efe2c0";
+  roundRect(ctx, TWIG_ZONE.x, TWIG_ZONE.y, TWIG_ZONE.w, TWIG_ZONE.h, 12);
+  ctx.fill();
+  const woods = ["#8d5520", "#a86b2a", "#6b4f2a", "#c48a3a"];
+  TWIG_BLOCKS.forEach((twig, index) => {
+    const cx = twig.x + twig.w / 2;
+    const cy = twig.y + 34;
+    ctx.strokeStyle = woods[index % woods.length];
+    ctx.lineWidth = 1.8;
+    for (let i = -2; i <= 2; i += 1) {
+      ctx.beginPath();
+      ctx.moveTo(cx + i * 1.5, cy + 12);
+      ctx.lineTo(cx + i * 2.4, cy - 14);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "#c45c26";
+    roundRect(ctx, cx - 5, cy - 2, 10, 5, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Twigs", TWIG_ZONE.x + 58, TWIG_ZONE.y - 8);
+}
+
+function drawChestnutPads(ctx) {
+  ctx.fillStyle = "#e7d3b0";
+  roundRect(ctx, CHESTNUT_BED.x, CHESTNUT_BED.y, CHESTNUT_BED.w, CHESTNUT_BED.h, 12);
+  ctx.fill();
+  const shells = ["#8d5520", "#a86b2a", "#6b4f2a"];
+  CHESTNUT_PADS.forEach((pad, index) => {
+    ctx.fillStyle = shells[index % shells.length];
+    oval(ctx, pad.x, pad.y, 9, 8);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, pad.x - 2, pad.y - 2, 2.2, 1.6);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(pad.x - 3, pad.y - 7);
+    ctx.lineTo(pad.x, pad.y - 11);
+    ctx.lineTo(pad.x + 3, pad.y - 7);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Chestnuts", CHESTNUT_BED.x + 8, CHESTNUT_BED.y - 8);
+}
+
+function drawStrawBroom(ctx) {
+  for (const post of BROOM_POSTS) {
+    ctx.fillStyle = "#c4a574";
+    roundRect(ctx, post.x + 4, post.y + 8, 8, post.h - 16, 3);
+    ctx.fill();
+  }
+  for (const wall of BROOM_WALLS) {
+    ctx.fillStyle = "#e6b325";
+    roundRect(ctx, wall.x, wall.y - 4, wall.w, 12, 3);
+    ctx.fill();
+    ctx.strokeStyle = "#8d5520";
+    ctx.lineWidth = 1.3;
+    for (let i = 0; i < 4; i += 1) {
+      const tx = wall.x + 4 + i * 6;
+      ctx.beginPath();
+      ctx.moveTo(tx, wall.y - 4);
+      ctx.lineTo(tx, wall.y + 12);
+      ctx.stroke();
+    }
+  }
+  ctx.strokeStyle = "#8d6e4c";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(BROOM_GAP.x + 2, BROOM_GAP.y + 18);
+  ctx.quadraticCurveTo(BROOM_GAP.x + BROOM_GAP.w / 2, BROOM_GAP.y - 16, BROOM_GAP.x + BROOM_GAP.w - 2, BROOM_GAP.y + 18);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Broom", BROOM_POSTS[0].x + 22, BROOM_POSTS[0].y - 8);
+}
+
+function drawCardinals(ctx) {
+  ctx.fillStyle = "#f8e4d4";
+  roundRect(ctx, CARDINAL_ZONE.x, CARDINAL_ZONE.y, CARDINAL_ZONE.w, CARDINAL_ZONE.h, 12);
+  ctx.fill();
+  const reds = ["#c0392b", "#e74c3c", "#a93226", "#d35400"];
+  CARDINALS.forEach((bird, index) => {
+    const cx = bird.x + bird.w / 2;
+    const cy = bird.y + 18;
+    ctx.fillStyle = reds[index % reds.length];
+    oval(ctx, cx, cy + 2, 7, 5);
+    ctx.fill();
+    oval(ctx, cx + 4, cy - 3, 3.5, 3);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx + 2, cy - 6);
+    ctx.lineTo(cx + 5, cy - 11);
+    ctx.lineTo(cx + 7, cy - 5);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    ctx.beginPath();
+    ctx.moveTo(cx + 7, cy - 3);
+    ctx.lineTo(cx + 12, cy - 2);
+    ctx.lineTo(cx + 7, cy);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx + 5, cy - 4, 0.8, 0.8);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Cardinals", CARDINAL_ZONE.x - 4, CARDINAL_ZONE.y - 8);
+}
+
+function drawPieTins(ctx) {
+  ctx.fillStyle = "#f7efd4";
+  roundRect(ctx, TIN_ZONE.x, TIN_ZONE.y, TIN_ZONE.w, TIN_ZONE.h, 12);
+  ctx.fill();
+  const metals = ["#d5d8dc", "#aeb6bf", "#f4f6f7", "#85929e"];
+  TIN_BLOCKS.forEach((tin, index) => {
+    const cx = tin.x + tin.w / 2;
+    const cy = tin.y + 32;
+    ctx.fillStyle = metals[index % metals.length];
+    oval(ctx, cx, cy, 9, 7);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.3;
+    oval(ctx, cx, cy, 9, 7);
+    ctx.stroke();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, cx, cy, 4, 3);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pie tins", TIN_ZONE.x + 48, TIN_ZONE.y - 8);
+}
+
+function paintPlum(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#8e4585";
+  oval(ctx, 0, 2, 8, 9);
+  ctx.fill();
+  ctx.fillStyle = "#c39bd3";
+  oval(ctx, -2, -1, 2.2, 1.8);
+  ctx.fill();
+  ctx.strokeStyle = "#5a3820";
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(0, -7);
+  ctx.lineTo(3, -13);
+  ctx.stroke();
+  ctx.fillStyle = "#3f9b4a";
+  oval(ctx, 5, -11, 4, 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedPlum(ctx, carried) {
+  if (!carried) {
+    paintPlum(ctx, 1320, 164, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Plum", 1302, 140);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, PLUM_SPOT.x - 22, PLUM_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#8e4585";
+  roundRect(ctx, PLUM_SPOT.x - 20, PLUM_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, PLUM_SPOT.x - 16, PLUM_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, PLUM_SPOT.x + 10, PLUM_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintPlum(ctx, PLUM_SPOT.x, PLUM_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Plum", PLUM_SPOT.x - 16, PLUM_SPOT.y - 16);
+}
+
 function drawSharedPear(ctx, carried) {
   if (!carried) {
     paintPear(ctx, 200, 236, 0.85);
@@ -5440,6 +5653,12 @@ export function drawTown(ctx, player, time) {
   drawSquirrels(ctx);
   drawWheatSheaves(ctx);
   drawSharedPear(ctx, player.carry === "pear");
+  drawTwigBundles(ctx);
+  drawChestnutPads(ctx);
+  drawStrawBroom(ctx);
+  drawCardinals(ctx);
+  drawPieTins(ctx);
+  drawSharedPlum(ctx, player.carry === "plum");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
