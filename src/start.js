@@ -57,6 +57,8 @@ import {
   sharePlum,
   takeHoneyjar,
   shareHoneyjar,
+  takeCocoa,
+  shareCocoa,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -523,6 +525,18 @@ export function startGame(root) {
     if (id === "share-honeyjar") {
       const before = player.stickers;
       player = shareHoneyjar(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-cocoa") {
+      player = takeCocoa(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-cocoa") {
+      const before = player.stickers;
+      player = shareCocoa(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
