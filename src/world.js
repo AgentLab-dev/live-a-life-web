@@ -1,4 +1,4 @@
-import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CRAYON_SPOT, FEATHER_SPOT, FLOWER_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
+import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, COCOA_SPOT, CRAYON_SPOT, FEATHER_SPOT, FLOWER_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -121,6 +121,8 @@ export const ACTIONS = {
     { id: "share-plum", label: "Share plum", x: PLUM_SPOT.x, y: PLUM_SPOT.y },
     { id: "take-honeyjar", label: "Take honey jar", x: 1860, y: 140 },
     { id: "share-honeyjar", label: "Share honey jar", x: HONEY_SPOT.x, y: HONEY_SPOT.y },
+    { id: "take-cocoa", label: "Take cocoa", x: 2448, y: 920 },
+    { id: "share-cocoa", label: "Share cocoa", x: COCOA_SPOT.x, y: COCOA_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -339,6 +341,8 @@ export function visibleActions(player) {
     if (action.id === "share-plum" && player.carry !== "plum") return false;
     if (action.id === "take-honeyjar" && player.carry) return false;
     if (action.id === "share-honeyjar" && player.carry !== "honeyjar") return false;
+    if (action.id === "take-cocoa" && player.carry) return false;
+    if (action.id === "share-cocoa" && player.carry !== "mug") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });

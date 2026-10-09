@@ -300,6 +300,18 @@ import {
   CINNAMON_ZONE,
   CINNAMON_BLOCKS,
   HONEY_SPOT,
+  WALNUT_ZONE,
+  WALNUT_BLOCKS,
+  FIG_BED,
+  FIG_PADS,
+  SCARF_POSTS,
+  SCARF_WALLS,
+  SCARF_GAP,
+  CHIP_ZONE,
+  CHIPMUNKS,
+  NEEDLE_ZONE,
+  NEEDLE_BLOCKS,
+  COCOA_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -937,6 +949,22 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#fff8e7";
     oval(ctx, 24, 16, 2, 2);
+    ctx.fill();
+  }
+  if (look.carry === "mug" && !sleeping) {
+    ctx.fillStyle = "#f7efd4";
+    roundRect(ctx, 16, 8, 14, 12, 3);
+    ctx.fill();
+    ctx.fillStyle = "#8d5524";
+    roundRect(ctx, 18, 10, 10, 8, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#f7efd4";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(31, 14, 3.2, -1.2, 1.2);
+    ctx.stroke();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, 23, 13, 2, 1.4);
     ctx.fill();
   }
   ctx.restore();
@@ -5292,6 +5320,189 @@ function drawCinnamonSticks(ctx) {
   ctx.fillText("Cinnamon", CINNAMON_ZONE.x + 42, CINNAMON_ZONE.y - 8);
 }
 
+function drawWalnuts(ctx) {
+  ctx.fillStyle = "#efe2c0";
+  roundRect(ctx, WALNUT_ZONE.x, WALNUT_ZONE.y, WALNUT_ZONE.w, WALNUT_ZONE.h, 12);
+  ctx.fill();
+  const shells = ["#6b3e26", "#8d5520", "#5a3820", "#a86b2a"];
+  WALNUT_BLOCKS.forEach((nut, index) => {
+    const cx = nut.x + nut.w / 2;
+    const cy = nut.y + 32;
+    ctx.fillStyle = shells[index % shells.length];
+    for (let i = -1; i <= 1; i += 1) {
+      oval(ctx, cx + i * 3, cy + (i === 0 ? -5 : 5), 4.2, 3.6);
+      ctx.fill();
+    }
+    ctx.strokeStyle = "#f4d35e";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - 3, cy - 8);
+    ctx.lineTo(cx + 3, cy - 2);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Walnuts", WALNUT_ZONE.x + 48, WALNUT_ZONE.y - 8);
+}
+
+function drawFigPads(ctx) {
+  ctx.fillStyle = "#e8d5c4";
+  roundRect(ctx, FIG_BED.x, FIG_BED.y, FIG_BED.w, FIG_BED.h, 12);
+  ctx.fill();
+  const fruits = ["#7b3f6b", "#9b4d7a", "#6b3e55"];
+  FIG_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pad.x, pad.y + 6, 10, 4);
+    ctx.fill();
+    ctx.fillStyle = fruits[index % fruits.length];
+    oval(ctx, pad.x, pad.y + 1, 7, 8);
+    ctx.fill();
+    ctx.fillStyle = "#c39bd3";
+    oval(ctx, pad.x - 2, pad.y - 1, 2, 1.4);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pad.x + 1, pad.y - 7, 3, 1.6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Figs", FIG_BED.x + 32, FIG_BED.y - 8);
+}
+
+function drawWoolScarf(ctx) {
+  for (const post of SCARF_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y + 6, 8, post.h - 10, 3);
+    ctx.fill();
+  }
+  const stripes = ["#c45c26", "#f4d35e", "#f7efd4", "#8d5524"];
+  for (const wall of SCARF_WALLS) {
+    for (let i = 0; i < 2; i += 1) {
+      ctx.fillStyle = stripes[(wall.x + i) % stripes.length];
+      roundRect(ctx, wall.x + i * 14, wall.y - 8, 13, 14, 3);
+      ctx.fill();
+    }
+  }
+  ctx.strokeStyle = "#c45c26";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(SCARF_GAP.x + 2, SCARF_GAP.y + 10);
+  ctx.quadraticCurveTo(SCARF_GAP.x + SCARF_GAP.w / 2, SCARF_GAP.y - 14, SCARF_GAP.x + SCARF_GAP.w - 2, SCARF_GAP.y + 10);
+  ctx.stroke();
+  ctx.strokeStyle = "#f4d35e";
+  ctx.lineWidth = 1.6;
+  ctx.beginPath();
+  ctx.moveTo(SCARF_GAP.x + 4, SCARF_GAP.y + 12);
+  ctx.quadraticCurveTo(SCARF_GAP.x + SCARF_GAP.w / 2, SCARF_GAP.y - 8, SCARF_GAP.x + SCARF_GAP.w - 4, SCARF_GAP.y + 12);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Scarf", SCARF_POSTS[0].x + 22, SCARF_POSTS[0].y - 8);
+}
+
+function drawChipmunks(ctx) {
+  ctx.fillStyle = "#f8e6c8";
+  roundRect(ctx, CHIP_ZONE.x, CHIP_ZONE.y, CHIP_ZONE.w, CHIP_ZONE.h, 12);
+  ctx.fill();
+  const coats = ["#a86b2a", "#8d5520", "#c48a3a", "#6b4f2a"];
+  CHIPMUNKS.forEach((chip, index) => {
+    const cx = chip.x + chip.w / 2;
+    const cy = chip.y + 18;
+    ctx.fillStyle = coats[index % coats.length];
+    oval(ctx, cx, cy + 2, 8, 5);
+    ctx.fill();
+    oval(ctx, cx + 5, cy - 3, 4, 3.4);
+    ctx.fill();
+    ctx.fillStyle = "#f7efd4";
+    oval(ctx, cx + 7, cy - 1, 2.2, 1.6);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    ctx.fillRect(cx - 2, cy + 1, 8, 1.4);
+    oval(ctx, cx + 6, cy - 4, 0.8, 0.8);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx - 6, cy + 2);
+    ctx.quadraticCurveTo(cx - 12, cy - 2, cx - 8, cy + 6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Chipmunks", CHIP_ZONE.x - 8, CHIP_ZONE.y - 8);
+}
+
+function drawPineNeedles(ctx) {
+  ctx.fillStyle = "#e7f0d4";
+  roundRect(ctx, NEEDLE_ZONE.x, NEEDLE_ZONE.y, NEEDLE_ZONE.w, NEEDLE_ZONE.h, 12);
+  ctx.fill();
+  const greens = ["#3f9b4a", "#6b4f2a", "#2d6a4f", "#8d5520"];
+  NEEDLE_BLOCKS.forEach((needle, index) => {
+    const cx = needle.x + needle.w / 2;
+    const cy = needle.y + 32;
+    ctx.strokeStyle = greens[index % greens.length];
+    ctx.lineWidth = 1.6;
+    for (let i = -2; i <= 2; i += 1) {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + 4);
+      ctx.lineTo(cx + i * 3, cy - 14);
+      ctx.stroke();
+    }
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Needles", NEEDLE_ZONE.x + 48, NEEDLE_ZONE.y - 8);
+}
+
+function paintCocoaMug(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#f7efd4";
+  roundRect(ctx, -8, -4, 16, 16, 4);
+  ctx.fill();
+  ctx.fillStyle = "#8d5524";
+  roundRect(ctx, -6, -2, 12, 10, 3);
+  ctx.fill();
+  ctx.strokeStyle = "#f7efd4";
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.arc(10, 4, 4, -1.2, 1.2);
+  ctx.stroke();
+  ctx.fillStyle = "#fff8e7";
+  oval(ctx, -1, 2, 3, 2);
+  ctx.fill();
+  ctx.strokeStyle = "#d6eaf8";
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(-2, -6);
+  ctx.quadraticCurveTo(0, -12, 2, -6);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawSharedCocoa(ctx, carried) {
+  if (!carried) {
+    paintCocoaMug(ctx, 2448, 908, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Cocoa", 2424, 880);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, COCOA_SPOT.x - 22, COCOA_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, COCOA_SPOT.x - 20, COCOA_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, COCOA_SPOT.x - 16, COCOA_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, COCOA_SPOT.x + 10, COCOA_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintCocoaMug(ctx, COCOA_SPOT.x, COCOA_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Cocoa", COCOA_SPOT.x - 18, COCOA_SPOT.y - 16);
+}
+
 function paintHoneyJar(ctx, x, y, scale = 1) {
   ctx.save();
   ctx.translate(x, y);
@@ -5863,6 +6074,12 @@ export function drawTown(ctx, player, time) {
   drawBlueJays(ctx);
   drawCinnamonSticks(ctx);
   drawSharedHoney(ctx, player.carry === "honeyjar");
+  drawWalnuts(ctx);
+  drawFigPads(ctx);
+  drawWoolScarf(ctx);
+  drawChipmunks(ctx);
+  drawPineNeedles(ctx);
+  drawSharedCocoa(ctx, player.carry === "mug");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
