@@ -127,6 +127,11 @@ import {
   blockedByScarf,
   blockedByChipmunks,
   blockedByNeedles,
+  blockedByBeads,
+  blockedByBlueberries,
+  blockedByMittens,
+  blockedByBunnies,
+  blockedBySpools,
   BOOK_SPOT,
   cheerCrossing,
   closeParkGate,
@@ -154,6 +159,7 @@ import {
   PLUM_SPOT,
   HONEY_SPOT,
   COCOA_SPOT,
+  COOKIE_SPOT,
   newSticker,
   townPathAt,
   nudgeBookCart,
@@ -284,6 +290,11 @@ import {
   onScarfGap,
   onChipmunk,
   onNeedleLane,
+  onBeadLane,
+  onBlueberryPad,
+  onMittenGap,
+  onBunny,
+  onSpoolLane,
   openParkGate,
   pushBookCart,
   shareBalloon,
@@ -312,6 +323,7 @@ import {
   sharePlum,
   shareHoneyjar,
   shareCocoa,
+  shareCookie,
   SNACK_SPOT,
   takeBook,
   takeCard,
@@ -339,6 +351,7 @@ import {
   takePlum,
   takeHoneyjar,
   takeCocoa,
+  takeCookie,
 } from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -5740,6 +5753,216 @@ describe("friday woodland play", () => {
     expect(isBlocked("town", 1914, 2166)).toBe(false);
     expect(isBlocked("town", 516, 1810)).toBe(false);
     expect(isBlocked("town", 2448, 920)).toBe(false);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
+  });
+});
+
+describe("monday craft-meadow play", () => {
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  function townKid(x, y, extra = {}) {
+    return {
+      room: "town",
+      x,
+      y,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      carry: "",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("names bead, blueberry, mitten, bunny, and yarn-spool paths", () => {
+    expect(townPathAt(2286, 164)).toBe("beads");
+    expect(onBeadLane(2286, 164)).toBe(true);
+    expect(townPathAt(2266, 164)).toBe("");
+    expect(townPathAt(654, 174)).toBe("blueberries");
+    expect(onBlueberryPad(654, 174)).toBe(true);
+    expect(townPathAt(616, 174)).toBe("");
+    expect(townPathAt(178, 624)).toBe("mittens");
+    expect(onMittenGap(178, 624)).toBe(true);
+    expect(townPathAt(128, 624)).toBe("");
+    expect(townPathAt(1894, 1462)).toBe("bunnies");
+    expect(onBunny(1894, 1462)).toBe(true);
+    expect(townPathAt(1862, 1486)).toBe("");
+    expect(townPathAt(1290, 1476)).toBe("spools");
+    expect(onSpoolLane(1290, 1476)).toBe(true);
+    expect(townPathAt(1270, 1476)).toBe("");
+    expect(townPathAt(2368, 640)).toBe("");
+  });
+
+  it("blocks bead piles, blueberry grass, mitten posts, bunny lawn, and yarn spools but not the walk paths", () => {
+    expect(blockedByBeads(2266, 164)).toBe(true);
+    expect(isBlocked("town", 2266, 164)).toBe(true);
+    expect(onBeadLane(2286, 164)).toBe(true);
+    expect(isBlocked("town", 2286, 164)).toBe(false);
+    expect(blockedByBlueberries(616, 174)).toBe(true);
+    expect(isBlocked("town", 616, 174)).toBe(true);
+    expect(onBlueberryPad(654, 174)).toBe(true);
+    expect(isBlocked("town", 654, 174)).toBe(false);
+    expect(blockedByMittens(128, 624)).toBe(true);
+    expect(isBlocked("town", 128, 624)).toBe(true);
+    expect(onMittenGap(178, 624)).toBe(true);
+    expect(isBlocked("town", 178, 624)).toBe(false);
+    expect(blockedByBunnies(1862, 1486)).toBe(true);
+    expect(isBlocked("town", 1862, 1486)).toBe(true);
+    expect(onBunny(1894, 1462)).toBe(true);
+    expect(isBlocked("town", 1894, 1462)).toBe(false);
+    expect(blockedBySpools(1270, 1476)).toBe(true);
+    expect(isBlocked("town", 1270, 1476)).toBe(true);
+    expect(onSpoolLane(1290, 1476)).toBe(true);
+    expect(isBlocked("town", 1290, 1476)).toBe(false);
+    expect(isBlocked("town", 2368, 640)).toBe(false);
+  });
+
+  it("walks the beads, blueberries, and mitten line and earns stickers", () => {
+    let player = townKid(2286, 116);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 20);
+    expect(player.y).toBeGreaterThan(200);
+    expect(player.stickers.beads).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(defaultStickers(), player.stickers)).toBe("beads");
+
+    player = townKid(654, 116);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 20);
+    expect(player.y).toBeGreaterThan(220);
+    expect(player.stickers.blueberries).toBe(true);
+
+    player = townKid(178, 572);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 16);
+    expect(player.y).toBeGreaterThan(634);
+    expect(player.stickers.mittens).toBe(true);
+    expect(player.timer).toBeUndefined();
+  });
+
+  it("walks the bunnies and yarn spools without a fail state", () => {
+    let player = townKid(1894, 1428);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 24);
+    expect(player.y).toBeGreaterThan(1568);
+    expect(player.stickers.bunnies).toBe(true);
+
+    player = townKid(1290, 1428);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 24);
+    expect(player.y).toBeGreaterThan(1512);
+    expect(player.stickers.spools).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets tap-to-walk stop at blueberry grass and bunny lawn instead of punishing", () => {
+    const berryBump = stepToward(townKid(616, 116), { x: 616, y: 300 }, 80);
+    expect(berryBump.y).toBeLessThan(132);
+    expect(berryBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 616, 174)).toBe(true);
+
+    const bunnyBump = stepToward(townKid(1862, 1428), { x: 1862, y: 1600 }, 80);
+    expect(bunnyBump.y).toBeLessThan(1444);
+    expect(bunnyBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1862, 1486)).toBe(true);
+  });
+
+  it("takes and shares a cookie without money or a timer", () => {
+    const helper = takeCookie({ room: "town", carry: "", stickers: defaultStickers(), money: 2 });
+    expect(helper.carry).toBe("cookie");
+    expect(helper.money).toBeUndefined();
+    expect(
+      visibleActions({ ...helper, x: 2368, y: 640, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+        (action) => action.id === "take-cookie",
+      ),
+    ).toBe(false);
+    const shared = shareCookie({ ...helper, room: "town", x: COOKIE_SPOT.x, y: COOKIE_SPOT.y });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("look");
+    expect(shared.stickers.cookie).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+    expect(takePicnic({ ...helper, carry: "cookie" }).carry).toBe("cookie");
+    expect(takeCocoa({ ...helper, carry: "cookie" }).carry).toBe("cookie");
+  });
+
+  it("cheers a nearby neighbor after a monday craft-meadow crossing", () => {
+    const people = createPeople();
+    const pip = people.find((person) => person.id === "pip");
+    const next = cheerCrossing(people, "cookie", pip.x, pip.y);
+    expect(next.find((person) => person.id === "pip").line).toMatch(/cookie|kind/i);
+    expect(next.find((person) => person.id === "pip").bubbleMs).toBe(2400);
+  });
+
+  it("persists monday craft-meadow stickers and a carried cookie", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      carry: "cookie",
+      stickers: { beads: true, blueberries: true, mittens: true, bunnies: true, spools: true, cookie: true, coins: 8 },
+      money: 5,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.carry).toBe("cookie");
+    expect(loaded.stickers.beads).toBe(true);
+    expect(loaded.stickers.blueberries).toBe(true);
+    expect(loaded.stickers.mittens).toBe(true);
+    expect(loaded.stickers.bunnies).toBe(true);
+    expect(loaded.stickers.spools).toBe(true);
+    expect(loaded.stickers.cookie).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.carry).toBe("cookie");
+  });
+
+  it("shows cookie actions without hiding house or shop buttons", () => {
+    const atYard = townKid(2368, 640, { pose: "idle", job: "none" });
+    const ids = visibleActions(atYard).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["take-cookie", "stickers"]));
+    expect(ids).not.toContain("share-cookie");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+    const withCookie = townKid(COOKIE_SPOT.x, COOKIE_SPOT.y, { carry: "cookie", pose: "idle", job: "none" });
+    expect(visibleActions(withCookie).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["share-cookie", "stickers"]),
+    );
+    expect(isBlocked("town", COOKIE_SPOT.x, COOKIE_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 2368, 640)).toBe(false);
+    expect(isBlocked("town", 480, 660)).toBe(false);
+  });
+
+  it("keeps the house, shop, park, PWA, and USA map paths open around the new crossings", () => {
+    let player = townKid(560, 920);
+    player = walkFrames(player, { x: 460, y: 980 }, 80);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    player = walkFrames(player, { x: 480, y: 720 }, 120);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(canEnter("town", "bakery")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(canEnter("town", "usa")).toBe(true);
+    expect(isBlocked("town", 1920, 1320)).toBe(false);
+    expect(isBlocked("town", 420, 980)).toBe(false);
+    expect(isBlocked("town", 420, 1400)).toBe(false);
+    expect(isBlocked("town", 2286, 164)).toBe(false);
+    expect(isBlocked("town", 654, 174)).toBe(false);
+    expect(isBlocked("town", 178, 624)).toBe(false);
+    expect(isBlocked("town", 1894, 1462)).toBe(false);
+    expect(isBlocked("town", 1290, 1476)).toBe(false);
+    expect(isBlocked("town", 300, 1900)).toBe(false);
+    expect(isBlocked("town", 2368, 640)).toBe(false);
     expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
   });
 });

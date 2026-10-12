@@ -1396,6 +1396,59 @@ export const NEEDLE_BLOCKS = [
 
 export const COCOA_SPOT = { x: 516, y: 1810 };
 
+export const BEAD_ZONE = { x: 2208, y: 132, w: 164, h: 64 };
+
+export const BEAD_BLOCKS = [
+  { x: 2216, y: 132, w: 20, h: 64 },
+  { x: 2256, y: 132, w: 20, h: 64 },
+  { x: 2296, y: 132, w: 20, h: 64 },
+  { x: 2336, y: 132, w: 20, h: 64 },
+];
+
+export const BLUEBERRY_BED = { x: 604, y: 132, w: 100, h: 84 };
+
+export const BLUEBERRY_PADS = [
+  { x: 654, y: 148 },
+  { x: 654, y: 174 },
+  { x: 654, y: 200 },
+];
+
+export const BLUEBERRY_RADIUS = 20;
+
+export const MITTEN_POSTS = [
+  { x: 120, y: 588, w: 16, h: 72 },
+  { x: 220, y: 588, w: 16, h: 72 },
+];
+
+export const MITTEN_WALLS = [
+  { x: 136, y: 616, w: 28, h: 14 },
+  { x: 192, y: 616, w: 28, h: 14 },
+];
+
+export const MITTEN_GAP = { x: 164, y: 600, w: 28, h: 48 };
+
+export const MITTEN_BAND = { x: 136, y: 616, w: 84, h: 14 };
+
+export const BUNNY_ZONE = { x: 1848, y: 1444, w: 88, h: 120 };
+
+export const BUNNIES = [
+  { x: 1856, y: 1444, w: 40, h: 36 },
+  { x: 1892, y: 1472, w: 40, h: 36 },
+  { x: 1856, y: 1500, w: 40, h: 36 },
+  { x: 1892, y: 1528, w: 40, h: 36 },
+];
+
+export const SPOOL_ZONE = { x: 1212, y: 1444, w: 164, h: 64 };
+
+export const SPOOL_BLOCKS = [
+  { x: 1220, y: 1444, w: 20, h: 64 },
+  { x: 1260, y: 1444, w: 20, h: 64 },
+  { x: 1300, y: 1444, w: 20, h: 64 },
+  { x: 1340, y: 1444, w: 20, h: 64 },
+];
+
+export const COOKIE_SPOT = { x: 300, y: 1900 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -1553,6 +1606,12 @@ export const STICKERS = [
   { id: "chipmunks", name: "Chipmunk tip-toer", hint: "You tip-toed past the friendly chipmunks." },
   { id: "needles", name: "Needle weaver", hint: "You weaved between the pine needles." },
   { id: "mug", name: "Cocoa friend", hint: "You shared a kind cocoa mug." },
+  { id: "beads", name: "Bead weaver", hint: "You weaved between the bead piles." },
+  { id: "blueberries", name: "Blueberry hopper", hint: "You hopped the blueberry pads." },
+  { id: "mittens", name: "Mitten ducker", hint: "You ducked under the mitten line." },
+  { id: "bunnies", name: "Bunny tip-toer", hint: "You tip-toed past the friendly bunnies." },
+  { id: "spools", name: "Spool weaver", hint: "You weaved between the yarn spools." },
+  { id: "cookie", name: "Cookie friend", hint: "You shared a kind cookie." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -1714,12 +1773,18 @@ export const CHEERS = {
   chipmunks: "Tip-toe past the friendly chipmunks!",
   needles: "Soft pine needles said hello!",
   mug: "A kind cocoa mug to share. Kind!",
+  beads: "Little bead piles said hello!",
+  blueberries: "Boing! Soft hops on the blueberries!",
+  mittens: "Duck under the cozy mitten line!",
+  bunnies: "Tip-toe past the friendly bunnies!",
+  spools: "Colorful yarn spools said hello!",
+  cookie: "A kind cookie to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie"];
 
 export function defaultStickers() {
   return {
@@ -1879,6 +1944,12 @@ export function defaultStickers() {
     chipmunks: false,
     needles: false,
     mug: false,
+    beads: false,
+    blueberries: false,
+    mittens: false,
+    bunnies: false,
+    spools: false,
+    cookie: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -2421,6 +2492,26 @@ export function onNeedleLane(x, y) {
   return inRect(x, y, NEEDLE_ZONE) && !NEEDLE_BLOCKS.some((needle) => inRect(x, y, needle));
 }
 
+export function onBeadLane(x, y) {
+  return inRect(x, y, BEAD_ZONE) && !BEAD_BLOCKS.some((bead) => inRect(x, y, bead));
+}
+
+export function onBlueberryPad(x, y) {
+  return BLUEBERRY_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= BLUEBERRY_RADIUS);
+}
+
+export function onMittenGap(x, y) {
+  return inRect(x, y, MITTEN_GAP);
+}
+
+export function onBunny(x, y) {
+  return BUNNIES.some((bunny) => inRect(x, y, bunny));
+}
+
+export function onSpoolLane(x, y) {
+  return inRect(x, y, SPOOL_ZONE) && !SPOOL_BLOCKS.some((spool) => inRect(x, y, spool));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -2547,6 +2638,11 @@ export function townPathAt(x, y) {
   if (onScarfGap(x, y)) return "scarf";
   if (onChipmunk(x, y)) return "chipmunks";
   if (onNeedleLane(x, y)) return "needles";
+  if (onBeadLane(x, y)) return "beads";
+  if (onBlueberryPad(x, y)) return "blueberries";
+  if (onMittenGap(x, y)) return "mittens";
+  if (onBunny(x, y)) return "bunnies";
+  if (onSpoolLane(x, y)) return "spools";
   return "";
 }
 
@@ -3110,6 +3206,27 @@ export function blockedByNeedles(x, y) {
   return NEEDLE_BLOCKS.some((needle) => inRect(x, y, needle));
 }
 
+export function blockedByBeads(x, y) {
+  return BEAD_BLOCKS.some((bead) => inRect(x, y, bead));
+}
+
+export function blockedByBlueberries(x, y) {
+  return inRect(x, y, BLUEBERRY_BED) && !onBlueberryPad(x, y);
+}
+
+export function blockedByMittens(x, y) {
+  if (onMittenGap(x, y)) return false;
+  return MITTEN_POSTS.some((post) => inRect(x, y, post)) || MITTEN_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByBunnies(x, y) {
+  return inRect(x, y, BUNNY_ZONE) && !onBunny(x, y);
+}
+
+export function blockedBySpools(x, y) {
+  return SPOOL_BLOCKS.some((spool) => inRect(x, y, spool));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -3240,7 +3357,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByFigs(x, y) ||
     blockedByScarf(x, y) ||
     blockedByChipmunks(x, y) ||
-    blockedByNeedles(x, y)
+    blockedByNeedles(x, y) ||
+    blockedByBeads(x, y) ||
+    blockedByBlueberries(x, y) ||
+    blockedByMittens(x, y) ||
+    blockedByBunnies(x, y) ||
+    blockedBySpools(x, y)
   );
 }
 
@@ -3420,6 +3542,11 @@ export function applyCrossingProgress(prev, next) {
     ["scarf", SCARF_BAND, "y"],
     ["chipmunks", CHIP_ZONE, "y"],
     ["needles", NEEDLE_ZONE, "y"],
+    ["beads", BEAD_ZONE, "y"],
+    ["blueberries", BLUEBERRY_BED, "y"],
+    ["mittens", MITTEN_BAND, "y"],
+    ["bunnies", BUNNY_ZONE, "y"],
+    ["spools", SPOOL_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -3496,7 +3623,9 @@ export function applyCrossingProgress(prev, next) {
       onPersimmonPad(next.x, next.y) ||
       onJay(next.x, next.y) ||
       onFigPad(next.x, next.y) ||
-      onChipmunk(next.x, next.y),
+      onChipmunk(next.x, next.y) ||
+      onBlueberryPad(next.x, next.y) ||
+      onBunny(next.x, next.y),
   };
 }
 
@@ -3882,6 +4011,22 @@ export function shareCocoa(player) {
   });
 }
 
+export function takeCookie(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "cookie", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareCookie(player) {
+  if (player.carry !== "cookie") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), cookie: true },
+  });
+}
+
 export function takePlum(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "plum", pose: "idle", actionBeatMs: 0 });
@@ -4005,5 +4150,6 @@ export function carryLabel(value) {
   if (value === "plum") return "Plum";
   if (value === "honeyjar") return "Honey jar";
   if (value === "mug") return "Cocoa";
+  if (value === "cookie") return "Cookie";
   return "";
 }
