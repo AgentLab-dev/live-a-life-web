@@ -123,7 +123,7 @@ export const ACTIONS = {
     { id: "share-honeyjar", label: "Share honey jar", x: HONEY_SPOT.x, y: HONEY_SPOT.y },
     { id: "take-cocoa", label: "Take cocoa", x: 2448, y: 920 },
     { id: "share-cocoa", label: "Share cocoa", x: COCOA_SPOT.x, y: COCOA_SPOT.y },
-    { id: "take-cookie", label: "Take cookie", x: 2368, y: 640 },
+    { id: "take-cookie", label: "Take cookie", x: 1000, y: 220 },
     { id: "share-cookie", label: "Share cookie", x: COOKIE_SPOT.x, y: COOKIE_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],

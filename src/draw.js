@@ -5641,10 +5641,10 @@ function paintCookie(ctx, x, y, scale = 1) {
 
 function drawSharedCookie(ctx, carried) {
   if (!carried) {
-    paintCookie(ctx, 2368, 628, 0.9);
+    paintCookie(ctx, 1000, 208, 0.9);
     ctx.fillStyle = "#5a3820";
     ctx.font = "700 14px Fredoka, sans-serif";
-    ctx.fillText("Cookie", 2340, 600);
+    ctx.fillText("Cookie", 972, 180);
   }
   ctx.fillStyle = "#fff8e7";
   roundRect(ctx, COOKIE_SPOT.x - 22, COOKIE_SPOT.y - 8, 44, 22, 8);

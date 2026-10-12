@@ -5783,59 +5783,59 @@ describe("monday craft-meadow play", () => {
   }
 
   it("names bead, blueberry, mitten, bunny, and yarn-spool paths", () => {
-    expect(townPathAt(2286, 164)).toBe("beads");
-    expect(onBeadLane(2286, 164)).toBe(true);
-    expect(townPathAt(2266, 164)).toBe("");
-    expect(townPathAt(654, 174)).toBe("blueberries");
-    expect(onBlueberryPad(654, 174)).toBe(true);
-    expect(townPathAt(616, 174)).toBe("");
+    expect(townPathAt(1446, 1700)).toBe("beads");
+    expect(onBeadLane(1446, 1700)).toBe(true);
+    expect(townPathAt(1426, 1700)).toBe("");
+    expect(townPathAt(1642, 414)).toBe("blueberries");
+    expect(onBlueberryPad(1642, 414)).toBe(true);
+    expect(townPathAt(1604, 414)).toBe("");
     expect(townPathAt(178, 624)).toBe("mittens");
     expect(onMittenGap(178, 624)).toBe(true);
     expect(townPathAt(128, 624)).toBe("");
-    expect(townPathAt(1894, 1462)).toBe("bunnies");
-    expect(onBunny(1894, 1462)).toBe(true);
-    expect(townPathAt(1862, 1486)).toBe("");
+    expect(townPathAt(2190, 1662)).toBe("bunnies");
+    expect(onBunny(2190, 1662)).toBe(true);
+    expect(townPathAt(2158, 1686)).toBe("");
     expect(townPathAt(1290, 1476)).toBe("spools");
     expect(onSpoolLane(1290, 1476)).toBe(true);
     expect(townPathAt(1270, 1476)).toBe("");
-    expect(townPathAt(2368, 640)).toBe("");
+    expect(townPathAt(1000, 220)).toBe("");
   });
 
   it("blocks bead piles, blueberry grass, mitten posts, bunny lawn, and yarn spools but not the walk paths", () => {
-    expect(blockedByBeads(2266, 164)).toBe(true);
-    expect(isBlocked("town", 2266, 164)).toBe(true);
-    expect(onBeadLane(2286, 164)).toBe(true);
-    expect(isBlocked("town", 2286, 164)).toBe(false);
-    expect(blockedByBlueberries(616, 174)).toBe(true);
-    expect(isBlocked("town", 616, 174)).toBe(true);
-    expect(onBlueberryPad(654, 174)).toBe(true);
-    expect(isBlocked("town", 654, 174)).toBe(false);
+    expect(blockedByBeads(1426, 1700)).toBe(true);
+    expect(isBlocked("town", 1426, 1700)).toBe(true);
+    expect(onBeadLane(1446, 1700)).toBe(true);
+    expect(isBlocked("town", 1446, 1700)).toBe(false);
+    expect(blockedByBlueberries(1604, 414)).toBe(true);
+    expect(isBlocked("town", 1604, 414)).toBe(true);
+    expect(onBlueberryPad(1642, 414)).toBe(true);
+    expect(isBlocked("town", 1642, 414)).toBe(false);
     expect(blockedByMittens(128, 624)).toBe(true);
     expect(isBlocked("town", 128, 624)).toBe(true);
     expect(onMittenGap(178, 624)).toBe(true);
     expect(isBlocked("town", 178, 624)).toBe(false);
-    expect(blockedByBunnies(1862, 1486)).toBe(true);
-    expect(isBlocked("town", 1862, 1486)).toBe(true);
-    expect(onBunny(1894, 1462)).toBe(true);
-    expect(isBlocked("town", 1894, 1462)).toBe(false);
+    expect(blockedByBunnies(2158, 1686)).toBe(true);
+    expect(isBlocked("town", 2158, 1686)).toBe(true);
+    expect(onBunny(2190, 1662)).toBe(true);
+    expect(isBlocked("town", 2190, 1662)).toBe(false);
     expect(blockedBySpools(1270, 1476)).toBe(true);
     expect(isBlocked("town", 1270, 1476)).toBe(true);
     expect(onSpoolLane(1290, 1476)).toBe(true);
     expect(isBlocked("town", 1290, 1476)).toBe(false);
-    expect(isBlocked("town", 2368, 640)).toBe(false);
+    expect(isBlocked("town", 1000, 220)).toBe(false);
   });
 
   it("walks the beads, blueberries, and mitten line and earns stickers", () => {
-    let player = townKid(2286, 116);
+    let player = townKid(1446, 1652);
     player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 20);
-    expect(player.y).toBeGreaterThan(200);
+    expect(player.y).toBeGreaterThan(1736);
     expect(player.stickers.beads).toBe(true);
     expect(player.money).toBeUndefined();
     expect(newSticker(defaultStickers(), player.stickers)).toBe("beads");
 
-    player = townKid(654, 116);
+    player = townKid(1642, 356);
     player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 20);
-    expect(player.y).toBeGreaterThan(220);
+    expect(player.y).toBeGreaterThan(460);
     expect(player.stickers.blueberries).toBe(true);
 
     player = townKid(178, 572);
@@ -5846,9 +5846,9 @@ describe("monday craft-meadow play", () => {
   });
 
   it("walks the bunnies and yarn spools without a fail state", () => {
-    let player = townKid(1894, 1428);
+    let player = townKid(2190, 1628);
     player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 24);
-    expect(player.y).toBeGreaterThan(1568);
+    expect(player.y).toBeGreaterThan(1768);
     expect(player.stickers.bunnies).toBe(true);
 
     player = townKid(1290, 1428);
@@ -5859,15 +5859,15 @@ describe("monday craft-meadow play", () => {
   });
 
   it("lets tap-to-walk stop at blueberry grass and bunny lawn instead of punishing", () => {
-    const berryBump = stepToward(townKid(616, 116), { x: 616, y: 300 }, 80);
-    expect(berryBump.y).toBeLessThan(132);
+    const berryBump = stepToward(townKid(1604, 356), { x: 1604, y: 520 }, 80);
+    expect(berryBump.y).toBeLessThan(372);
     expect(berryBump.stickers).toEqual(defaultStickers());
-    expect(isBlocked("town", 616, 174)).toBe(true);
+    expect(isBlocked("town", 1604, 414)).toBe(true);
 
-    const bunnyBump = stepToward(townKid(1862, 1428), { x: 1862, y: 1600 }, 80);
-    expect(bunnyBump.y).toBeLessThan(1444);
+    const bunnyBump = stepToward(townKid(2158, 1628), { x: 2158, y: 1800 }, 80);
+    expect(bunnyBump.y).toBeLessThan(1644);
     expect(bunnyBump.stickers).toEqual(defaultStickers());
-    expect(isBlocked("town", 1862, 1486)).toBe(true);
+    expect(isBlocked("town", 2158, 1686)).toBe(true);
   });
 
   it("takes and shares a cookie without money or a timer", () => {
@@ -5875,7 +5875,7 @@ describe("monday craft-meadow play", () => {
     expect(helper.carry).toBe("cookie");
     expect(helper.money).toBeUndefined();
     expect(
-      visibleActions({ ...helper, x: 2368, y: 640, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+      visibleActions({ ...helper, x: 1000, y: 220, pose: "idle", actionBeatMs: 0, job: "none" }).some(
         (action) => action.id === "take-cookie",
       ),
     ).toBe(false);
@@ -5923,7 +5923,7 @@ describe("monday craft-meadow play", () => {
   });
 
   it("shows cookie actions without hiding house or shop buttons", () => {
-    const atYard = townKid(2368, 640, { pose: "idle", job: "none" });
+    const atYard = townKid(1000, 220, { pose: "idle", job: "none" });
     const ids = visibleActions(atYard).map((action) => action.id);
     expect(ids).toEqual(expect.arrayContaining(["take-cookie", "stickers"]));
     expect(ids).not.toContain("share-cookie");
@@ -5936,7 +5936,7 @@ describe("monday craft-meadow play", () => {
       expect.arrayContaining(["share-cookie", "stickers"]),
     );
     expect(isBlocked("town", COOKIE_SPOT.x, COOKIE_SPOT.y)).toBe(false);
-    expect(isBlocked("town", 2368, 640)).toBe(false);
+    expect(isBlocked("town", 1000, 220)).toBe(false);
     expect(isBlocked("town", 480, 660)).toBe(false);
   });
 
@@ -5956,13 +5956,13 @@ describe("monday craft-meadow play", () => {
     expect(isBlocked("town", 1920, 1320)).toBe(false);
     expect(isBlocked("town", 420, 980)).toBe(false);
     expect(isBlocked("town", 420, 1400)).toBe(false);
-    expect(isBlocked("town", 2286, 164)).toBe(false);
-    expect(isBlocked("town", 654, 174)).toBe(false);
+    expect(isBlocked("town", 1446, 1700)).toBe(false);
+    expect(isBlocked("town", 1642, 414)).toBe(false);
     expect(isBlocked("town", 178, 624)).toBe(false);
-    expect(isBlocked("town", 1894, 1462)).toBe(false);
+    expect(isBlocked("town", 2190, 1662)).toBe(false);
     expect(isBlocked("town", 1290, 1476)).toBe(false);
     expect(isBlocked("town", 300, 1900)).toBe(false);
-    expect(isBlocked("town", 2368, 640)).toBe(false);
+    expect(isBlocked("town", 1000, 220)).toBe(false);
     expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
   });
 });

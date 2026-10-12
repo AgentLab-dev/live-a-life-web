@@ -1396,21 +1396,21 @@ export const NEEDLE_BLOCKS = [
 
 export const COCOA_SPOT = { x: 516, y: 1810 };
 
-export const BEAD_ZONE = { x: 2208, y: 132, w: 164, h: 64 };
+export const BEAD_ZONE = { x: 1368, y: 1668, w: 164, h: 64 };
 
 export const BEAD_BLOCKS = [
-  { x: 2216, y: 132, w: 20, h: 64 },
-  { x: 2256, y: 132, w: 20, h: 64 },
-  { x: 2296, y: 132, w: 20, h: 64 },
-  { x: 2336, y: 132, w: 20, h: 64 },
+  { x: 1376, y: 1668, w: 20, h: 64 },
+  { x: 1416, y: 1668, w: 20, h: 64 },
+  { x: 1456, y: 1668, w: 20, h: 64 },
+  { x: 1496, y: 1668, w: 20, h: 64 },
 ];
 
-export const BLUEBERRY_BED = { x: 604, y: 132, w: 100, h: 84 };
+export const BLUEBERRY_BED = { x: 1592, y: 372, w: 100, h: 84 };
 
 export const BLUEBERRY_PADS = [
-  { x: 654, y: 148 },
-  { x: 654, y: 174 },
-  { x: 654, y: 200 },
+  { x: 1642, y: 388 },
+  { x: 1642, y: 414 },
+  { x: 1642, y: 440 },
 ];
 
 export const BLUEBERRY_RADIUS = 20;
@@ -1429,13 +1429,13 @@ export const MITTEN_GAP = { x: 164, y: 600, w: 28, h: 48 };
 
 export const MITTEN_BAND = { x: 136, y: 616, w: 84, h: 14 };
 
-export const BUNNY_ZONE = { x: 1848, y: 1444, w: 88, h: 120 };
+export const BUNNY_ZONE = { x: 2144, y: 1644, w: 88, h: 120 };
 
 export const BUNNIES = [
-  { x: 1856, y: 1444, w: 40, h: 36 },
-  { x: 1892, y: 1472, w: 40, h: 36 },
-  { x: 1856, y: 1500, w: 40, h: 36 },
-  { x: 1892, y: 1528, w: 40, h: 36 },
+  { x: 2152, y: 1644, w: 40, h: 36 },
+  { x: 2188, y: 1672, w: 40, h: 36 },
+  { x: 2152, y: 1700, w: 40, h: 36 },
+  { x: 2188, y: 1728, w: 40, h: 36 },
 ];
 
 export const SPOOL_ZONE = { x: 1212, y: 1444, w: 164, h: 64 };
