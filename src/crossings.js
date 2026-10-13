@@ -1449,6 +1449,59 @@ export const SPOOL_BLOCKS = [
 
 export const COOKIE_SPOT = { x: 300, y: 1900 };
 
+export const BUTTON_ZONE = { x: 2220, y: 112, w: 164, h: 64 };
+
+export const BUTTON_BLOCKS = [
+  { x: 2228, y: 112, w: 20, h: 64 },
+  { x: 2268, y: 112, w: 20, h: 64 },
+  { x: 2308, y: 112, w: 20, h: 64 },
+  { x: 2348, y: 112, w: 20, h: 64 },
+];
+
+export const APRICOT_BED = { x: 2364, y: 832, w: 100, h: 84 };
+
+export const APRICOT_PADS = [
+  { x: 2414, y: 848 },
+  { x: 2414, y: 874 },
+  { x: 2414, y: 900 },
+];
+
+export const APRICOT_RADIUS = 20;
+
+export const EARMUFF_POSTS = [
+  { x: 2004, y: 688, w: 16, h: 72 },
+  { x: 2104, y: 688, w: 16, h: 72 },
+];
+
+export const EARMUFF_WALLS = [
+  { x: 2020, y: 716, w: 28, h: 14 },
+  { x: 2076, y: 716, w: 28, h: 14 },
+];
+
+export const EARMUFF_GAP = { x: 2048, y: 700, w: 28, h: 48 };
+
+export const EARMUFF_BAND = { x: 2020, y: 716, w: 84, h: 14 };
+
+export const HOG_ZONE = { x: 2420, y: 208, w: 88, h: 120 };
+
+export const HOGS = [
+  { x: 2428, y: 208, w: 40, h: 36 },
+  { x: 2464, y: 236, w: 40, h: 36 },
+  { x: 2428, y: 264, w: 40, h: 36 },
+  { x: 2464, y: 292, w: 40, h: 36 },
+];
+
+export const PEBBLE_ZONE = { x: 2092, y: 2136, w: 164, h: 64 };
+
+export const PEBBLE_BLOCKS = [
+  { x: 2100, y: 2136, w: 20, h: 64 },
+  { x: 2140, y: 2136, w: 20, h: 64 },
+  { x: 2180, y: 2136, w: 20, h: 64 },
+  { x: 2220, y: 2136, w: 20, h: 64 },
+];
+
+export const MUFFIN_SPOT = { x: 2302, y: 1984 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -1612,6 +1665,12 @@ export const STICKERS = [
   { id: "bunnies", name: "Bunny tip-toer", hint: "You tip-toed past the friendly bunnies." },
   { id: "spools", name: "Spool weaver", hint: "You weaved between the yarn spools." },
   { id: "cookie", name: "Cookie friend", hint: "You shared a kind cookie." },
+  { id: "buttons", name: "Button weaver", hint: "You weaved between the button stacks." },
+  { id: "apricots", name: "Apricot hopper", hint: "You hopped the apricot pads." },
+  { id: "earmuffs", name: "Earmuff ducker", hint: "You ducked under the earmuff line." },
+  { id: "hogs", name: "Hedgehog tip-toer", hint: "You tip-toed past the friendly hedgehogs." },
+  { id: "pebbles", name: "Pebble weaver", hint: "You weaved between the pebble stacks." },
+  { id: "muffin", name: "Muffin friend", hint: "You shared a kind muffin." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -1779,12 +1838,18 @@ export const CHEERS = {
   bunnies: "Tip-toe past the friendly bunnies!",
   spools: "Colorful yarn spools said hello!",
   cookie: "A kind cookie to share. Kind!",
+  buttons: "Little button stacks said hello!",
+  apricots: "Boing! Soft hops on the apricots!",
+  earmuffs: "Duck under the cozy earmuff line!",
+  hogs: "Tip-toe past the friendly hedgehogs!",
+  pebbles: "Smooth pebble stacks said hello!",
+  muffin: "A kind muffin to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin"];
 
 export function defaultStickers() {
   return {
@@ -1950,6 +2015,12 @@ export function defaultStickers() {
     bunnies: false,
     spools: false,
     cookie: false,
+    buttons: false,
+    apricots: false,
+    earmuffs: false,
+    hogs: false,
+    pebbles: false,
+    muffin: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -2512,6 +2583,26 @@ export function onSpoolLane(x, y) {
   return inRect(x, y, SPOOL_ZONE) && !SPOOL_BLOCKS.some((spool) => inRect(x, y, spool));
 }
 
+export function onButtonLane(x, y) {
+  return inRect(x, y, BUTTON_ZONE) && !BUTTON_BLOCKS.some((button) => inRect(x, y, button));
+}
+
+export function onApricotPad(x, y) {
+  return APRICOT_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= APRICOT_RADIUS);
+}
+
+export function onEarmuffGap(x, y) {
+  return inRect(x, y, EARMUFF_GAP);
+}
+
+export function onHog(x, y) {
+  return HOGS.some((hog) => inRect(x, y, hog));
+}
+
+export function onPebbleLane(x, y) {
+  return inRect(x, y, PEBBLE_ZONE) && !PEBBLE_BLOCKS.some((pebble) => inRect(x, y, pebble));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -2643,6 +2734,11 @@ export function townPathAt(x, y) {
   if (onMittenGap(x, y)) return "mittens";
   if (onBunny(x, y)) return "bunnies";
   if (onSpoolLane(x, y)) return "spools";
+  if (onButtonLane(x, y)) return "buttons";
+  if (onApricotPad(x, y)) return "apricots";
+  if (onEarmuffGap(x, y)) return "earmuffs";
+  if (onHog(x, y)) return "hogs";
+  if (onPebbleLane(x, y)) return "pebbles";
   return "";
 }
 
@@ -3227,6 +3323,27 @@ export function blockedBySpools(x, y) {
   return SPOOL_BLOCKS.some((spool) => inRect(x, y, spool));
 }
 
+export function blockedByButtons(x, y) {
+  return BUTTON_BLOCKS.some((button) => inRect(x, y, button));
+}
+
+export function blockedByApricots(x, y) {
+  return inRect(x, y, APRICOT_BED) && !onApricotPad(x, y);
+}
+
+export function blockedByEarmuffs(x, y) {
+  if (onEarmuffGap(x, y)) return false;
+  return EARMUFF_POSTS.some((post) => inRect(x, y, post)) || EARMUFF_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByHogs(x, y) {
+  return inRect(x, y, HOG_ZONE) && !onHog(x, y);
+}
+
+export function blockedByPebbles(x, y) {
+  return PEBBLE_BLOCKS.some((pebble) => inRect(x, y, pebble));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -3362,7 +3479,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByBlueberries(x, y) ||
     blockedByMittens(x, y) ||
     blockedByBunnies(x, y) ||
-    blockedBySpools(x, y)
+    blockedBySpools(x, y) ||
+    blockedByButtons(x, y) ||
+    blockedByApricots(x, y) ||
+    blockedByEarmuffs(x, y) ||
+    blockedByHogs(x, y) ||
+    blockedByPebbles(x, y)
   );
 }
 
@@ -3547,6 +3669,11 @@ export function applyCrossingProgress(prev, next) {
     ["mittens", MITTEN_BAND, "y"],
     ["bunnies", BUNNY_ZONE, "y"],
     ["spools", SPOOL_ZONE, "y"],
+    ["buttons", BUTTON_ZONE, "y"],
+    ["apricots", APRICOT_BED, "y"],
+    ["earmuffs", EARMUFF_BAND, "y"],
+    ["hogs", HOG_ZONE, "y"],
+    ["pebbles", PEBBLE_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -3625,7 +3752,9 @@ export function applyCrossingProgress(prev, next) {
       onFigPad(next.x, next.y) ||
       onChipmunk(next.x, next.y) ||
       onBlueberryPad(next.x, next.y) ||
-      onBunny(next.x, next.y),
+      onBunny(next.x, next.y) ||
+      onApricotPad(next.x, next.y) ||
+      onHog(next.x, next.y),
   };
 }
 
@@ -4027,6 +4156,22 @@ export function shareCookie(player) {
   });
 }
 
+export function takeMuffin(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "muffin", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareMuffin(player) {
+  if (player.carry !== "muffin") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), muffin: true },
+  });
+}
+
 export function takePlum(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "plum", pose: "idle", actionBeatMs: 0 });
@@ -4151,5 +4296,6 @@ export function carryLabel(value) {
   if (value === "honeyjar") return "Honey jar";
   if (value === "mug") return "Cocoa";
   if (value === "cookie") return "Cookie";
+  if (value === "muffin") return "Muffin";
   return "";
 }

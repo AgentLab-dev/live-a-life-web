@@ -324,6 +324,18 @@ import {
   SPOOL_ZONE,
   SPOOL_BLOCKS,
   COOKIE_SPOT,
+  BUTTON_ZONE,
+  BUTTON_BLOCKS,
+  APRICOT_BED,
+  APRICOT_PADS,
+  EARMUFF_POSTS,
+  EARMUFF_WALLS,
+  EARMUFF_GAP,
+  HOG_ZONE,
+  HOGS,
+  PEBBLE_ZONE,
+  PEBBLE_BLOCKS,
+  MUFFIN_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -989,6 +1001,19 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     oval(ctx, 26, 15, 1.2, 1.2);
     ctx.fill();
     oval(ctx, 24, 11, 1.1, 1.1);
+    ctx.fill();
+  }
+  if (look.carry === "muffin" && !sleeping) {
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, 16, 12, 16, 8, 2);
+    ctx.fill();
+    ctx.fillStyle = "#c48a3a";
+    oval(ctx, 24, 12, 8, 5);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, 22, 10, 1.2, 1.2);
+    ctx.fill();
+    oval(ctx, 26, 11, 1.1, 1.1);
     ctx.fill();
   }
   ctx.restore();
@@ -5663,6 +5688,203 @@ function drawSharedCookie(ctx, carried) {
   ctx.fillText("Cookie", COOKIE_SPOT.x - 22, COOKIE_SPOT.y - 16);
 }
 
+function drawButtons(ctx) {
+  ctx.fillStyle = "#f8e6c8";
+  roundRect(ctx, BUTTON_ZONE.x, BUTTON_ZONE.y, BUTTON_ZONE.w, BUTTON_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#e74c3c", "#5b8def", "#f4d35e", "#3f9b4a"];
+  BUTTON_BLOCKS.forEach((button, index) => {
+    const cx = button.x + button.w / 2;
+    const cy = button.y + 32;
+    for (let i = -1; i <= 1; i += 1) {
+      ctx.fillStyle = colors[(index + i + 1) % colors.length];
+      oval(ctx, cx, cy + i * 8, 6, 6);
+      ctx.fill();
+      ctx.fillStyle = "#fff8e7";
+      oval(ctx, cx - 1.6, cy + i * 8 - 1.4, 1.1, 1.1);
+      ctx.fill();
+      oval(ctx, cx + 1.6, cy + i * 8 + 1.2, 1.1, 1.1);
+      ctx.fill();
+    }
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Buttons", BUTTON_ZONE.x + 48, BUTTON_ZONE.y - 8);
+}
+
+function drawApricotPads(ctx) {
+  ctx.fillStyle = "#e7f0d4";
+  roundRect(ctx, APRICOT_BED.x, APRICOT_BED.y, APRICOT_BED.w, APRICOT_BED.h, 12);
+  ctx.fill();
+  const fruits = ["#f4a261", "#e07a3d", "#f6c28b"];
+  APRICOT_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pad.x, pad.y + 6, 10, 4);
+    ctx.fill();
+    ctx.fillStyle = fruits[index % fruits.length];
+    oval(ctx, pad.x, pad.y, 7, 7);
+    ctx.fill();
+    ctx.fillStyle = "#fff1d6";
+    oval(ctx, pad.x - 2, pad.y - 2, 1.6, 1.6);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pad.x + 2, pad.y - 7, 3.2, 1.6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Apricots", APRICOT_BED.x + 12, APRICOT_BED.y - 8);
+}
+
+function drawEarmuffLine(ctx) {
+  for (const post of EARMUFF_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y + 6, 8, post.h - 10, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#6d5a4a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(EARMUFF_POSTS[0].x + 8, EARMUFF_POSTS[0].y + 16);
+  ctx.lineTo(EARMUFF_POSTS[1].x + 8, EARMUFF_POSTS[1].y + 16);
+  ctx.stroke();
+  const wool = ["#c39bd3", "#5b8def", "#f4a4c4", "#f4d35e"];
+  EARMUFF_WALLS.forEach((wall, index) => {
+    const cx = wall.x + wall.w / 2;
+    const cy = wall.y + 2;
+    ctx.fillStyle = wool[index % wool.length];
+    oval(ctx, cx - 6, cy + 4, 4.5, 5);
+    ctx.fill();
+    oval(ctx, cx + 6, cy + 4, 4.5, 5);
+    ctx.fill();
+    ctx.strokeStyle = wool[(index + 1) % wool.length];
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(cx - 4, cy - 1);
+    ctx.quadraticCurveTo(cx, cy - 8, cx + 4, cy - 1);
+    ctx.stroke();
+  });
+  ctx.strokeStyle = "#c39bd3";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(EARMUFF_GAP.x + 2, EARMUFF_GAP.y + 8);
+  ctx.quadraticCurveTo(EARMUFF_GAP.x + EARMUFF_GAP.w / 2, EARMUFF_GAP.y - 10, EARMUFF_GAP.x + EARMUFF_GAP.w - 2, EARMUFF_GAP.y + 8);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Earmuffs", EARMUFF_POSTS[0].x + 12, EARMUFF_POSTS[0].y - 8);
+}
+
+function drawHedgehogs(ctx) {
+  ctx.fillStyle = "#f8e6c8";
+  roundRect(ctx, HOG_ZONE.x, HOG_ZONE.y, HOG_ZONE.w, HOG_ZONE.h, 12);
+  ctx.fill();
+  const coats = ["#c48a3a", "#a86b2a", "#d4a15a", "#8d5520"];
+  HOGS.forEach((hog, index) => {
+    const cx = hog.x + hog.w / 2;
+    const cy = hog.y + 18;
+    ctx.strokeStyle = coats[index % coats.length];
+    ctx.lineWidth = 1.4;
+    for (let i = -2; i <= 2; i += 1) {
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + i * 3, cy - 8);
+      ctx.stroke();
+    }
+    ctx.fillStyle = coats[index % coats.length];
+    oval(ctx, cx, cy + 2, 7, 5);
+    ctx.fill();
+    ctx.fillStyle = "#f7efd4";
+    oval(ctx, cx + 4, cy + 1, 3, 2.4);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx + 5, cy, 0.7, 0.7);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, cx + 6.2, cy + 2, 0.8, 0.6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Hedgehogs", HOG_ZONE.x - 8, HOG_ZONE.y - 8);
+}
+
+function drawPebbles(ctx) {
+  ctx.fillStyle = "#efe2c0";
+  roundRect(ctx, PEBBLE_ZONE.x, PEBBLE_ZONE.y, PEBBLE_ZONE.w, PEBBLE_ZONE.h, 12);
+  ctx.fill();
+  const stones = ["#b7b7b7", "#d7c4a3", "#8d8d8d", "#e7d3b0"];
+  PEBBLE_BLOCKS.forEach((pebble, index) => {
+    const cx = pebble.x + pebble.w / 2;
+    const cy = pebble.y + 32;
+    for (let i = -1; i <= 1; i += 1) {
+      ctx.fillStyle = stones[(index + i + 1) % stones.length];
+      oval(ctx, cx, cy + i * 8, 6, 4.2);
+      ctx.fill();
+      ctx.fillStyle = "rgba(255,248,231,0.7)";
+      oval(ctx, cx - 1.5, cy + i * 8 - 1, 1.4, 0.8);
+      ctx.fill();
+    }
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pebbles", PEBBLE_ZONE.x + 48, PEBBLE_ZONE.y - 8);
+}
+
+function paintMuffin(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#f4d35e";
+  roundRect(ctx, -8, 2, 16, 10, 3);
+  ctx.fill();
+  ctx.strokeStyle = "#c45c26";
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(-8, 4);
+  ctx.lineTo(-5, 12);
+  ctx.moveTo(-2, 3);
+  ctx.lineTo(-1, 12);
+  ctx.moveTo(3, 3);
+  ctx.lineTo(4, 12);
+  ctx.stroke();
+  ctx.fillStyle = "#c48a3a";
+  oval(ctx, 0, 0, 9, 6);
+  ctx.fill();
+  ctx.fillStyle = "#e74c3c";
+  oval(ctx, -3, -1, 1.3, 1.3);
+  ctx.fill();
+  oval(ctx, 3, 0, 1.2, 1.2);
+  ctx.fill();
+  oval(ctx, 0, -3, 1.1, 1.1);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedMuffin(ctx, carried) {
+  if (!carried) {
+    paintMuffin(ctx, 1908, 100, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Muffin", 1880, 72);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, MUFFIN_SPOT.x - 22, MUFFIN_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, MUFFIN_SPOT.x - 20, MUFFIN_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, MUFFIN_SPOT.x - 16, MUFFIN_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, MUFFIN_SPOT.x + 10, MUFFIN_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintMuffin(ctx, MUFFIN_SPOT.x, MUFFIN_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Muffin", MUFFIN_SPOT.x - 20, MUFFIN_SPOT.y - 16);
+}
+
 function paintCocoaMug(ctx, x, y, scale = 1) {
   ctx.save();
   ctx.translate(x, y);
@@ -6297,6 +6519,12 @@ export function drawTown(ctx, player, time) {
   drawBunnies(ctx);
   drawYarnSpools(ctx);
   drawSharedCookie(ctx, player.carry === "cookie");
+  drawButtons(ctx);
+  drawApricotPads(ctx);
+  drawEarmuffLine(ctx);
+  drawHedgehogs(ctx);
+  drawPebbles(ctx);
+  drawSharedMuffin(ctx, player.carry === "muffin");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
