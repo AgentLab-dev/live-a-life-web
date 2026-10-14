@@ -63,6 +63,8 @@ import {
   shareCookie,
   takeMuffin,
   shareMuffin,
+  takeStar,
+  shareStar,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -565,6 +567,18 @@ export function startGame(root) {
     if (id === "share-muffin") {
       const before = player.stickers;
       player = shareMuffin(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-star") {
+      player = takeStar(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-star") {
+      const before = player.stickers;
+      player = shareStar(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
