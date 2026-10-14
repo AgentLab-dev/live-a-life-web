@@ -1502,6 +1502,59 @@ export const PEBBLE_BLOCKS = [
 
 export const MUFFIN_SPOT = { x: 2302, y: 1984 };
 
+export const CATTAIL_ZONE = { x: 1204, y: 1148, w: 164, h: 64 };
+
+export const CATTAIL_BLOCKS = [
+  { x: 1212, y: 1148, w: 20, h: 64 },
+  { x: 1252, y: 1148, w: 20, h: 64 },
+  { x: 1292, y: 1148, w: 20, h: 64 },
+  { x: 1332, y: 1148, w: 20, h: 64 },
+];
+
+export const ROSEHIP_BED = { x: 744, y: 532, w: 100, h: 84 };
+
+export const ROSEHIP_PADS = [
+  { x: 794, y: 548 },
+  { x: 794, y: 574 },
+  { x: 794, y: 600 },
+];
+
+export const ROSEHIP_RADIUS = 20;
+
+export const HAMMOCK_POSTS = [
+  { x: 1608, y: 1084, w: 16, h: 72 },
+  { x: 1708, y: 1084, w: 16, h: 72 },
+];
+
+export const HAMMOCK_WALLS = [
+  { x: 1624, y: 1112, w: 28, h: 14 },
+  { x: 1680, y: 1112, w: 28, h: 14 },
+];
+
+export const HAMMOCK_GAP = { x: 1652, y: 1096, w: 28, h: 48 };
+
+export const HAMMOCK_BAND = { x: 1624, y: 1112, w: 84, h: 14 };
+
+export const FOX_ZONE = { x: 574, y: 1288, w: 88, h: 120 };
+
+export const FOXES = [
+  { x: 582, y: 1288, w: 40, h: 36 },
+  { x: 618, y: 1316, w: 40, h: 36 },
+  { x: 582, y: 1344, w: 40, h: 36 },
+  { x: 618, y: 1372, w: 40, h: 36 },
+];
+
+export const BOOT_ZONE = { x: 1196, y: 2024, w: 164, h: 64 };
+
+export const BOOT_BLOCKS = [
+  { x: 1204, y: 2024, w: 20, h: 64 },
+  { x: 1244, y: 2024, w: 20, h: 64 },
+  { x: 1284, y: 2024, w: 20, h: 64 },
+  { x: 1324, y: 2024, w: 20, h: 64 },
+];
+
+export const STAR_SPOT = { x: 580, y: 1720 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -1671,6 +1724,12 @@ export const STICKERS = [
   { id: "hogs", name: "Hedgehog tip-toer", hint: "You tip-toed past the friendly hedgehogs." },
   { id: "pebbles", name: "Pebble weaver", hint: "You weaved between the pebble stacks." },
   { id: "muffin", name: "Muffin friend", hint: "You shared a kind muffin." },
+  { id: "cattails", name: "Cattail weaver", hint: "You weaved between the cattails." },
+  { id: "rosehips", name: "Rosehip hopper", hint: "You hopped the rosehip pads." },
+  { id: "hammock", name: "Hammock ducker", hint: "You ducked under the park hammock." },
+  { id: "foxes", name: "Fox tip-toer", hint: "You tip-toed past the friendly foxes." },
+  { id: "boots", name: "Boot weaver", hint: "You weaved between the rain boots." },
+  { id: "star", name: "Star friend", hint: "You shared a kind paper star." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -1844,12 +1903,18 @@ export const CHEERS = {
   hogs: "Tip-toe past the friendly hedgehogs!",
   pebbles: "Smooth pebble stacks said hello!",
   muffin: "A kind muffin to share. Kind!",
+  cattails: "Tall cattails said hello!",
+  rosehips: "Boing! Soft hops on the rosehips!",
+  hammock: "Duck under the cozy hammock!",
+  foxes: "Tip-toe past the friendly foxes!",
+  boots: "Colorful rain boots said hello!",
+  star: "A kind paper star to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star"];
 
 export function defaultStickers() {
   return {
@@ -2021,6 +2086,12 @@ export function defaultStickers() {
     hogs: false,
     pebbles: false,
     muffin: false,
+    cattails: false,
+    rosehips: false,
+    hammock: false,
+    foxes: false,
+    boots: false,
+    star: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -2603,6 +2674,26 @@ export function onPebbleLane(x, y) {
   return inRect(x, y, PEBBLE_ZONE) && !PEBBLE_BLOCKS.some((pebble) => inRect(x, y, pebble));
 }
 
+export function onCattailLane(x, y) {
+  return inRect(x, y, CATTAIL_ZONE) && !CATTAIL_BLOCKS.some((stalk) => inRect(x, y, stalk));
+}
+
+export function onRosehipPad(x, y) {
+  return ROSEHIP_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= ROSEHIP_RADIUS);
+}
+
+export function onHammockGap(x, y) {
+  return inRect(x, y, HAMMOCK_GAP);
+}
+
+export function onFox(x, y) {
+  return FOXES.some((fox) => inRect(x, y, fox));
+}
+
+export function onBootLane(x, y) {
+  return inRect(x, y, BOOT_ZONE) && !BOOT_BLOCKS.some((boot) => inRect(x, y, boot));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -2739,6 +2830,11 @@ export function townPathAt(x, y) {
   if (onEarmuffGap(x, y)) return "earmuffs";
   if (onHog(x, y)) return "hogs";
   if (onPebbleLane(x, y)) return "pebbles";
+  if (onCattailLane(x, y)) return "cattails";
+  if (onRosehipPad(x, y)) return "rosehips";
+  if (onHammockGap(x, y)) return "hammock";
+  if (onFox(x, y)) return "foxes";
+  if (onBootLane(x, y)) return "boots";
   return "";
 }
 
@@ -3344,6 +3440,27 @@ export function blockedByPebbles(x, y) {
   return PEBBLE_BLOCKS.some((pebble) => inRect(x, y, pebble));
 }
 
+export function blockedByCattails(x, y) {
+  return CATTAIL_BLOCKS.some((stalk) => inRect(x, y, stalk));
+}
+
+export function blockedByRosehips(x, y) {
+  return inRect(x, y, ROSEHIP_BED) && !onRosehipPad(x, y);
+}
+
+export function blockedByHammock(x, y) {
+  if (onHammockGap(x, y)) return false;
+  return HAMMOCK_POSTS.some((post) => inRect(x, y, post)) || HAMMOCK_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByFoxes(x, y) {
+  return inRect(x, y, FOX_ZONE) && !onFox(x, y);
+}
+
+export function blockedByBoots(x, y) {
+  return BOOT_BLOCKS.some((boot) => inRect(x, y, boot));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -3484,7 +3601,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByApricots(x, y) ||
     blockedByEarmuffs(x, y) ||
     blockedByHogs(x, y) ||
-    blockedByPebbles(x, y)
+    blockedByPebbles(x, y) ||
+    blockedByCattails(x, y) ||
+    blockedByRosehips(x, y) ||
+    blockedByHammock(x, y) ||
+    blockedByFoxes(x, y) ||
+    blockedByBoots(x, y)
   );
 }
 
@@ -3674,6 +3796,11 @@ export function applyCrossingProgress(prev, next) {
     ["earmuffs", EARMUFF_BAND, "y"],
     ["hogs", HOG_ZONE, "y"],
     ["pebbles", PEBBLE_ZONE, "y"],
+    ["cattails", CATTAIL_ZONE, "y"],
+    ["rosehips", ROSEHIP_BED, "y"],
+    ["hammock", HAMMOCK_BAND, "y"],
+    ["foxes", FOX_ZONE, "y"],
+    ["boots", BOOT_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -3754,7 +3881,9 @@ export function applyCrossingProgress(prev, next) {
       onBlueberryPad(next.x, next.y) ||
       onBunny(next.x, next.y) ||
       onApricotPad(next.x, next.y) ||
-      onHog(next.x, next.y),
+      onHog(next.x, next.y) ||
+      onRosehipPad(next.x, next.y) ||
+      onFox(next.x, next.y),
   };
 }
 
@@ -4172,6 +4301,22 @@ export function shareMuffin(player) {
   });
 }
 
+export function takeStar(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "star", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareStar(player) {
+  if (player.carry !== "star") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), star: true },
+  });
+}
+
 export function takePlum(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "plum", pose: "idle", actionBeatMs: 0 });
@@ -4297,5 +4442,6 @@ export function carryLabel(value) {
   if (value === "mug") return "Cocoa";
   if (value === "cookie") return "Cookie";
   if (value === "muffin") return "Muffin";
+  if (value === "star") return "Paper star";
   return "";
 }
