@@ -1555,6 +1555,59 @@ export const BOOT_BLOCKS = [
 
 export const STAR_SPOT = { x: 580, y: 1720 };
 
+export const LAVENDER_ZONE = { x: 720, y: 2128, w: 164, h: 64 };
+
+export const LAVENDER_BLOCKS = [
+  { x: 728, y: 2128, w: 20, h: 64 },
+  { x: 768, y: 2128, w: 20, h: 64 },
+  { x: 808, y: 2128, w: 20, h: 64 },
+  { x: 848, y: 2128, w: 20, h: 64 },
+];
+
+export const STRAWBERRY_BED = { x: 1000, y: 1268, w: 100, h: 84 };
+
+export const STRAWBERRY_PADS = [
+  { x: 1050, y: 1284 },
+  { x: 1050, y: 1310 },
+  { x: 1050, y: 1336 },
+];
+
+export const STRAWBERRY_RADIUS = 20;
+
+export const BUNTING_POSTS = [
+  { x: 1264, y: 220, w: 16, h: 72 },
+  { x: 1364, y: 220, w: 16, h: 72 },
+];
+
+export const BUNTING_WALLS = [
+  { x: 1280, y: 248, w: 28, h: 14 },
+  { x: 1336, y: 248, w: 28, h: 14 },
+];
+
+export const BUNTING_GAP = { x: 1308, y: 232, w: 28, h: 48 };
+
+export const BUNTING_BAND = { x: 1280, y: 248, w: 84, h: 14 };
+
+export const TURTLE_ZONE = { x: 2088, y: 1988, w: 88, h: 120 };
+
+export const TURTLES = [
+  { x: 2096, y: 1988, w: 40, h: 36 },
+  { x: 2132, y: 2016, w: 40, h: 36 },
+  { x: 2096, y: 2044, w: 40, h: 36 },
+  { x: 2132, y: 2072, w: 40, h: 36 },
+];
+
+export const BRUSH_ZONE = { x: 1664, y: 2156, w: 164, h: 64 };
+
+export const BRUSH_BLOCKS = [
+  { x: 1672, y: 2156, w: 20, h: 64 },
+  { x: 1712, y: 2156, w: 20, h: 64 },
+  { x: 1752, y: 2156, w: 20, h: 64 },
+  { x: 1792, y: 2156, w: 20, h: 64 },
+];
+
+export const DAISY_SPOT = { x: 140, y: 1900 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -1730,6 +1783,12 @@ export const STICKERS = [
   { id: "foxes", name: "Fox tip-toer", hint: "You tip-toed past the friendly foxes." },
   { id: "boots", name: "Boot weaver", hint: "You weaved between the rain boots." },
   { id: "star", name: "Star friend", hint: "You shared a kind paper star." },
+  { id: "lavenders", name: "Lavender weaver", hint: "You weaved between the lavender." },
+  { id: "strawberries", name: "Strawberry hopper", hint: "You hopped the strawberry pads." },
+  { id: "bunting", name: "Bunting ducker", hint: "You ducked under the party bunting." },
+  { id: "turtles", name: "Turtle tip-toer", hint: "You tip-toed past the friendly turtles." },
+  { id: "brushes", name: "Brush weaver", hint: "You weaved between the paintbrushes." },
+  { id: "daisy", name: "Daisy friend", hint: "You shared a kind daisy." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -1909,12 +1968,18 @@ export const CHEERS = {
   foxes: "Tip-toe past the friendly foxes!",
   boots: "Colorful rain boots said hello!",
   star: "A kind paper star to share. Kind!",
+  lavenders: "Tall lavender said hello!",
+  strawberries: "Boing! Soft hops on the strawberries!",
+  bunting: "Duck under the colorful bunting!",
+  turtles: "Tip-toe past the friendly turtles!",
+  brushes: "Colorful paintbrushes said hello!",
+  daisy: "A kind daisy to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy"];
 
 export function defaultStickers() {
   return {
@@ -2092,6 +2157,12 @@ export function defaultStickers() {
     foxes: false,
     boots: false,
     star: false,
+    lavenders: false,
+    strawberries: false,
+    bunting: false,
+    turtles: false,
+    brushes: false,
+    daisy: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -2694,6 +2765,26 @@ export function onBootLane(x, y) {
   return inRect(x, y, BOOT_ZONE) && !BOOT_BLOCKS.some((boot) => inRect(x, y, boot));
 }
 
+export function onLavenderLane(x, y) {
+  return inRect(x, y, LAVENDER_ZONE) && !LAVENDER_BLOCKS.some((sprig) => inRect(x, y, sprig));
+}
+
+export function onStrawberryPad(x, y) {
+  return STRAWBERRY_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= STRAWBERRY_RADIUS);
+}
+
+export function onBuntingGap(x, y) {
+  return inRect(x, y, BUNTING_GAP);
+}
+
+export function onTurtle(x, y) {
+  return TURTLES.some((turtle) => inRect(x, y, turtle));
+}
+
+export function onBrushLane(x, y) {
+  return inRect(x, y, BRUSH_ZONE) && !BRUSH_BLOCKS.some((brush) => inRect(x, y, brush));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -2835,6 +2926,11 @@ export function townPathAt(x, y) {
   if (onHammockGap(x, y)) return "hammock";
   if (onFox(x, y)) return "foxes";
   if (onBootLane(x, y)) return "boots";
+  if (onLavenderLane(x, y)) return "lavenders";
+  if (onStrawberryPad(x, y)) return "strawberries";
+  if (onBuntingGap(x, y)) return "bunting";
+  if (onTurtle(x, y)) return "turtles";
+  if (onBrushLane(x, y)) return "brushes";
   return "";
 }
 
@@ -3461,6 +3557,27 @@ export function blockedByBoots(x, y) {
   return BOOT_BLOCKS.some((boot) => inRect(x, y, boot));
 }
 
+export function blockedByLavenders(x, y) {
+  return LAVENDER_BLOCKS.some((sprig) => inRect(x, y, sprig));
+}
+
+export function blockedByStrawberries(x, y) {
+  return inRect(x, y, STRAWBERRY_BED) && !onStrawberryPad(x, y);
+}
+
+export function blockedByBunting(x, y) {
+  if (onBuntingGap(x, y)) return false;
+  return BUNTING_POSTS.some((post) => inRect(x, y, post)) || BUNTING_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByTurtles(x, y) {
+  return inRect(x, y, TURTLE_ZONE) && !onTurtle(x, y);
+}
+
+export function blockedByBrushes(x, y) {
+  return BRUSH_BLOCKS.some((brush) => inRect(x, y, brush));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -3606,7 +3723,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByRosehips(x, y) ||
     blockedByHammock(x, y) ||
     blockedByFoxes(x, y) ||
-    blockedByBoots(x, y)
+    blockedByBoots(x, y) ||
+    blockedByLavenders(x, y) ||
+    blockedByStrawberries(x, y) ||
+    blockedByBunting(x, y) ||
+    blockedByTurtles(x, y) ||
+    blockedByBrushes(x, y)
   );
 }
 
@@ -3801,6 +3923,11 @@ export function applyCrossingProgress(prev, next) {
     ["hammock", HAMMOCK_BAND, "y"],
     ["foxes", FOX_ZONE, "y"],
     ["boots", BOOT_ZONE, "y"],
+    ["lavenders", LAVENDER_ZONE, "y"],
+    ["strawberries", STRAWBERRY_BED, "y"],
+    ["bunting", BUNTING_BAND, "y"],
+    ["turtles", TURTLE_ZONE, "y"],
+    ["brushes", BRUSH_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -3883,7 +4010,9 @@ export function applyCrossingProgress(prev, next) {
       onApricotPad(next.x, next.y) ||
       onHog(next.x, next.y) ||
       onRosehipPad(next.x, next.y) ||
-      onFox(next.x, next.y),
+      onFox(next.x, next.y) ||
+      onStrawberryPad(next.x, next.y) ||
+      onTurtle(next.x, next.y),
   };
 }
 
@@ -4317,6 +4446,22 @@ export function shareStar(player) {
   });
 }
 
+export function takeDaisy(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "daisy", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareDaisy(player) {
+  if (player.carry !== "daisy") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), daisy: true },
+  });
+}
+
 export function takePlum(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "plum", pose: "idle", actionBeatMs: 0 });
@@ -4443,5 +4588,6 @@ export function carryLabel(value) {
   if (value === "cookie") return "Cookie";
   if (value === "muffin") return "Muffin";
   if (value === "star") return "Paper star";
+  if (value === "daisy") return "Daisy";
   return "";
 }
