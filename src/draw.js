@@ -348,6 +348,18 @@ import {
   BOOT_ZONE,
   BOOT_BLOCKS,
   STAR_SPOT,
+  LAVENDER_ZONE,
+  LAVENDER_BLOCKS,
+  STRAWBERRY_BED,
+  STRAWBERRY_PADS,
+  BUNTING_POSTS,
+  BUNTING_WALLS,
+  BUNTING_GAP,
+  TURTLE_ZONE,
+  TURTLES,
+  BRUSH_ZONE,
+  BRUSH_BLOCKS,
+  DAISY_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1045,6 +1057,20 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#fff8e7";
     oval(ctx, 23, 13, 1.2, 1.2);
+    ctx.fill();
+  }
+  if (look.carry === "daisy" && !sleeping) {
+    ctx.fillStyle = "#3f9b4a";
+    roundRect(ctx, 22, 12, 3, 10, 1);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    for (let i = 0; i < 6; i += 1) {
+      const angle = (Math.PI * 2 * i) / 6;
+      oval(ctx, 23 + Math.cos(angle) * 5, 10 + Math.sin(angle) * 5, 2.4, 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 23, 10, 2.2, 2.2);
     ctx.fill();
   }
   ctx.restore();
@@ -6123,6 +6149,215 @@ function drawSharedStar(ctx, carried) {
   ctx.fillText("Star", STAR_SPOT.x - 14, STAR_SPOT.y - 16);
 }
 
+function drawLavender(ctx) {
+  ctx.fillStyle = "#e7e0f4";
+  roundRect(ctx, LAVENDER_ZONE.x, LAVENDER_ZONE.y, LAVENDER_ZONE.w, LAVENDER_ZONE.h, 12);
+  ctx.fill();
+  const blooms = ["#9b59b6", "#b07cc6", "#7d3c98", "#c39bd3"];
+  LAVENDER_BLOCKS.forEach((sprig, index) => {
+    const cx = sprig.x + sprig.w / 2;
+    ctx.strokeStyle = "#3f9b4a";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, sprig.y + sprig.h - 4);
+    ctx.lineTo(cx, sprig.y + 8);
+    ctx.stroke();
+    ctx.fillStyle = blooms[index % blooms.length];
+    for (let i = 0; i < 4; i += 1) {
+      oval(ctx, cx + (i % 2 === 0 ? -2 : 2), sprig.y + 10 + i * 6, 3.2, 2.4);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#6c3483";
+    oval(ctx, cx, sprig.y + 8, 2.2, 2.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Lavender", LAVENDER_ZONE.x + 42, LAVENDER_ZONE.y - 8);
+}
+
+function drawStrawberryPads(ctx) {
+  ctx.fillStyle = "#e7f6d8";
+  roundRect(ctx, STRAWBERRY_BED.x, STRAWBERRY_BED.y, STRAWBERRY_BED.w, STRAWBERRY_BED.h, 12);
+  ctx.fill();
+  const berries = ["#e74c3c", "#c0392b", "#e66767"];
+  STRAWBERRY_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pad.x, pad.y + 8, 10, 4);
+    ctx.fill();
+    ctx.fillStyle = berries[index % berries.length];
+    oval(ctx, pad.x, pad.y, 6.5, 7.4);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x - 2, pad.y - 1, 0.8, 0.8);
+    ctx.fill();
+    oval(ctx, pad.x + 1.4, pad.y + 1, 0.8, 0.8);
+    ctx.fill();
+    ctx.fillStyle = "#2d6a4f";
+    ctx.beginPath();
+    ctx.moveTo(pad.x - 3, pad.y - 6);
+    ctx.lineTo(pad.x, pad.y - 2);
+    ctx.lineTo(pad.x + 3, pad.y - 6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Strawberries", STRAWBERRY_BED.x - 8, STRAWBERRY_BED.y - 8);
+}
+
+function drawBunting(ctx) {
+  for (const post of BUNTING_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y + 6, 8, post.h - 10, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#6d5a4a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(BUNTING_POSTS[0].x + 8, BUNTING_POSTS[0].y + 14);
+  ctx.lineTo(BUNTING_POSTS[1].x + 8, BUNTING_POSTS[1].y + 14);
+  ctx.stroke();
+  const flags = ["#e74c3c", "#f4d35e", "#5b8def", "#3f9b4a"];
+  BUNTING_WALLS.forEach((wall, index) => {
+    const left = flags[index % flags.length];
+    const right = flags[(index + 2) % flags.length];
+    ctx.fillStyle = left;
+    ctx.beginPath();
+    ctx.moveTo(wall.x, wall.y - 6);
+    ctx.lineTo(wall.x + wall.w / 2, wall.y - 6);
+    ctx.lineTo(wall.x + wall.w / 4, wall.y + 10);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = right;
+    ctx.beginPath();
+    ctx.moveTo(wall.x + wall.w / 2, wall.y - 6);
+    ctx.lineTo(wall.x + wall.w, wall.y - 6);
+    ctx.lineTo(wall.x + (wall.w * 3) / 4, wall.y + 10);
+    ctx.closePath();
+    ctx.fill();
+  });
+  ctx.strokeStyle = "#f4d35e";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(BUNTING_GAP.x + 2, BUNTING_GAP.y + 4);
+  ctx.lineTo(BUNTING_GAP.x + BUNTING_GAP.w - 2, BUNTING_GAP.y + 4);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Bunting", BUNTING_POSTS[0].x + 18, BUNTING_POSTS[0].y - 8);
+}
+
+function drawTurtles(ctx) {
+  ctx.fillStyle = "#d5f5e3";
+  roundRect(ctx, TURTLE_ZONE.x, TURTLE_ZONE.y, TURTLE_ZONE.w, TURTLE_ZONE.h, 12);
+  ctx.fill();
+  const shells = ["#1e8449", "#27ae60", "#196f3d", "#58d68d"];
+  TURTLES.forEach((turtle, index) => {
+    const cx = turtle.x + turtle.w / 2;
+    const cy = turtle.y + 18;
+    ctx.fillStyle = "#7dcea0";
+    oval(ctx, cx, cy + 2, 5, 3.2);
+    ctx.fill();
+    ctx.fillStyle = shells[index % shells.length];
+    oval(ctx, cx, cy, 8, 5.5);
+    ctx.fill();
+    ctx.strokeStyle = "#145a32";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - 4, cy);
+    ctx.lineTo(cx + 4, cy);
+    ctx.moveTo(cx, cy - 3);
+    ctx.lineTo(cx, cy + 3);
+    ctx.stroke();
+    ctx.fillStyle = "#27ae60";
+    oval(ctx, cx + 7, cy - 1, 3.2, 2.4);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx + 8.4, cy - 1.4, 0.6, 0.6);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, cx + 9.2, cy + 0.4, 0.5, 0.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Turtles", TURTLE_ZONE.x + 12, TURTLE_ZONE.y - 8);
+}
+
+function drawPaintbrushes(ctx) {
+  ctx.fillStyle = "#fdebd0";
+  roundRect(ctx, BRUSH_ZONE.x, BRUSH_ZONE.y, BRUSH_ZONE.w, BRUSH_ZONE.h, 12);
+  ctx.fill();
+  const handles = ["#e74c3c", "#5b8def", "#f4d35e", "#9b59b6"];
+  BRUSH_BLOCKS.forEach((brush, index) => {
+    const cx = brush.x + brush.w / 2;
+    const top = brush.y + 10;
+    ctx.fillStyle = handles[index % handles.length];
+    roundRect(ctx, cx - 2.4, top + 14, 4.8, 28, 2);
+    ctx.fill();
+    ctx.fillStyle = "#c48a3a";
+    roundRect(ctx, cx - 3.4, top + 10, 6.8, 6, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f7efd4";
+    ctx.beginPath();
+    ctx.moveTo(cx - 4, top + 10);
+    ctx.lineTo(cx + 4, top + 10);
+    ctx.lineTo(cx + 2, top);
+    ctx.lineTo(cx - 2, top);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, top + 22, 1, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Brushes", BRUSH_ZONE.x + 48, BRUSH_ZONE.y - 8);
+}
+
+function paintDaisy(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#3f9b4a";
+  roundRect(ctx, -1.5, 2, 3, 14, 1);
+  ctx.fill();
+  ctx.fillStyle = "#fff8e7";
+  for (let i = 0; i < 8; i += 1) {
+    const angle = (Math.PI * 2 * i) / 8;
+    oval(ctx, Math.cos(angle) * 7, -6 + Math.sin(angle) * 7, 3.2, 2.2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, 0, -6, 3.4, 3.4);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedDaisy(ctx, carried) {
+  if (!carried) {
+    paintDaisy(ctx, 1860, 548, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Daisy", 1838, 522);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, DAISY_SPOT.x - 22, DAISY_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, DAISY_SPOT.x - 20, DAISY_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, DAISY_SPOT.x - 16, DAISY_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, DAISY_SPOT.x + 10, DAISY_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintDaisy(ctx, DAISY_SPOT.x, DAISY_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Daisy", DAISY_SPOT.x - 16, DAISY_SPOT.y - 16);
+}
+
 function paintCocoaMug(ctx, x, y, scale = 1) {
   ctx.save();
   ctx.translate(x, y);
@@ -6769,6 +7004,12 @@ export function drawTown(ctx, player, time) {
   drawFoxes(ctx);
   drawRainBoots(ctx);
   drawSharedStar(ctx, player.carry === "star");
+  drawLavender(ctx);
+  drawStrawberryPads(ctx);
+  drawBunting(ctx);
+  drawTurtles(ctx);
+  drawPaintbrushes(ctx);
+  drawSharedDaisy(ctx, player.carry === "daisy");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
