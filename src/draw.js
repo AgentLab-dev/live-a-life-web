@@ -360,6 +360,18 @@ import {
   BRUSH_ZONE,
   BRUSH_BLOCKS,
   DAISY_SPOT,
+  KNIT_ZONE,
+  KNIT_BLOCKS,
+  BLACKBERRY_BED,
+  BLACKBERRY_PADS,
+  APRON_POSTS,
+  APRON_WALLS,
+  APRON_GAP,
+  LADYBUG_ZONE,
+  LADYBUGS,
+  CANDLE_ZONE,
+  CANDLE_BLOCKS,
+  CLOVER_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1071,6 +1083,21 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     }
     ctx.fillStyle = "#f4d35e";
     oval(ctx, 23, 10, 2.2, 2.2);
+    ctx.fill();
+  }
+  if (look.carry === "clover" && !sleeping) {
+    ctx.fillStyle = "#1e8449";
+    roundRect(ctx, 22, 14, 2.4, 8, 1);
+    ctx.fill();
+    ctx.fillStyle = "#27ae60";
+    oval(ctx, 20, 10, 3.2, 2.4);
+    ctx.fill();
+    oval(ctx, 26, 10, 3.2, 2.4);
+    ctx.fill();
+    oval(ctx, 23, 7, 3, 2.2);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 23, 11, 1.1, 1.1);
     ctx.fill();
   }
   ctx.restore();
@@ -6358,6 +6385,206 @@ function drawSharedDaisy(ctx, carried) {
   ctx.fillText("Daisy", DAISY_SPOT.x - 16, DAISY_SPOT.y - 16);
 }
 
+function drawKnittingNeedles(ctx) {
+  ctx.fillStyle = "#f8efe4";
+  roundRect(ctx, KNIT_ZONE.x, KNIT_ZONE.y, KNIT_ZONE.w, KNIT_ZONE.h, 12);
+  ctx.fill();
+  const yarns = ["#e74c3c", "#5b8def", "#f4d35e", "#c39bd3"];
+  KNIT_BLOCKS.forEach((needle, index) => {
+    const cx = needle.x + needle.w / 2;
+    ctx.strokeStyle = "#d5d8dc";
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    ctx.moveTo(cx, needle.y + needle.h - 6);
+    ctx.lineTo(cx, needle.y + 10);
+    ctx.stroke();
+    ctx.fillStyle = "#bfc4ca";
+    oval(ctx, cx, needle.y + 8, 2.4, 2.4);
+    ctx.fill();
+    ctx.strokeStyle = yarns[index % yarns.length];
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(cx - 5, needle.y + 28);
+    ctx.quadraticCurveTo(cx + 4, needle.y + 34, cx - 4, needle.y + 42);
+    ctx.quadraticCurveTo(cx + 5, needle.y + 48, cx - 3, needle.y + 54);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Needles", KNIT_ZONE.x + 48, KNIT_ZONE.y - 8);
+}
+
+function drawBlackberryPads(ctx) {
+  ctx.fillStyle = "#e7f6d8";
+  roundRect(ctx, BLACKBERRY_BED.x, BLACKBERRY_BED.y, BLACKBERRY_BED.w, BLACKBERRY_BED.h, 12);
+  ctx.fill();
+  const berries = ["#4a235a", "#6c3483", "#5b2c6f"];
+  BLACKBERRY_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pad.x, pad.y + 8, 10, 4);
+    ctx.fill();
+    ctx.fillStyle = berries[index % berries.length];
+    for (const [dx, dy] of [
+      [-3, -1],
+      [0, -3],
+      [3, -1],
+      [-2, 2],
+      [2, 2],
+      [0, 0],
+    ]) {
+      oval(ctx, pad.x + dx, pad.y + dy, 2.3, 2.3);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#f5eef8";
+    oval(ctx, pad.x - 1, pad.y - 2, 0.7, 0.7);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Blackberries", BLACKBERRY_BED.x - 10, BLACKBERRY_BED.y - 8);
+}
+
+function drawApronLine(ctx) {
+  for (const post of APRON_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y + 6, 8, post.h - 10, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#6d5a4a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(APRON_POSTS[0].x + 8, APRON_POSTS[0].y + 14);
+  ctx.lineTo(APRON_POSTS[1].x + 8, APRON_POSTS[1].y + 14);
+  ctx.stroke();
+  APRON_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#f4f1ea" : "#5b8def";
+    roundRect(ctx, wall.x, wall.y - 8, wall.w, 18, 4);
+    ctx.fill();
+    ctx.fillStyle = index === 0 ? "#f08080" : "#f4d35e";
+    roundRect(ctx, wall.x + 6, wall.y - 2, wall.w - 12, 6, 2);
+    ctx.fill();
+  });
+  ctx.strokeStyle = "#f4d35e";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(APRON_GAP.x + 2, APRON_GAP.y + 4);
+  ctx.lineTo(APRON_GAP.x + APRON_GAP.w - 2, APRON_GAP.y + 4);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Apron", APRON_POSTS[0].x + 28, APRON_POSTS[0].y - 8);
+}
+
+function drawLadybugs(ctx) {
+  ctx.fillStyle = "#fdebd0";
+  roundRect(ctx, LADYBUG_ZONE.x, LADYBUG_ZONE.y, LADYBUG_ZONE.w, LADYBUG_ZONE.h, 12);
+  ctx.fill();
+  const shells = ["#e74c3c", "#c0392b", "#e66767", "#a93226"];
+  LADYBUGS.forEach((bug, index) => {
+    const cx = bug.x + bug.w / 2;
+    const cy = bug.y + 18;
+    ctx.fillStyle = "#7dcea0";
+    oval(ctx, cx - 2, cy + 4, 7, 3);
+    ctx.fill();
+    ctx.fillStyle = shells[index % shells.length];
+    oval(ctx, cx, cy, 7, 5);
+    ctx.fill();
+    ctx.strokeStyle = "#2c3e50";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 4);
+    ctx.lineTo(cx, cy + 4);
+    ctx.stroke();
+    ctx.fillStyle = "#2c3e50";
+    oval(ctx, cx - 2.4, cy - 1, 1.1, 1.1);
+    ctx.fill();
+    oval(ctx, cx + 2.4, cy + 1, 1.1, 1.1);
+    ctx.fill();
+    ctx.fillStyle = "#1a1a1a";
+    oval(ctx, cx + 6, cy, 2.4, 2.2);
+    ctx.fill();
+    ctx.strokeStyle = "#1a1a1a";
+    ctx.beginPath();
+    ctx.moveTo(cx + 7, cy - 1);
+    ctx.lineTo(cx + 10, cy - 4);
+    ctx.moveTo(cx + 7, cy + 1);
+    ctx.lineTo(cx + 10, cy + 3);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Ladybugs", LADYBUG_ZONE.x + 6, LADYBUG_ZONE.y - 8);
+}
+
+function drawCandles(ctx) {
+  ctx.fillStyle = "#fff6e8";
+  roundRect(ctx, CANDLE_ZONE.x, CANDLE_ZONE.y, CANDLE_ZONE.w, CANDLE_ZONE.h, 12);
+  ctx.fill();
+  const wax = ["#f7efd4", "#f4d35e", "#f5cba7", "#fadbd8"];
+  CANDLE_BLOCKS.forEach((candle, index) => {
+    const cx = candle.x + candle.w / 2;
+    ctx.fillStyle = wax[index % wax.length];
+    roundRect(ctx, cx - 4, candle.y + 18, 8, candle.h - 26, 2);
+    ctx.fill();
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, cx - 0.6, candle.y + 12, 1.2, 8, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f39c12";
+    oval(ctx, cx, candle.y + 10, 2.4, 3.2);
+    ctx.fill();
+    ctx.fillStyle = "#f7dc6f";
+    oval(ctx, cx, candle.y + 11, 1.2, 1.6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Candles", CANDLE_ZONE.x + 48, CANDLE_ZONE.y - 8);
+}
+
+function paintClover(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#1e8449";
+  roundRect(ctx, -1.4, 2, 2.8, 14, 1);
+  ctx.fill();
+  ctx.fillStyle = "#27ae60";
+  oval(ctx, -6, -4, 5, 3.6);
+  ctx.fill();
+  oval(ctx, 6, -4, 5, 3.6);
+  ctx.fill();
+  oval(ctx, 0, -9, 4.6, 3.4);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, 0, -2, 1.6, 1.6);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedClover(ctx, carried) {
+  if (!carried) {
+    paintClover(ctx, 1640, 228, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Clover", 1616, 204);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, CLOVER_SPOT.x - 22, CLOVER_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, CLOVER_SPOT.x - 20, CLOVER_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, CLOVER_SPOT.x - 16, CLOVER_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, CLOVER_SPOT.x + 10, CLOVER_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintClover(ctx, CLOVER_SPOT.x, CLOVER_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Clover", CLOVER_SPOT.x - 20, CLOVER_SPOT.y - 16);
+}
+
 function paintCocoaMug(ctx, x, y, scale = 1) {
   ctx.save();
   ctx.translate(x, y);
@@ -7010,6 +7237,12 @@ export function drawTown(ctx, player, time) {
   drawTurtles(ctx);
   drawPaintbrushes(ctx);
   drawSharedDaisy(ctx, player.carry === "daisy");
+  drawKnittingNeedles(ctx);
+  drawBlackberryPads(ctx);
+  drawApronLine(ctx);
+  drawLadybugs(ctx);
+  drawCandles(ctx);
+  drawSharedClover(ctx, player.carry === "clover");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
