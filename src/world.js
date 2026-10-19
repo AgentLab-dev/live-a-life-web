@@ -1,4 +1,4 @@
-import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, MUFFIN_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
+import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, MUFFIN_SPOT, MUM_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -133,6 +133,8 @@ export const ACTIONS = {
     { id: "share-daisy", label: "Share daisy", x: DAISY_SPOT.x, y: DAISY_SPOT.y },
     { id: "take-clover", label: "Take clover", x: 1640, y: 240 },
     { id: "share-clover", label: "Share clover", x: CLOVER_SPOT.x, y: CLOVER_SPOT.y },
+    { id: "take-mum", label: "Take chrysanthemum", x: 1088, y: 248 },
+    { id: "share-mum", label: "Share chrysanthemum", x: MUM_SPOT.x, y: MUM_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -363,6 +365,8 @@ export function visibleActions(player) {
     if (action.id === "share-daisy" && player.carry !== "daisy") return false;
     if (action.id === "take-clover" && player.carry) return false;
     if (action.id === "share-clover" && player.carry !== "clover") return false;
+    if (action.id === "take-mum" && player.carry) return false;
+    if (action.id === "share-mum" && player.carry !== "mum") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });

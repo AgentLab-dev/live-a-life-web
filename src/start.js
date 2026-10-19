@@ -69,6 +69,8 @@ import {
   shareDaisy,
   takeClover,
   shareClover,
+  takeMum,
+  shareMum,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -607,6 +609,18 @@ export function startGame(root) {
     if (id === "share-clover") {
       const before = player.stickers;
       player = shareClover(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-mum") {
+      player = takeMum(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-mum") {
+      const before = player.stickers;
+      player = shareMum(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
