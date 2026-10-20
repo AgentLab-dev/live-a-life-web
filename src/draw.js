@@ -384,6 +384,18 @@ import {
   JAM_ZONE,
   JAM_BLOCKS,
   MUM_SPOT,
+  CARROT_ZONE,
+  CARROT_BLOCKS,
+  RADISH_BED,
+  RADISH_PADS,
+  GLOVE_POSTS,
+  GLOVE_WALLS,
+  GLOVE_GAP,
+  SNAIL_ZONE,
+  SNAILS,
+  PACKET_ZONE,
+  PACKET_BLOCKS,
+  MARIGOLD_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1124,6 +1136,20 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     }
     ctx.fillStyle = "#f4d35e";
     oval(ctx, 23, 10, 2, 2);
+    ctx.fill();
+  }
+  if (look.carry === "marigold" && !sleeping) {
+    ctx.fillStyle = "#2e7d32";
+    roundRect(ctx, 22, 14, 2.4, 8, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f39c12";
+    for (let i = 0; i < 7; i += 1) {
+      const angle = (Math.PI * 2 * i) / 7;
+      oval(ctx, 23 + Math.cos(angle) * 4.2, 9 + Math.sin(angle) * 3.6, 2.4, 1.5);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#d35400";
+    oval(ctx, 23, 9, 2.1, 2.1);
     ctx.fill();
   }
   ctx.restore();
@@ -6808,6 +6834,210 @@ function drawSharedMum(ctx, carried) {
   ctx.fillText("Mum", MUM_SPOT.x - 14, MUM_SPOT.y - 16);
 }
 
+function drawCarrotRow(ctx) {
+  ctx.fillStyle = "#f8efe0";
+  roundRect(ctx, CARROT_ZONE.x, CARROT_ZONE.y, CARROT_ZONE.w, CARROT_ZONE.h, 12);
+  ctx.fill();
+  const greens = ["#1e8449", "#27ae60", "#2e7d32", "#196f3d"];
+  CARROT_BLOCKS.forEach((block, index) => {
+    const cx = block.x + block.w / 2;
+    ctx.fillStyle = "#e67e22";
+    ctx.beginPath();
+    ctx.moveTo(cx, block.y + 52);
+    ctx.lineTo(cx - 7, block.y + 18);
+    ctx.lineTo(cx + 7, block.y + 18);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = greens[index % greens.length];
+    oval(ctx, cx - 3, block.y + 14, 4, 2);
+    ctx.fill();
+    oval(ctx, cx + 3, block.y + 13, 4, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#fdebd0";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - 2, block.y + 24);
+    ctx.lineTo(cx - 2, block.y + 46);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Carrots", CARROT_ZONE.x + 48, CARROT_ZONE.y - 8);
+}
+
+function drawRadishPads(ctx) {
+  ctx.fillStyle = "#e7f6d8";
+  roundRect(ctx, RADISH_BED.x, RADISH_BED.y, RADISH_BED.w, RADISH_BED.h, 12);
+  ctx.fill();
+  const skins = ["#e74c3c", "#c0392b", "#f1948a"];
+  RADISH_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#7dcea0";
+    oval(ctx, pad.x, pad.y + 7, 10, 4);
+    ctx.fill();
+    ctx.fillStyle = skins[index % skins.length];
+    oval(ctx, pad.x, pad.y, 6, 6);
+    ctx.fill();
+    ctx.fillStyle = "#1e8449";
+    oval(ctx, pad.x - 3, pad.y - 6, 3, 1.6);
+    ctx.fill();
+    oval(ctx, pad.x + 3, pad.y - 6, 3, 1.6);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x - 2, pad.y - 1, 1.2, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Radishes", RADISH_BED.x + 14, RADISH_BED.y - 8);
+}
+
+function drawGloveLine(ctx) {
+  for (const post of GLOVE_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y + 6, 8, post.h - 10, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#6d5a4a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(GLOVE_POSTS[0].x + 8, GLOVE_POSTS[0].y + 14);
+  ctx.lineTo(GLOVE_POSTS[1].x + 8, GLOVE_POSTS[1].y + 14);
+  ctx.stroke();
+  const cloth = ["#5dade2", "#f5b041"];
+  GLOVE_WALLS.forEach((wall, index) => {
+    const cx = wall.x + wall.w / 2;
+    ctx.fillStyle = cloth[index % cloth.length];
+    roundRect(ctx, cx - 8, wall.y - 8, 16, 14, 5);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, cx - 3, wall.y - 6, 6, 5, 2);
+    ctx.fill();
+    ctx.fillStyle = cloth[index % cloth.length];
+    oval(ctx, cx + 8, wall.y - 2, 3, 2);
+    ctx.fill();
+  });
+  ctx.strokeStyle = "#7dcea0";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(GLOVE_GAP.x + 2, GLOVE_GAP.y + 4);
+  ctx.lineTo(GLOVE_GAP.x + GLOVE_GAP.w - 2, GLOVE_GAP.y + 4);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Gloves", GLOVE_POSTS[0].x + 28, GLOVE_POSTS[0].y - 8);
+}
+
+function drawSnails(ctx) {
+  ctx.fillStyle = "#fdebd0";
+  roundRect(ctx, SNAIL_ZONE.x, SNAIL_ZONE.y, SNAIL_ZONE.w, SNAIL_ZONE.h, 12);
+  ctx.fill();
+  const shells = ["#f5b041", "#af7ac5", "#5dade2", "#7dcea0"];
+  SNAILS.forEach((snail, index) => {
+    const cx = snail.x + snail.w / 2;
+    const cy = snail.y + 18;
+    ctx.fillStyle = "#7dcea0";
+    oval(ctx, cx, cy + 8, 8, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f7efd4";
+    oval(ctx, cx - 2, cy + 2, 6, 3.4);
+    ctx.fill();
+    ctx.fillStyle = shells[index % shells.length];
+    oval(ctx, cx + 1, cy - 2, 5, 4.4);
+    ctx.fill();
+    ctx.strokeStyle = "#fff8e7";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx + 1, cy - 2, 2.2, 0.4, 4.2);
+    ctx.stroke();
+    ctx.fillStyle = "#2c3e50";
+    oval(ctx, cx - 5, cy + 1, 0.7, 0.7);
+    ctx.fill();
+    oval(ctx, cx - 3, cy + 0.4, 0.7, 0.7);
+    ctx.fill();
+    ctx.strokeStyle = "#e74c3c";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx - 4, cy + 2.6, 1.6, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Snails", SNAIL_ZONE.x + 16, SNAIL_ZONE.y - 8);
+}
+
+function drawSeedPackets(ctx) {
+  ctx.fillStyle = "#fff6e8";
+  roundRect(ctx, PACKET_ZONE.x, PACKET_ZONE.y, PACKET_ZONE.w, PACKET_ZONE.h, 12);
+  ctx.fill();
+  const papers = ["#f5b7b1", "#d6eaf8", "#f9e79f", "#d5f5e3"];
+  PACKET_BLOCKS.forEach((packet, index) => {
+    const cx = packet.x + packet.w / 2;
+    ctx.fillStyle = papers[index % papers.length];
+    roundRect(ctx, cx - 7, packet.y + 12, 14, 36, 2);
+    ctx.fill();
+    ctx.fillStyle = "#1e8449";
+    oval(ctx, cx, packet.y + 24, 3, 2);
+    ctx.fill();
+    ctx.fillStyle = "#e67e22";
+    oval(ctx, cx - 3, packet.y + 32, 1.4, 1.4);
+    ctx.fill();
+    oval(ctx, cx + 2, packet.y + 34, 1.4, 1.4);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    roundRect(ctx, cx - 4, packet.y + 40, 8, 2, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Seeds", PACKET_ZONE.x + 58, PACKET_ZONE.y - 8);
+}
+
+function paintMarigold(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#1e8449";
+  roundRect(ctx, -1.4, 2, 2.8, 14, 1);
+  ctx.fill();
+  ctx.fillStyle = "#f39c12";
+  for (let i = 0; i < 10; i += 1) {
+    const angle = (Math.PI * 2 * i) / 10;
+    oval(ctx, Math.cos(angle) * 7, Math.sin(angle) * 6 - 4, 3.2, 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = "#d35400";
+  oval(ctx, 0, -4, 3.4, 3.4);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, 0, -4, 1.5, 1.5);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedMarigold(ctx, carried) {
+  if (!carried) {
+    paintMarigold(ctx, 2416, 138, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Marigold", 2384, 108);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, MARIGOLD_SPOT.x - 22, MARIGOLD_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, MARIGOLD_SPOT.x - 20, MARIGOLD_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, MARIGOLD_SPOT.x - 16, MARIGOLD_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, MARIGOLD_SPOT.x + 10, MARIGOLD_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintMarigold(ctx, MARIGOLD_SPOT.x, MARIGOLD_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Marigold", MARIGOLD_SPOT.x - 26, MARIGOLD_SPOT.y - 16);
+}
+
 function paintCocoaMug(ctx, x, y, scale = 1) {
   ctx.save();
   ctx.translate(x, y);
@@ -7472,6 +7702,12 @@ export function drawTown(ctx, player, time) {
   drawRobins(ctx);
   drawJamJars(ctx);
   drawSharedMum(ctx, player.carry === "mum");
+  drawCarrotRow(ctx);
+  drawRadishPads(ctx);
+  drawGloveLine(ctx);
+  drawSnails(ctx);
+  drawSeedPackets(ctx);
+  drawSharedMarigold(ctx, player.carry === "marigold");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
