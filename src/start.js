@@ -71,6 +71,8 @@ import {
   shareClover,
   takeMum,
   shareMum,
+  takeMarigold,
+  shareMarigold,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -621,6 +623,18 @@ export function startGame(root) {
     if (id === "share-mum") {
       const before = player.stickers;
       player = shareMum(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-marigold") {
+      player = takeMarigold(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-marigold") {
+      const before = player.stickers;
+      player = shareMarigold(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
