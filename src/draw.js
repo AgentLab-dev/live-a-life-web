@@ -396,6 +396,18 @@ import {
   PACKET_ZONE,
   PACKET_BLOCKS,
   MARIGOLD_SPOT,
+  XYLO_ZONE,
+  XYLO_BLOCKS,
+  DRUM_BED,
+  DRUM_PADS,
+  STAND_POSTS,
+  STAND_WALLS,
+  STAND_GAP,
+  MARACA_ZONE,
+  MARACAS,
+  BELL_ZONE,
+  BELL_BLOCKS,
+  KAZOO_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1150,6 +1162,20 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     }
     ctx.fillStyle = "#d35400";
     oval(ctx, 23, 9, 2.1, 2.1);
+    ctx.fill();
+  }
+  if (look.carry === "kazoo" && !sleeping) {
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, 18, 8, 16, 5, 2);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    roundRect(ctx, 22, 8, 3, 5, 1);
+    ctx.fill();
+    ctx.fillStyle = "#5dade2";
+    roundRect(ctx, 27, 8, 3, 5, 1);
+    ctx.fill();
+    ctx.fillStyle = "#f7efd4";
+    oval(ctx, 34, 10.5, 2.2, 2.2);
     ctx.fill();
   }
   ctx.restore();
@@ -7038,6 +7064,190 @@ function drawSharedMarigold(ctx, carried) {
   ctx.fillText("Marigold", MARIGOLD_SPOT.x - 26, MARIGOLD_SPOT.y - 16);
 }
 
+function drawXyloBars(ctx) {
+  ctx.fillStyle = "#f8efe0";
+  roundRect(ctx, XYLO_ZONE.x, XYLO_ZONE.y, XYLO_ZONE.w, XYLO_ZONE.h, 12);
+  ctx.fill();
+  const keys = ["#e74c3c", "#f4d35e", "#27ae60", "#5dade2"];
+  XYLO_BLOCKS.forEach((bar, index) => {
+    const cx = bar.x + bar.w / 2;
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, cx - 8, bar.y + 8, 16, 48, 4);
+    ctx.fill();
+    ctx.fillStyle = keys[index % keys.length];
+    roundRect(ctx, cx - 6, bar.y + 12, 12, 36, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, cx - 4, bar.y + 16, 3, 10, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Xylo", XYLO_ZONE.x + 64, XYLO_ZONE.y - 8);
+}
+
+function drawDrumPads(ctx) {
+  ctx.fillStyle = "#fdebd0";
+  roundRect(ctx, DRUM_BED.x, DRUM_BED.y, DRUM_BED.w, DRUM_BED.h, 12);
+  ctx.fill();
+  const skins = ["#e74c3c", "#f4d35e", "#5dade2"];
+  DRUM_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#6d4c32";
+    oval(ctx, pad.x, pad.y + 4, 12, 6);
+    ctx.fill();
+    ctx.fillStyle = skins[index % skins.length];
+    oval(ctx, pad.x, pad.y, 10, 6);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x, pad.y - 1, 6, 3);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(pad.x - 4, pad.y);
+    ctx.lineTo(pad.x + 4, pad.y);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Drums", DRUM_BED.x + 24, DRUM_BED.y - 8);
+}
+
+function drawMusicStand(ctx) {
+  for (const post of STAND_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y + 6, 8, post.h - 10, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#6d5a4a";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(STAND_POSTS[0].x + 8, STAND_POSTS[0].y + 14);
+  ctx.lineTo(STAND_POSTS[1].x + 8, STAND_POSTS[1].y + 14);
+  ctx.stroke();
+  STAND_WALLS.forEach((wall) => {
+    const cx = wall.x + wall.w / 2;
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, cx - 8, wall.y - 10, 16, 14, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#5dade2";
+    ctx.lineWidth = 1;
+    for (let line = 0; line < 3; line += 1) {
+      ctx.beginPath();
+      ctx.moveTo(cx - 5, wall.y - 6 + line * 3);
+      ctx.lineTo(cx + 5, wall.y - 6 + line * 3);
+      ctx.stroke();
+    }
+  });
+  ctx.strokeStyle = "#f4d35e";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(STAND_GAP.x + 2, STAND_GAP.y + 4);
+  ctx.lineTo(STAND_GAP.x + STAND_GAP.w - 2, STAND_GAP.y + 4);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Stand", STAND_POSTS[0].x + 28, STAND_POSTS[0].y - 8);
+}
+
+function drawMaracas(ctx) {
+  ctx.fillStyle = "#fff6e8";
+  roundRect(ctx, MARACA_ZONE.x, MARACA_ZONE.y, MARACA_ZONE.w, MARACA_ZONE.h, 12);
+  ctx.fill();
+  const skins = ["#e74c3c", "#f4d35e", "#27ae60", "#af7ac5"];
+  MARACAS.forEach((maraca, index) => {
+    const cx = maraca.x + maraca.w / 2;
+    const cy = maraca.y + 16;
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, cx - 1.4, cy + 2, 3, 10, 1);
+    ctx.fill();
+    ctx.fillStyle = skins[index % skins.length];
+    oval(ctx, cx, cy - 2, 7, 6);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx - 2, cy - 4, 1.4, 1.4);
+    ctx.fill();
+    oval(ctx, cx + 2, cy - 1, 1.2, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Maracas", MARACA_ZONE.x + 8, MARACA_ZONE.y - 8);
+}
+
+function drawBellRow(ctx) {
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, BELL_ZONE.x, BELL_ZONE.y, BELL_ZONE.w, BELL_ZONE.h, 12);
+  ctx.fill();
+  const metals = ["#f4d35e", "#f5b041", "#f7efd4", "#f4d35e"];
+  BELL_BLOCKS.forEach((bell, index) => {
+    const cx = bell.x + bell.w / 2;
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, cx - 1, bell.y + 8, 2, 8, 1);
+    ctx.fill();
+    ctx.fillStyle = metals[index % metals.length];
+    ctx.beginPath();
+    ctx.moveTo(cx - 7, bell.y + 22);
+    ctx.quadraticCurveTo(cx, bell.y + 14, cx + 7, bell.y + 22);
+    ctx.lineTo(cx + 7, bell.y + 40);
+    ctx.quadraticCurveTo(cx, bell.y + 48, cx - 7, bell.y + 40);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#b9770e";
+    oval(ctx, cx, bell.y + 44, 2, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Bells", BELL_ZONE.x + 62, BELL_ZONE.y - 8);
+}
+
+function paintKazoo(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#f4d35e";
+  roundRect(ctx, -14, -5, 28, 10, 5);
+  ctx.fill();
+  ctx.fillStyle = "#e74c3c";
+  roundRect(ctx, -4, -5, 5, 10, 1);
+  ctx.fill();
+  ctx.fillStyle = "#5dade2";
+  roundRect(ctx, 4, -5, 5, 10, 1);
+  ctx.fill();
+  ctx.fillStyle = "#27ae60";
+  roundRect(ctx, 10, -5, 4, 10, 1);
+  ctx.fill();
+  ctx.fillStyle = "#f7efd4";
+  oval(ctx, 14, 0, 4, 4);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedKazoo(ctx, carried) {
+  if (!carried) {
+    paintKazoo(ctx, 1936, 128, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Kazoo", 1914, 100);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, KAZOO_SPOT.x - 22, KAZOO_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, KAZOO_SPOT.x - 20, KAZOO_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, KAZOO_SPOT.x - 16, KAZOO_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, KAZOO_SPOT.x + 10, KAZOO_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintKazoo(ctx, KAZOO_SPOT.x, KAZOO_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Kazoo", KAZOO_SPOT.x - 18, KAZOO_SPOT.y - 16);
+}
+
 function paintCocoaMug(ctx, x, y, scale = 1) {
   ctx.save();
   ctx.translate(x, y);
@@ -7708,6 +7918,12 @@ export function drawTown(ctx, player, time) {
   drawSnails(ctx);
   drawSeedPackets(ctx);
   drawSharedMarigold(ctx, player.carry === "marigold");
+  drawXyloBars(ctx);
+  drawDrumPads(ctx);
+  drawMusicStand(ctx);
+  drawMaracas(ctx);
+  drawBellRow(ctx);
+  drawSharedKazoo(ctx, player.carry === "kazoo");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
