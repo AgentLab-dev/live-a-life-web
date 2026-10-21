@@ -162,6 +162,11 @@ import {
   blockedByGloves,
   blockedBySnails,
   blockedByPackets,
+  blockedByXylos,
+  blockedByDrums,
+  blockedByStands,
+  blockedByMaracas,
+  blockedByBells,
   BOOK_SPOT,
   cheerCrossing,
   closeParkGate,
@@ -196,6 +201,7 @@ import {
   CLOVER_SPOT,
   MUM_SPOT,
   MARIGOLD_SPOT,
+  KAZOO_SPOT,
   newSticker,
   townPathAt,
   nudgeBookCart,
@@ -361,6 +367,11 @@ import {
   onGloveGap,
   onSnail,
   onPacketLane,
+  onXyloLane,
+  onDrumPad,
+  onStandGap,
+  onMaraca,
+  onBellLane,
   openParkGate,
   pushBookCart,
   shareBalloon,
@@ -396,6 +407,7 @@ import {
   shareClover,
   shareMum,
   shareMarigold,
+  shareKazoo,
   SNACK_SPOT,
   takeBook,
   takeCard,
@@ -430,6 +442,7 @@ import {
   takeClover,
   takeMum,
   takeMarigold,
+  takeKazoo,
 } from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -7301,6 +7314,216 @@ describe("tuesday garden-friend play", () => {
     expect(isBlocked("town", 1086, 956)).toBe(false);
     expect(isBlocked("town", MARIGOLD_SPOT.x, MARIGOLD_SPOT.y)).toBe(false);
     expect(isBlocked("town", 2416, 150)).toBe(false);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
+  });
+});
+
+describe("wednesday music-meadow play", () => {
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  function townKid(x, y, extra = {}) {
+    return {
+      room: "town",
+      x,
+      y,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      carry: "",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("names xylophone, drum, stand, maraca, and bell paths", () => {
+    expect(townPathAt(1830, 748)).toBe("xylos");
+    expect(onXyloLane(1830, 748)).toBe(true);
+    expect(townPathAt(1890, 748)).toBe("");
+    expect(townPathAt(1626, 1734)).toBe("drums");
+    expect(onDrumPad(1626, 1734)).toBe(true);
+    expect(townPathAt(1588, 1734)).toBe("");
+    expect(townPathAt(786, 272)).toBe("stands");
+    expect(onStandGap(786, 272)).toBe(true);
+    expect(townPathAt(736, 272)).toBe("");
+    expect(townPathAt(1046, 1742)).toBe("maracas");
+    expect(onMaraca(1046, 1742)).toBe(true);
+    expect(townPathAt(1042, 1766)).toBe("");
+    expect(townPathAt(1270, 1820)).toBe("bells");
+    expect(onBellLane(1270, 1820)).toBe(true);
+    expect(townPathAt(1330, 1820)).toBe("");
+    expect(townPathAt(1936, 140)).toBe("");
+  });
+
+  it("blocks xylophone bars, drum grass, stand posts, maraca lawn, and bells but not the walk paths", () => {
+    expect(blockedByXylos(1890, 748)).toBe(true);
+    expect(isBlocked("town", 1890, 748)).toBe(true);
+    expect(onXyloLane(1830, 748)).toBe(true);
+    expect(isBlocked("town", 1830, 748)).toBe(false);
+    expect(blockedByDrums(1588, 1734)).toBe(true);
+    expect(isBlocked("town", 1588, 1734)).toBe(true);
+    expect(onDrumPad(1626, 1734)).toBe(true);
+    expect(isBlocked("town", 1626, 1734)).toBe(false);
+    expect(blockedByStands(736, 272)).toBe(true);
+    expect(isBlocked("town", 736, 272)).toBe(true);
+    expect(onStandGap(786, 272)).toBe(true);
+    expect(isBlocked("town", 786, 272)).toBe(false);
+    expect(blockedByMaracas(1042, 1766)).toBe(true);
+    expect(isBlocked("town", 1042, 1766)).toBe(true);
+    expect(onMaraca(1046, 1742)).toBe(true);
+    expect(isBlocked("town", 1046, 1742)).toBe(false);
+    expect(blockedByBells(1330, 1820)).toBe(true);
+    expect(isBlocked("town", 1330, 1820)).toBe(true);
+    expect(onBellLane(1270, 1820)).toBe(true);
+    expect(isBlocked("town", 1270, 1820)).toBe(false);
+    expect(isBlocked("town", 1936, 140)).toBe(false);
+  });
+
+  it("walks the xylophone, drums, and music stand and earns stickers", () => {
+    let player = townKid(1830, 700);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 20);
+    expect(player.y).toBeGreaterThan(784);
+    expect(player.stickers.xylos).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(defaultStickers(), player.stickers)).toBe("xylos");
+
+    player = townKid(1626, 1676);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 24);
+    expect(player.y).toBeGreaterThan(1780);
+    expect(player.stickers.drums).toBe(true);
+
+    player = townKid(786, 220);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 16);
+    expect(player.y).toBeGreaterThan(278);
+    expect(player.stickers.stands).toBe(true);
+    expect(player.timer).toBeUndefined();
+  });
+
+  it("walks the maracas and jingle bells without a fail state", () => {
+    let player = townKid(1046, 1708);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 28);
+    expect(player.y).toBeGreaterThan(1848);
+    expect(player.stickers.maracas).toBe(true);
+
+    player = townKid(1270, 1772);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 24);
+    expect(player.y).toBeGreaterThan(1856);
+    expect(player.stickers.bells).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets tap-to-walk stop at drum grass and maraca lawn instead of punishing", () => {
+    const drumBump = stepToward(townKid(1588, 1676), { x: 1588, y: 1840 }, 80);
+    expect(drumBump.y).toBeLessThan(1692);
+    expect(drumBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1588, 1734)).toBe(true);
+
+    const maracaBump = stepToward(townKid(1042, 1708), { x: 1042, y: 1900 }, 80);
+    expect(maracaBump.y).toBeLessThan(1724);
+    expect(maracaBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1042, 1766)).toBe(true);
+  });
+
+  it("takes and shares a kazoo without money or a timer", () => {
+    const helper = takeKazoo({ room: "town", carry: "", stickers: defaultStickers(), money: 2 });
+    expect(helper.carry).toBe("kazoo");
+    expect(helper.money).toBeUndefined();
+    expect(
+      visibleActions({ ...helper, x: 1936, y: 140, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+        (action) => action.id === "take-kazoo",
+      ),
+    ).toBe(false);
+    const shared = shareKazoo({ ...helper, room: "town", x: KAZOO_SPOT.x, y: KAZOO_SPOT.y });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("look");
+    expect(shared.stickers.kazoo).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+    expect(takePicnic({ ...helper, carry: "kazoo" }).carry).toBe("kazoo");
+    expect(takeMarigold({ ...helper, carry: "kazoo" }).carry).toBe("kazoo");
+  });
+
+  it("cheers a nearby neighbor after a wednesday music-meadow crossing", () => {
+    const people = createPeople();
+    const pip = people.find((person) => person.id === "pip");
+    const next = cheerCrossing(people, "kazoo", pip.x, pip.y);
+    expect(next.find((person) => person.id === "pip").line).toMatch(/kazoo|kind/i);
+    expect(next.find((person) => person.id === "pip").bubbleMs).toBe(2400);
+  });
+
+  it("persists wednesday music-meadow stickers and a carried kazoo", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      carry: "kazoo",
+      stickers: { xylos: true, drums: true, stands: true, maracas: true, bells: true, kazoo: true, coins: 8 },
+      money: 5,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.carry).toBe("kazoo");
+    expect(loaded.stickers.xylos).toBe(true);
+    expect(loaded.stickers.drums).toBe(true);
+    expect(loaded.stickers.stands).toBe(true);
+    expect(loaded.stickers.maracas).toBe(true);
+    expect(loaded.stickers.bells).toBe(true);
+    expect(loaded.stickers.kazoo).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.carry).toBe("kazoo");
+  });
+
+  it("shows kazoo actions without hiding house or shop buttons", () => {
+    const atYard = townKid(1936, 140, { pose: "idle", job: "none" });
+    const ids = visibleActions(atYard).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["take-kazoo", "stickers"]));
+    expect(ids).not.toContain("share-kazoo");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+    const withKazoo = townKid(KAZOO_SPOT.x, KAZOO_SPOT.y, { carry: "kazoo", pose: "idle", job: "none" });
+    expect(visibleActions(withKazoo).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["share-kazoo", "stickers"]),
+    );
+    expect(isBlocked("town", KAZOO_SPOT.x, KAZOO_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 1936, 140)).toBe(false);
+    expect(isBlocked("town", 480, 660)).toBe(false);
+  });
+
+  it("keeps the house, shop, park, PWA, and USA map paths open around the new crossings", () => {
+    let player = townKid(560, 920);
+    player = walkFrames(player, { x: 460, y: 980 }, 80);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    player = walkFrames(player, { x: 480, y: 720 }, 120);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(canEnter("town", "bakery")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(canEnter("town", "usa")).toBe(true);
+    expect(isBlocked("town", 1920, 1320)).toBe(false);
+    expect(isBlocked("town", 420, 980)).toBe(false);
+    expect(isBlocked("town", 420, 1400)).toBe(false);
+    expect(isBlocked("town", 1830, 748)).toBe(false);
+    expect(isBlocked("town", 1626, 1734)).toBe(false);
+    expect(isBlocked("town", 786, 272)).toBe(false);
+    expect(isBlocked("town", 1046, 1742)).toBe(false);
+    expect(isBlocked("town", 1270, 1820)).toBe(false);
+    expect(isBlocked("town", KAZOO_SPOT.x, KAZOO_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 1936, 140)).toBe(false);
     expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
   });
 });
