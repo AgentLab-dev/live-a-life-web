@@ -7347,9 +7347,9 @@ describe("wednesday music-meadow play", () => {
     expect(townPathAt(1830, 748)).toBe("xylos");
     expect(onXyloLane(1830, 748)).toBe(true);
     expect(townPathAt(1890, 748)).toBe("");
-    expect(townPathAt(1626, 1734)).toBe("drums");
-    expect(onDrumPad(1626, 1734)).toBe(true);
-    expect(townPathAt(1588, 1734)).toBe("");
+    expect(townPathAt(1682, 1734)).toBe("drums");
+    expect(onDrumPad(1682, 1734)).toBe(true);
+    expect(townPathAt(1644, 1734)).toBe("");
     expect(townPathAt(786, 272)).toBe("stands");
     expect(onStandGap(786, 272)).toBe(true);
     expect(townPathAt(736, 272)).toBe("");
@@ -7367,10 +7367,10 @@ describe("wednesday music-meadow play", () => {
     expect(isBlocked("town", 1890, 748)).toBe(true);
     expect(onXyloLane(1830, 748)).toBe(true);
     expect(isBlocked("town", 1830, 748)).toBe(false);
-    expect(blockedByDrums(1588, 1734)).toBe(true);
-    expect(isBlocked("town", 1588, 1734)).toBe(true);
-    expect(onDrumPad(1626, 1734)).toBe(true);
-    expect(isBlocked("town", 1626, 1734)).toBe(false);
+    expect(blockedByDrums(1644, 1734)).toBe(true);
+    expect(isBlocked("town", 1644, 1734)).toBe(true);
+    expect(onDrumPad(1682, 1734)).toBe(true);
+    expect(isBlocked("town", 1682, 1734)).toBe(false);
     expect(blockedByStands(736, 272)).toBe(true);
     expect(isBlocked("town", 736, 272)).toBe(true);
     expect(onStandGap(786, 272)).toBe(true);
@@ -7394,7 +7394,7 @@ describe("wednesday music-meadow play", () => {
     expect(player.money).toBeUndefined();
     expect(newSticker(defaultStickers(), player.stickers)).toBe("xylos");
 
-    player = townKid(1626, 1676);
+    player = townKid(1682, 1676);
     player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 24);
     expect(player.y).toBeGreaterThan(1780);
     expect(player.stickers.drums).toBe(true);
@@ -7420,10 +7420,10 @@ describe("wednesday music-meadow play", () => {
   });
 
   it("lets tap-to-walk stop at drum grass and maraca lawn instead of punishing", () => {
-    const drumBump = stepToward(townKid(1588, 1676), { x: 1588, y: 1840 }, 80);
+    const drumBump = stepToward(townKid(1644, 1676), { x: 1644, y: 1840 }, 80);
     expect(drumBump.y).toBeLessThan(1692);
     expect(drumBump.stickers).toEqual(defaultStickers());
-    expect(isBlocked("town", 1588, 1734)).toBe(true);
+    expect(isBlocked("town", 1644, 1734)).toBe(true);
 
     const maracaBump = stepToward(townKid(1042, 1708), { x: 1042, y: 1900 }, 80);
     expect(maracaBump.y).toBeLessThan(1724);
@@ -7518,7 +7518,7 @@ describe("wednesday music-meadow play", () => {
     expect(isBlocked("town", 420, 980)).toBe(false);
     expect(isBlocked("town", 420, 1400)).toBe(false);
     expect(isBlocked("town", 1830, 748)).toBe(false);
-    expect(isBlocked("town", 1626, 1734)).toBe(false);
+    expect(isBlocked("town", 1682, 1734)).toBe(false);
     expect(isBlocked("town", 786, 272)).toBe(false);
     expect(isBlocked("town", 1046, 1742)).toBe(false);
     expect(isBlocked("town", 1270, 1820)).toBe(false);

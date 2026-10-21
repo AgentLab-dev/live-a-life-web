@@ -1776,12 +1776,12 @@ export const XYLO_BLOCKS = [
   { x: 1880, y: 716, w: 20, h: 64 },
 ];
 
-export const DRUM_BED = { x: 1576, y: 1692, w: 100, h: 84 };
+export const DRUM_BED = { x: 1632, y: 1692, w: 100, h: 84 };
 
 export const DRUM_PADS = [
-  { x: 1626, y: 1708 },
-  { x: 1626, y: 1734 },
-  { x: 1626, y: 1760 },
+  { x: 1682, y: 1708 },
+  { x: 1682, y: 1734 },
+  { x: 1682, y: 1760 },
 ];
 
 export const DRUM_RADIUS = 20;
