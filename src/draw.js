@@ -408,6 +408,18 @@ import {
   BELL_ZONE,
   BELL_BLOCKS,
   KAZOO_SPOT,
+  CORD_ZONE,
+  CORD_BLOCKS,
+  LAMP_BED,
+  LAMP_PADS,
+  DRAPE_POSTS,
+  DRAPE_WALLS,
+  DRAPE_GAP,
+  PUPPET_ZONE,
+  PUPPETS,
+  CUE_ZONE,
+  CUE_BLOCKS,
+  CROWN_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1176,6 +1188,22 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#f7efd4";
     oval(ctx, 34, 10.5, 2.2, 2.2);
+    ctx.fill();
+  }
+  if (look.carry === "crown" && !sleeping) {
+    ctx.fillStyle = "#f4d35e";
+    ctx.beginPath();
+    ctx.moveTo(16, 16);
+    ctx.lineTo(18, 8);
+    ctx.lineTo(22, 13);
+    ctx.lineTo(26, 6);
+    ctx.lineTo(30, 13);
+    ctx.lineTo(34, 8);
+    ctx.lineTo(36, 16);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, 26, 12, 1.6, 1.6);
     ctx.fill();
   }
   ctx.restore();
@@ -7202,6 +7230,196 @@ function drawBellRow(ctx) {
   ctx.fillText("Bells", BELL_ZONE.x + 62, BELL_ZONE.y - 8);
 }
 
+function drawPuppetStrings(ctx) {
+  ctx.fillStyle = "#f8efe0";
+  roundRect(ctx, CORD_ZONE.x, CORD_ZONE.y, CORD_ZONE.w, CORD_ZONE.h, 12);
+  ctx.fill();
+  const strings = ["#e74c3c", "#f4d35e", "#27ae60", "#5dade2"];
+  CORD_BLOCKS.forEach((cord, index) => {
+    const cx = cord.x + cord.w / 2;
+    ctx.strokeStyle = strings[index % strings.length];
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx, cord.y + 6);
+    ctx.lineTo(cx, cord.y + cord.h - 8);
+    ctx.stroke();
+    ctx.fillStyle = "#f7c6d0";
+    oval(ctx, cx, cord.y + 16, 6, 5);
+    ctx.fill();
+    ctx.fillStyle = "#2b1b14";
+    oval(ctx, cx - 2, cord.y + 15, 1, 1);
+    ctx.fill();
+    oval(ctx, cx + 2, cord.y + 15, 1, 1);
+    ctx.fill();
+    ctx.strokeStyle = "#c47a6a";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cord.y + 18, 2, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Strings", CORD_ZONE.x + 52, CORD_ZONE.y - 8);
+}
+
+function drawSpotlights(ctx) {
+  ctx.fillStyle = "#efe6d6";
+  roundRect(ctx, LAMP_BED.x, LAMP_BED.y, LAMP_BED.w, LAMP_BED.h, 12);
+  ctx.fill();
+  const glows = ["#f4d35e", "#f5b041", "#fff4c8"];
+  LAMP_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#6d5a4a";
+    roundRect(ctx, pad.x - 3, pad.y + 2, 6, 8, 2);
+    ctx.fill();
+    ctx.fillStyle = glows[index % glows.length];
+    oval(ctx, pad.x, pad.y, 10, 6);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x - 2, pad.y - 1, 3, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Lights", LAMP_BED.x + 24, LAMP_BED.y - 8);
+}
+
+function drawCurtain(ctx) {
+  for (const post of DRAPE_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 4, post.y + 6, 8, post.h - 10, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#c0392b";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(DRAPE_POSTS[0].x + 8, DRAPE_POSTS[0].y + 10);
+  ctx.lineTo(DRAPE_POSTS[1].x + 8, DRAPE_POSTS[1].y + 10);
+  ctx.stroke();
+  DRAPE_WALLS.forEach((wall) => {
+    ctx.fillStyle = "#e74c3c";
+    roundRect(ctx, wall.x, wall.y - 8, wall.w, 22, 4);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, wall.x + 4, wall.y - 4, wall.w - 8, 4, 2);
+    ctx.fill();
+  });
+  ctx.strokeStyle = "#f4d35e";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(DRAPE_GAP.x + 2, DRAPE_GAP.y + 6);
+  ctx.lineTo(DRAPE_GAP.x + DRAPE_GAP.w - 2, DRAPE_GAP.y + 6);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Curtain", DRAPE_POSTS[0].x + 18, DRAPE_POSTS[0].y - 8);
+}
+
+function drawSockPuppets(ctx) {
+  ctx.fillStyle = "#fff6e8";
+  roundRect(ctx, PUPPET_ZONE.x, PUPPET_ZONE.y, PUPPET_ZONE.w, PUPPET_ZONE.h, 12);
+  ctx.fill();
+  const socks = ["#e74c3c", "#5dade2", "#f4d35e", "#27ae60"];
+  PUPPETS.forEach((puppet, index) => {
+    const cx = puppet.x + puppet.w / 2;
+    const cy = puppet.y + 16;
+    ctx.fillStyle = socks[index % socks.length];
+    oval(ctx, cx, cy, 8, 7);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, cy + 2, 5, 3);
+    ctx.fill();
+    ctx.fillStyle = "#2b1b14";
+    oval(ctx, cx - 2.4, cy - 1, 1.2, 1.4);
+    ctx.fill();
+    oval(ctx, cx + 2.4, cy - 1, 1.2, 1.4);
+    ctx.fill();
+    ctx.strokeStyle = "#c47a6a";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cy + 2, 2, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Puppets", PUPPET_ZONE.x + 8, PUPPET_ZONE.y - 8);
+}
+
+function drawCueCards(ctx) {
+  ctx.fillStyle = "#f8efe0";
+  roundRect(ctx, CUE_ZONE.x, CUE_ZONE.y, CUE_ZONE.w, CUE_ZONE.h, 12);
+  ctx.fill();
+  const cards = ["#fff8e7", "#fdebd0", "#eaf6ff", "#fce4ec"];
+  const marks = ["#e74c3c", "#5dade2", "#27ae60", "#af7ac5"];
+  CUE_BLOCKS.forEach((card, index) => {
+    const cx = card.x + card.w / 2;
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, cx - 7, card.y + 10, 14, 40, 3);
+    ctx.fill();
+    ctx.fillStyle = cards[index % cards.length];
+    roundRect(ctx, cx - 5, card.y + 12, 10, 32, 2);
+    ctx.fill();
+    ctx.fillStyle = marks[index % marks.length];
+    oval(ctx, cx, card.y + 26, 2.4, 2.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Cues", CUE_ZONE.x + 64, CUE_ZONE.y - 8);
+}
+
+function paintCrown(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#f4d35e";
+  ctx.beginPath();
+  ctx.moveTo(-14, 8);
+  ctx.lineTo(-12, -6);
+  ctx.lineTo(-6, 2);
+  ctx.lineTo(0, -10);
+  ctx.lineTo(6, 2);
+  ctx.lineTo(12, -6);
+  ctx.lineTo(14, 8);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#e67e22";
+  roundRect(ctx, -14, 6, 28, 5, 2);
+  ctx.fill();
+  ctx.fillStyle = "#e74c3c";
+  oval(ctx, 0, 0, 2.4, 2.4);
+  ctx.fill();
+  ctx.fillStyle = "#5dade2";
+  oval(ctx, -7, 2, 1.6, 1.6);
+  ctx.fill();
+  oval(ctx, 7, 2, 1.6, 1.6);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedCrown(ctx, carried) {
+  if (!carried) {
+    paintCrown(ctx, 80, 600, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Crown", 54, 572);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, CROWN_SPOT.x - 22, CROWN_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, CROWN_SPOT.x - 20, CROWN_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, CROWN_SPOT.x - 16, CROWN_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, CROWN_SPOT.x + 10, CROWN_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintCrown(ctx, CROWN_SPOT.x, CROWN_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Crown", CROWN_SPOT.x - 22, CROWN_SPOT.y - 16);
+}
+
 function paintKazoo(ctx, x, y, scale = 1) {
   ctx.save();
   ctx.translate(x, y);
@@ -7924,6 +8142,12 @@ export function drawTown(ctx, player, time) {
   drawMaracas(ctx);
   drawBellRow(ctx);
   drawSharedKazoo(ctx, player.carry === "kazoo");
+  drawPuppetStrings(ctx);
+  drawSpotlights(ctx);
+  drawCurtain(ctx);
+  drawSockPuppets(ctx);
+  drawCueCards(ctx);
+  drawSharedCrown(ctx, player.carry === "crown");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
