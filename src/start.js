@@ -77,6 +77,8 @@ import {
   shareKazoo,
   takeCrown,
   shareCrown,
+  takeBookmark,
+  shareBookmark,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -663,6 +665,18 @@ export function startGame(root) {
     if (id === "share-crown") {
       const before = player.stickers;
       player = shareCrown(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-bookmark") {
+      player = takeBookmark(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-bookmark") {
+      const before = player.stickers;
+      player = shareBookmark(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

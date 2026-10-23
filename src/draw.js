@@ -420,6 +420,18 @@ import {
   CUE_ZONE,
   CUE_BLOCKS,
   CROWN_SPOT,
+  BRICK_ZONE,
+  BRICK_BLOCKS,
+  DOMINO_BED,
+  DOMINO_PADS,
+  FORT_POSTS,
+  FORT_WALLS,
+  FORT_GAP,
+  TEDDY_ZONE,
+  TEDDIES,
+  PUZZLE_ZONE,
+  PUZZLE_BLOCKS,
+  BOOKMARK_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1204,6 +1216,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#e74c3c";
     oval(ctx, 26, 12, 1.6, 1.6);
+    ctx.fill();
+  }
+  if (look.carry === "bookmark" && !sleeping) {
+    ctx.fillStyle = "#5dade2";
+    roundRect(ctx, 20, 4, 8, 16, 2);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, 21, 6, 6, 3, 1);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, 24, 12, 1.4, 1.4);
     ctx.fill();
   }
   ctx.restore();
@@ -7396,6 +7419,186 @@ function paintCrown(ctx, x, y, scale = 1) {
   ctx.restore();
 }
 
+function drawBuildingBlocks(ctx) {
+  ctx.fillStyle = "#f4efe4";
+  roundRect(ctx, BRICK_ZONE.x, BRICK_ZONE.y, BRICK_ZONE.w, BRICK_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#e74c3c", "#f4d35e", "#5dade2", "#27ae60"];
+  BRICK_BLOCKS.forEach((brick, index) => {
+    const cx = brick.x + brick.w / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, cx - 8, brick.y + 10, 16, 18, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, cx - 6, brick.y + 18, 12, 2, 1);
+    ctx.fill();
+    ctx.fillStyle = colors[(index + 1) % colors.length];
+    roundRect(ctx, cx - 8, brick.y + 30, 16, 14, 3);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Blocks", BRICK_ZONE.x + 46, BRICK_ZONE.y - 8);
+}
+
+function drawDominos(ctx) {
+  ctx.fillStyle = "#efe6d6";
+  roundRect(ctx, DOMINO_BED.x, DOMINO_BED.y, DOMINO_BED.w, DOMINO_BED.h, 12);
+  ctx.fill();
+  const faces = ["#f7f3ea", "#fff8e7", "#fdebd0"];
+  DOMINO_PADS.forEach((pad, index) => {
+    ctx.fillStyle = "#2b1b14";
+    roundRect(ctx, pad.x - 6, pad.y - 12, 12, 22, 2);
+    ctx.fill();
+    ctx.fillStyle = faces[index % faces.length];
+    roundRect(ctx, pad.x - 4, pad.y - 10, 8, 18, 2);
+    ctx.fill();
+    ctx.fillStyle = "#2b1b14";
+    oval(ctx, pad.x, pad.y - 5, 1.2, 1.2);
+    ctx.fill();
+    oval(ctx, pad.x, pad.y + 3, 1.2, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Dominos", DOMINO_BED.x + 8, DOMINO_BED.y - 8);
+}
+
+function drawBlanketFort(ctx) {
+  for (const post of FORT_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 3, post.y + 8, 8, post.h - 10, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#5dade2";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(FORT_POSTS[0].x + 7, FORT_POSTS[0].y + 10);
+  ctx.lineTo(FORT_POSTS[1].x + 7, FORT_POSTS[1].y + 10);
+  ctx.stroke();
+  FORT_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#f4d35e" : "#e74c3c";
+    roundRect(ctx, wall.x, wall.y - 10, wall.w, 24, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, wall.x + 4, wall.y - 4, wall.w - 8, 4, 2);
+    ctx.fill();
+  });
+  ctx.strokeStyle = "#f7efd4";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(FORT_GAP.x + 2, FORT_GAP.y + 8);
+  ctx.lineTo(FORT_GAP.x + FORT_GAP.w - 2, FORT_GAP.y + 8);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Fort", FORT_POSTS[0].x + 28, FORT_POSTS[0].y - 8);
+}
+
+function drawTeddies(ctx) {
+  ctx.fillStyle = "#fff6e8";
+  roundRect(ctx, TEDDY_ZONE.x, TEDDY_ZONE.y, TEDDY_ZONE.w, TEDDY_ZONE.h, 12);
+  ctx.fill();
+  const furs = ["#c47a3a", "#e0a060", "#a56b3c", "#d9894b"];
+  TEDDIES.forEach((teddy, index) => {
+    const cx = teddy.x + teddy.w / 2;
+    const cy = teddy.y + 16;
+    ctx.fillStyle = furs[index % furs.length];
+    oval(ctx, cx - 7, cy - 6, 3.2, 3.2);
+    ctx.fill();
+    oval(ctx, cx + 7, cy - 6, 3.2, 3.2);
+    ctx.fill();
+    oval(ctx, cx, cy, 7, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f7d7b5";
+    oval(ctx, cx, cy + 1, 3.4, 2.6);
+    ctx.fill();
+    ctx.fillStyle = "#2b1b14";
+    oval(ctx, cx - 2.2, cy - 1, 1, 1.2);
+    ctx.fill();
+    oval(ctx, cx + 2.2, cy - 1, 1, 1.2);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, cx, cy + 4, 1.2, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Teddies", TEDDY_ZONE.x + 6, TEDDY_ZONE.y - 8);
+}
+
+function drawPuzzlePieces(ctx) {
+  ctx.fillStyle = "#f8efe0";
+  roundRect(ctx, PUZZLE_ZONE.x, PUZZLE_ZONE.y, PUZZLE_ZONE.w, PUZZLE_ZONE.h, 12);
+  ctx.fill();
+  const pieces = ["#5dade2", "#f4d35e", "#e74c3c", "#27ae60"];
+  PUZZLE_BLOCKS.forEach((piece, index) => {
+    const cx = piece.x + piece.w / 2;
+    ctx.fillStyle = pieces[index % pieces.length];
+    roundRect(ctx, cx - 7, piece.y + 14, 14, 18, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx + 6, piece.y + 22, 3, 3);
+    ctx.fill();
+    ctx.fillStyle = pieces[index % pieces.length];
+    oval(ctx, cx - 7, piece.y + 26, 2.4, 2.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Puzzles", PUZZLE_ZONE.x + 42, PUZZLE_ZONE.y - 8);
+}
+
+function paintBookmark(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#5dade2";
+  roundRect(ctx, -6, -14, 12, 26, 2);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  roundRect(ctx, -4, -10, 8, 4, 1);
+  ctx.fill();
+  ctx.fillStyle = "#e74c3c";
+  oval(ctx, 0, -2, 2, 2);
+  ctx.fill();
+  ctx.fillStyle = "#1f6aa5";
+  ctx.beginPath();
+  ctx.moveTo(-6, 12);
+  ctx.lineTo(0, 6);
+  ctx.lineTo(6, 12);
+  ctx.lineTo(6, 8);
+  ctx.lineTo(0, 2);
+  ctx.lineTo(-6, 8);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedBookmark(ctx, carried) {
+  if (!carried) {
+    paintBookmark(ctx, 1040, 100, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Bookmark", 1004, 72);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, BOOKMARK_SPOT.x - 22, BOOKMARK_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, BOOKMARK_SPOT.x - 20, BOOKMARK_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, BOOKMARK_SPOT.x - 16, BOOKMARK_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, BOOKMARK_SPOT.x + 10, BOOKMARK_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintBookmark(ctx, BOOKMARK_SPOT.x, BOOKMARK_SPOT.y, 0.7);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Bookmark", BOOKMARK_SPOT.x - 32, BOOKMARK_SPOT.y - 16);
+}
+
 function drawSharedCrown(ctx, carried) {
   if (!carried) {
     paintCrown(ctx, 80, 600, 0.9);
@@ -8148,6 +8351,12 @@ export function drawTown(ctx, player, time) {
   drawSockPuppets(ctx);
   drawCueCards(ctx);
   drawSharedCrown(ctx, player.carry === "crown");
+  drawBuildingBlocks(ctx);
+  drawDominos(ctx);
+  drawBlanketFort(ctx);
+  drawTeddies(ctx);
+  drawPuzzlePieces(ctx);
+  drawSharedBookmark(ctx, player.carry === "bookmark");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

@@ -1873,6 +1873,59 @@ export const CUE_BLOCKS = [
 
 export const CROWN_SPOT = { x: 1540, y: 1940 };
 
+export const BRICK_ZONE = { x: 720, y: 1108, w: 148, h: 56 };
+
+export const BRICK_BLOCKS = [
+  { x: 728, y: 1108, w: 20, h: 56 },
+  { x: 768, y: 1108, w: 20, h: 56 },
+  { x: 808, y: 1108, w: 20, h: 56 },
+  { x: 848, y: 1108, w: 20, h: 56 },
+];
+
+export const DOMINO_BED = { x: 1376, y: 1396, w: 88, h: 72 };
+
+export const DOMINO_PADS = [
+  { x: 1420, y: 1412 },
+  { x: 1420, y: 1432 },
+  { x: 1420, y: 1452 },
+];
+
+export const DOMINO_RADIUS = 16;
+
+export const FORT_POSTS = [
+  { x: 1696, y: 404, w: 14, h: 64 },
+  { x: 1792, y: 404, w: 14, h: 64 },
+];
+
+export const FORT_WALLS = [
+  { x: 1710, y: 428, w: 26, h: 12 },
+  { x: 1766, y: 428, w: 26, h: 12 },
+];
+
+export const FORT_GAP = { x: 1736, y: 416, w: 30, h: 40 };
+
+export const FORT_BAND = { x: 1710, y: 428, w: 82, h: 12 };
+
+export const TEDDY_ZONE = { x: 1104, y: 1732, w: 80, h: 106 };
+
+export const TEDDIES = [
+  { x: 1106, y: 1732, w: 42, h: 34 },
+  { x: 1140, y: 1756, w: 42, h: 34 },
+  { x: 1106, y: 1780, w: 42, h: 34 },
+  { x: 1140, y: 1804, w: 42, h: 34 },
+];
+
+export const PUZZLE_ZONE = { x: 1360, y: 1780, w: 148, h: 56 };
+
+export const PUZZLE_BLOCKS = [
+  { x: 1368, y: 1780, w: 20, h: 56 },
+  { x: 1408, y: 1780, w: 20, h: 56 },
+  { x: 1448, y: 1780, w: 20, h: 56 },
+  { x: 1488, y: 1780, w: 20, h: 56 },
+];
+
+export const BOOKMARK_SPOT = { x: 980, y: 1980 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2084,6 +2137,12 @@ export const STICKERS = [
   { id: "puppets", name: "Puppet tip-toer", hint: "You tip-toed past the friendly sock puppets." },
   { id: "cues", name: "Cue-card weaver", hint: "You weaved between the cue cards." },
   { id: "crown", name: "Crown friend", hint: "You shared a kind paper crown." },
+  { id: "bricks", name: "Block weaver", hint: "You weaved between the building blocks." },
+  { id: "dominos", name: "Domino hopper", hint: "You hopped the upright dominos." },
+  { id: "fort", name: "Fort ducker", hint: "You ducked under the blanket fort." },
+  { id: "teddies", name: "Teddy tip-toer", hint: "You tip-toed past the friendly teddies." },
+  { id: "puzzles", name: "Puzzle weaver", hint: "You weaved between the puzzle pieces." },
+  { id: "bookmark", name: "Bookmark friend", hint: "You shared a kind bookmark." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2299,12 +2358,18 @@ export const CHEERS = {
   puppets: "Tip-toe past the friendly sock puppets!",
   cues: "Little cue cards said hello!",
   crown: "A kind paper crown to share. Kind!",
+  bricks: "Colorful building blocks said hello!",
+  dominos: "Boing! Soft hops on the dominos!",
+  fort: "Duck under the cozy blanket fort!",
+  teddies: "Tip-toe past the friendly teddies!",
+  puzzles: "Little puzzle pieces said hello!",
+  bookmark: "A kind bookmark to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark"];
 
 export function defaultStickers() {
   return {
@@ -2518,6 +2583,12 @@ export function defaultStickers() {
     puppets: false,
     cues: false,
     crown: false,
+    bricks: false,
+    dominos: false,
+    fort: false,
+    teddies: false,
+    puzzles: false,
+    bookmark: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -3240,6 +3311,26 @@ export function onCueLane(x, y) {
   return inRect(x, y, CUE_ZONE) && !CUE_BLOCKS.some((card) => inRect(x, y, card));
 }
 
+export function onBrickLane(x, y) {
+  return inRect(x, y, BRICK_ZONE) && !BRICK_BLOCKS.some((brick) => inRect(x, y, brick));
+}
+
+export function onDominoPad(x, y) {
+  return DOMINO_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= DOMINO_RADIUS);
+}
+
+export function onFortGap(x, y) {
+  return inRect(x, y, FORT_GAP);
+}
+
+export function onTeddy(x, y) {
+  return TEDDIES.some((teddy) => inRect(x, y, teddy));
+}
+
+export function onPuzzleLane(x, y) {
+  return inRect(x, y, PUZZLE_ZONE) && !PUZZLE_BLOCKS.some((piece) => inRect(x, y, piece));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -3411,6 +3502,11 @@ export function townPathAt(x, y) {
   if (onDrapeGap(x, y)) return "drapes";
   if (onPuppet(x, y)) return "puppets";
   if (onCueLane(x, y)) return "cues";
+  if (onBrickLane(x, y)) return "bricks";
+  if (onDominoPad(x, y)) return "dominos";
+  if (onFortGap(x, y)) return "fort";
+  if (onTeddy(x, y)) return "teddies";
+  if (onPuzzleLane(x, y)) return "puzzles";
   return "";
 }
 
@@ -4163,6 +4259,27 @@ export function blockedByCues(x, y) {
   return CUE_BLOCKS.some((card) => inRect(x, y, card));
 }
 
+export function blockedByBricks(x, y) {
+  return BRICK_BLOCKS.some((brick) => inRect(x, y, brick));
+}
+
+export function blockedByDominos(x, y) {
+  return inRect(x, y, DOMINO_BED) && !onDominoPad(x, y);
+}
+
+export function blockedByFort(x, y) {
+  if (onFortGap(x, y)) return false;
+  return FORT_POSTS.some((post) => inRect(x, y, post)) || FORT_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByTeddies(x, y) {
+  return inRect(x, y, TEDDY_ZONE) && !onTeddy(x, y);
+}
+
+export function blockedByPuzzles(x, y) {
+  return PUZZLE_BLOCKS.some((piece) => inRect(x, y, piece));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -4338,7 +4455,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByLamps(x, y) ||
     blockedByDrapes(x, y) ||
     blockedByPuppets(x, y) ||
-    blockedByCues(x, y)
+    blockedByCues(x, y) ||
+    blockedByBricks(x, y) ||
+    blockedByDominos(x, y) ||
+    blockedByFort(x, y) ||
+    blockedByTeddies(x, y) ||
+    blockedByPuzzles(x, y)
   );
 }
 
@@ -4563,6 +4685,11 @@ export function applyCrossingProgress(prev, next) {
     ["drapes", DRAPE_BAND, "y"],
     ["puppets", PUPPET_ZONE, "y"],
     ["cues", CUE_ZONE, "y"],
+    ["bricks", BRICK_ZONE, "y"],
+    ["dominos", DOMINO_BED, "y"],
+    ["fort", FORT_BAND, "y"],
+    ["teddies", TEDDY_ZONE, "y"],
+    ["puzzles", PUZZLE_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -4657,7 +4784,9 @@ export function applyCrossingProgress(prev, next) {
       onDrumPad(next.x, next.y) ||
       onMaraca(next.x, next.y) ||
       onLampPad(next.x, next.y) ||
-      onPuppet(next.x, next.y),
+      onPuppet(next.x, next.y) ||
+      onDominoPad(next.x, next.y) ||
+      onTeddy(next.x, next.y),
   };
 }
 
@@ -5155,6 +5284,22 @@ export function shareMarigold(player) {
   });
 }
 
+export function takeBookmark(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "bookmark", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareBookmark(player) {
+  if (player.carry !== "bookmark") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), bookmark: true },
+  });
+}
+
 export function takeCrown(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "crown", pose: "idle", actionBeatMs: 0 });
@@ -5319,5 +5464,6 @@ export function carryLabel(value) {
   if (value === "marigold") return "Marigold";
   if (value === "kazoo") return "Kazoo";
   if (value === "crown") return "Paper crown";
+  if (value === "bookmark") return "Bookmark";
   return "";
 }
