@@ -432,6 +432,18 @@ import {
   PUZZLE_ZONE,
   PUZZLE_BLOCKS,
   BOOKMARK_SPOT,
+  POPUP_ZONE,
+  POPUP_BLOCKS,
+  PILLOW_BED,
+  PILLOW_PADS,
+  CANOPY_POSTS,
+  CANOPY_WALLS,
+  CANOPY_GAP,
+  GLOW_ZONE,
+  GLOWS,
+  SLIPPER_ZONE,
+  SLIPPER_BLOCKS,
+  MOON_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1227,6 +1239,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#e74c3c";
     oval(ctx, 24, 12, 1.4, 1.4);
+    ctx.fill();
+  }
+  if (look.carry === "moon" && !sleeping) {
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 26, 10, 7, 7);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, 29, 8, 6, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f39c12";
+    oval(ctx, 23, 9, 1.2, 1.2);
     ctx.fill();
   }
   ctx.restore();
@@ -8114,6 +8137,169 @@ function drawPath(ctx, x, y, w, h) {
   ctx.fill();
 }
 
+function drawPopUpBooks(ctx) {
+  ctx.fillStyle = "#f7efe2";
+  roundRect(ctx, POPUP_ZONE.x, POPUP_ZONE.y, POPUP_ZONE.w, POPUP_ZONE.h, 12);
+  ctx.fill();
+  const covers = ["#e74c3c", "#5dade2", "#27ae60", "#f4d35e"];
+  POPUP_BLOCKS.forEach((book, index) => {
+    const cx = book.x + book.w / 2;
+    ctx.fillStyle = covers[index % covers.length];
+    roundRect(ctx, cx - 7, book.y + 16, 14, 28, 2);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    ctx.beginPath();
+    ctx.moveTo(cx - 6, book.y + 16);
+    ctx.lineTo(cx, book.y + 6);
+    ctx.lineTo(cx + 6, book.y + 16);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    roundRect(ctx, cx - 1, book.y + 20, 2, 20, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Books", POPUP_ZONE.x + 50, POPUP_ZONE.y - 8);
+}
+
+function drawPillows(ctx) {
+  ctx.fillStyle = "#fdebd0";
+  roundRect(ctx, PILLOW_BED.x, PILLOW_BED.y, PILLOW_BED.w, PILLOW_BED.h, 12);
+  ctx.fill();
+  const colors = ["#f5b7b1", "#d7bde2", "#aed6f1"];
+  PILLOW_PADS.forEach((pad, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, pad.x - 14, pad.y - 10, 28, 20, 8);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, pad.x - 8, pad.y - 2, 16, 4, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pillows", PILLOW_BED.x + 12, PILLOW_BED.y - 8);
+}
+
+function drawReadingCanopy(ctx) {
+  for (const post of CANOPY_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 3, post.y + 8, 8, post.h - 10, 3);
+    ctx.fill();
+  }
+  ctx.strokeStyle = "#c39bd3";
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.moveTo(CANOPY_POSTS[0].x + 7, CANOPY_POSTS[0].y + 10);
+  ctx.lineTo(CANOPY_POSTS[1].x + 7, CANOPY_POSTS[1].y + 10);
+  ctx.stroke();
+  CANOPY_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#d7bde2" : "#f5b7b1";
+    roundRect(ctx, wall.x, wall.y - 14, wall.w, 26, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, wall.x + wall.w / 2, wall.y - 2, 4, 4);
+    ctx.fill();
+  });
+  ctx.strokeStyle = "#fff8e7";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(CANOPY_GAP.x + 2, CANOPY_GAP.y + 8);
+  ctx.lineTo(CANOPY_GAP.x + CANOPY_GAP.w - 2, CANOPY_GAP.y + 8);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Canopy", CANOPY_POSTS[0].x + 16, CANOPY_POSTS[0].y - 8);
+}
+
+function drawNightLights(ctx) {
+  ctx.fillStyle = "#fff6dc";
+  roundRect(ctx, GLOW_ZONE.x, GLOW_ZONE.y, GLOW_ZONE.w, GLOW_ZONE.h, 12);
+  ctx.fill();
+  const bulbs = ["#f9e79f", "#f8c471", "#f5b041", "#f4d35e"];
+  GLOWS.forEach((glow, index) => {
+    const cx = glow.x + glow.w / 2;
+    const cy = glow.y + 16;
+    ctx.fillStyle = "rgba(244, 211, 94, 0.45)";
+    oval(ctx, cx, cy, 12, 10);
+    ctx.fill();
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, cx - 4, cy + 2, 8, 10, 2);
+    ctx.fill();
+    ctx.fillStyle = bulbs[index % bulbs.length];
+    oval(ctx, cx, cy - 2, 6, 7);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx - 2, cy - 4, 2, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Lights", GLOW_ZONE.x + 14, GLOW_ZONE.y - 8);
+}
+
+function drawSlippers(ctx) {
+  ctx.fillStyle = "#fdeef4";
+  roundRect(ctx, SLIPPER_ZONE.x, SLIPPER_ZONE.y, SLIPPER_ZONE.w, SLIPPER_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#f5b7b1", "#85c1e9", "#82e0aa", "#f7dc6f"];
+  SLIPPER_BLOCKS.forEach((slipper, index) => {
+    const cx = slipper.x + slipper.w / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, cx - 8, slipper.y + 18, 16, 22, 8);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, slipper.y + 24, 4, 3);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx + 3, slipper.y + 34, 1.4, 1.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Slippers", SLIPPER_ZONE.x + 40, SLIPPER_ZONE.y - 8);
+}
+
+function paintMoon(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, 0, 0, 12, 12);
+  ctx.fill();
+  ctx.fillStyle = "#fff8e7";
+  oval(ctx, 5, -2, 10, 10);
+  ctx.fill();
+  ctx.fillStyle = "#f39c12";
+  oval(ctx, -4, -2, 1.6, 1.6);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedMoon(ctx, carried) {
+  if (!carried) {
+    paintMoon(ctx, 1520, 220, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Moon", 1496, 188);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, MOON_SPOT.x - 22, MOON_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, MOON_SPOT.x - 20, MOON_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, MOON_SPOT.x - 16, MOON_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, MOON_SPOT.x + 10, MOON_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintMoon(ctx, MOON_SPOT.x, MOON_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Moon", MOON_SPOT.x - 18, MOON_SPOT.y - 16);
+}
+
 export function drawTown(ctx, player, time) {
   ctx.fillStyle = "#8ecae6";
   ctx.fillRect(0, 0, TOWN.width, 220);
@@ -8357,6 +8543,12 @@ export function drawTown(ctx, player, time) {
   drawTeddies(ctx);
   drawPuzzlePieces(ctx);
   drawSharedBookmark(ctx, player.carry === "bookmark");
+  drawPopUpBooks(ctx);
+  drawPillows(ctx);
+  drawReadingCanopy(ctx);
+  drawNightLights(ctx);
+  drawSlippers(ctx);
+  drawSharedMoon(ctx, player.carry === "moon");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
