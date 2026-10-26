@@ -1,4 +1,4 @@
-import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOOKMARK_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, CROWN_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, KAZOO_SPOT, MARIGOLD_SPOT, MUFFIN_SPOT, MUM_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
+import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOOKMARK_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, CROWN_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, KAZOO_SPOT, MARIGOLD_SPOT, MOON_SPOT, MUFFIN_SPOT, MUM_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -143,6 +143,8 @@ export const ACTIONS = {
     { id: "share-crown", label: "Share paper crown", x: CROWN_SPOT.x, y: CROWN_SPOT.y },
     { id: "take-bookmark", label: "Take bookmark", x: 1040, y: 120 },
     { id: "share-bookmark", label: "Share bookmark", x: BOOKMARK_SPOT.x, y: BOOKMARK_SPOT.y },
+    { id: "take-moon", label: "Take paper moon", x: 1520, y: 240 },
+    { id: "share-moon", label: "Share paper moon", x: MOON_SPOT.x, y: MOON_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -383,6 +385,8 @@ export function visibleActions(player) {
     if (action.id === "share-crown" && player.carry !== "crown") return false;
     if (action.id === "take-bookmark" && player.carry) return false;
     if (action.id === "share-bookmark" && player.carry !== "bookmark") return false;
+    if (action.id === "take-moon" && player.carry) return false;
+    if (action.id === "share-moon" && player.carry !== "moon") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });

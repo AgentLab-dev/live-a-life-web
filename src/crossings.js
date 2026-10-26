@@ -1926,6 +1926,59 @@ export const PUZZLE_BLOCKS = [
 
 export const BOOKMARK_SPOT = { x: 980, y: 1980 };
 
+export const POPUP_ZONE = { x: 2352, y: 1112, w: 148, h: 56 };
+
+export const POPUP_BLOCKS = [
+  { x: 2360, y: 1112, w: 20, h: 56 },
+  { x: 2400, y: 1112, w: 20, h: 56 },
+  { x: 2440, y: 1112, w: 20, h: 56 },
+  { x: 2480, y: 1112, w: 20, h: 56 },
+];
+
+export const PILLOW_BED = { x: 2268, y: 1928, w: 88, h: 72 };
+
+export const PILLOW_PADS = [
+  { x: 2312, y: 1944 },
+  { x: 2312, y: 1964 },
+  { x: 2312, y: 1984 },
+];
+
+export const PILLOW_RADIUS = 16;
+
+export const CANOPY_POSTS = [
+  { x: 564, y: 1580, w: 14, h: 64 },
+  { x: 660, y: 1580, w: 14, h: 64 },
+];
+
+export const CANOPY_WALLS = [
+  { x: 578, y: 1604, w: 26, h: 12 },
+  { x: 634, y: 1604, w: 26, h: 12 },
+];
+
+export const CANOPY_GAP = { x: 604, y: 1592, w: 30, h: 40 };
+
+export const CANOPY_BAND = { x: 578, y: 1604, w: 82, h: 12 };
+
+export const GLOW_ZONE = { x: 432, y: 1052, w: 80, h: 106 };
+
+export const GLOWS = [
+  { x: 434, y: 1052, w: 42, h: 34 },
+  { x: 468, y: 1076, w: 42, h: 34 },
+  { x: 434, y: 1100, w: 42, h: 34 },
+  { x: 468, y: 1124, w: 42, h: 34 },
+];
+
+export const SLIPPER_ZONE = { x: 276, y: 2048, w: 148, h: 56 };
+
+export const SLIPPER_BLOCKS = [
+  { x: 284, y: 2048, w: 20, h: 56 },
+  { x: 324, y: 2048, w: 20, h: 56 },
+  { x: 364, y: 2048, w: 20, h: 56 },
+  { x: 404, y: 2048, w: 20, h: 56 },
+];
+
+export const MOON_SPOT = { x: 1400, y: 1500 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2143,6 +2196,12 @@ export const STICKERS = [
   { id: "teddies", name: "Teddy tip-toer", hint: "You tip-toed past the friendly teddies." },
   { id: "puzzles", name: "Puzzle weaver", hint: "You weaved between the puzzle pieces." },
   { id: "bookmark", name: "Bookmark friend", hint: "You shared a kind bookmark." },
+  { id: "popups", name: "Pop-up weaver", hint: "You weaved between the pop-up books." },
+  { id: "pillows", name: "Pillow hopper", hint: "You hopped the soft pillows." },
+  { id: "canopy", name: "Canopy ducker", hint: "You ducked under the reading canopy." },
+  { id: "glows", name: "Night-light tip-toer", hint: "You tip-toed past the friendly night lights." },
+  { id: "slippers", name: "Slipper weaver", hint: "You weaved between the soft slippers." },
+  { id: "moon", name: "Moon friend", hint: "You shared a kind paper moon." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2364,12 +2423,18 @@ export const CHEERS = {
   teddies: "Tip-toe past the friendly teddies!",
   puzzles: "Little puzzle pieces said hello!",
   bookmark: "A kind bookmark to share. Kind!",
+  popups: "Colorful pop-up books said hello!",
+  pillows: "Boing! Soft hops on the pillows!",
+  canopy: "Duck under the cozy reading canopy!",
+  glows: "Tip-toe past the friendly night lights!",
+  slippers: "Soft slippers said hello!",
+  moon: "A kind paper moon to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon"];
 
 export function defaultStickers() {
   return {
@@ -2589,6 +2654,12 @@ export function defaultStickers() {
     teddies: false,
     puzzles: false,
     bookmark: false,
+    popups: false,
+    pillows: false,
+    canopy: false,
+    glows: false,
+    slippers: false,
+    moon: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -3331,6 +3402,26 @@ export function onPuzzleLane(x, y) {
   return inRect(x, y, PUZZLE_ZONE) && !PUZZLE_BLOCKS.some((piece) => inRect(x, y, piece));
 }
 
+export function onPopupLane(x, y) {
+  return inRect(x, y, POPUP_ZONE) && !POPUP_BLOCKS.some((book) => inRect(x, y, book));
+}
+
+export function onPillowPad(x, y) {
+  return PILLOW_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= PILLOW_RADIUS);
+}
+
+export function onCanopyGap(x, y) {
+  return inRect(x, y, CANOPY_GAP);
+}
+
+export function onGlow(x, y) {
+  return GLOWS.some((glow) => inRect(x, y, glow));
+}
+
+export function onSlipperLane(x, y) {
+  return inRect(x, y, SLIPPER_ZONE) && !SLIPPER_BLOCKS.some((slipper) => inRect(x, y, slipper));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -3507,6 +3598,11 @@ export function townPathAt(x, y) {
   if (onFortGap(x, y)) return "fort";
   if (onTeddy(x, y)) return "teddies";
   if (onPuzzleLane(x, y)) return "puzzles";
+  if (onPopupLane(x, y)) return "popups";
+  if (onPillowPad(x, y)) return "pillows";
+  if (onCanopyGap(x, y)) return "canopy";
+  if (onGlow(x, y)) return "glows";
+  if (onSlipperLane(x, y)) return "slippers";
   return "";
 }
 
@@ -4280,6 +4376,27 @@ export function blockedByPuzzles(x, y) {
   return PUZZLE_BLOCKS.some((piece) => inRect(x, y, piece));
 }
 
+export function blockedByPopups(x, y) {
+  return POPUP_BLOCKS.some((book) => inRect(x, y, book));
+}
+
+export function blockedByPillows(x, y) {
+  return inRect(x, y, PILLOW_BED) && !onPillowPad(x, y);
+}
+
+export function blockedByCanopy(x, y) {
+  if (onCanopyGap(x, y)) return false;
+  return CANOPY_POSTS.some((post) => inRect(x, y, post)) || CANOPY_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByGlows(x, y) {
+  return inRect(x, y, GLOW_ZONE) && !onGlow(x, y);
+}
+
+export function blockedBySlippers(x, y) {
+  return SLIPPER_BLOCKS.some((slipper) => inRect(x, y, slipper));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -4460,7 +4577,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByDominos(x, y) ||
     blockedByFort(x, y) ||
     blockedByTeddies(x, y) ||
-    blockedByPuzzles(x, y)
+    blockedByPuzzles(x, y) ||
+    blockedByPopups(x, y) ||
+    blockedByPillows(x, y) ||
+    blockedByCanopy(x, y) ||
+    blockedByGlows(x, y) ||
+    blockedBySlippers(x, y)
   );
 }
 
@@ -4690,6 +4812,11 @@ export function applyCrossingProgress(prev, next) {
     ["fort", FORT_BAND, "y"],
     ["teddies", TEDDY_ZONE, "y"],
     ["puzzles", PUZZLE_ZONE, "y"],
+    ["popups", POPUP_ZONE, "y"],
+    ["pillows", PILLOW_BED, "y"],
+    ["canopy", CANOPY_BAND, "y"],
+    ["glows", GLOW_ZONE, "y"],
+    ["slippers", SLIPPER_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -4786,7 +4913,9 @@ export function applyCrossingProgress(prev, next) {
       onLampPad(next.x, next.y) ||
       onPuppet(next.x, next.y) ||
       onDominoPad(next.x, next.y) ||
-      onTeddy(next.x, next.y),
+      onTeddy(next.x, next.y) ||
+      onPillowPad(next.x, next.y) ||
+      onGlow(next.x, next.y),
   };
 }
 
@@ -5300,6 +5429,22 @@ export function shareBookmark(player) {
   });
 }
 
+export function takeMoon(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "moon", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareMoon(player) {
+  if (player.carry !== "moon") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), moon: true },
+  });
+}
+
 export function takeCrown(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "crown", pose: "idle", actionBeatMs: 0 });
@@ -5465,5 +5610,6 @@ export function carryLabel(value) {
   if (value === "kazoo") return "Kazoo";
   if (value === "crown") return "Paper crown";
   if (value === "bookmark") return "Bookmark";
+  if (value === "moon") return "Paper moon";
   return "";
 }
