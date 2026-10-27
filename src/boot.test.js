@@ -191,6 +191,8 @@ describe("Play boot", () => {
     expect(start).toContain("shareBookmark");
     expect(start).toContain("takeMoon");
     expect(start).toContain("shareMoon");
+    expect(start).toContain("takeGlobe");
+    expect(start).toContain("shareGlobe");
     expect(start).toContain("pushBookCart");
     expect(start).toContain("enterUsaMap");
     expect(start).toContain("startHop");

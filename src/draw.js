@@ -444,6 +444,18 @@ import {
   SLIPPER_ZONE,
   SLIPPER_BLOCKS,
   MOON_SPOT,
+  CLOUD_ZONE,
+  CLOUD_BLOCKS,
+  PLANET_BED,
+  PLANET_PADS,
+  SCOPE_POSTS,
+  SCOPE_WALLS,
+  SCOPE_GAP,
+  SAT_ZONE,
+  SATS,
+  COMET_ZONE,
+  COMET_BLOCKS,
+  GLOBE_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1250,6 +1262,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#f39c12";
     oval(ctx, 23, 9, 1.2, 1.2);
+    ctx.fill();
+  }
+  if (look.carry === "globe" && !sleeping) {
+    ctx.fillStyle = "#5dade2";
+    oval(ctx, 26, 10, 7, 7);
+    ctx.fill();
+    ctx.fillStyle = "#7dcea0";
+    oval(ctx, 24, 9, 3.2, 2.4);
+    ctx.fill();
+    ctx.fillStyle = "#f7efd4";
+    oval(ctx, 28, 12, 1.2, 1.2);
     ctx.fill();
   }
   ctx.restore();
@@ -8276,6 +8299,187 @@ function paintMoon(ctx, x, y, scale = 1) {
   ctx.restore();
 }
 
+function drawCloudPuffs(ctx) {
+  ctx.fillStyle = "#d6eaf8";
+  roundRect(ctx, CLOUD_ZONE.x, CLOUD_ZONE.y, CLOUD_ZONE.w, CLOUD_ZONE.h, 14);
+  ctx.fill();
+  CLOUD_BLOCKS.forEach((puff, index) => {
+    const cx = puff.x + puff.w / 2;
+    const cy = puff.y + puff.h / 2;
+    ctx.fillStyle = index % 2 === 0 ? "#fffef8" : "#f4f8fb";
+    oval(ctx, cx, cy, 12, 9);
+    ctx.fill();
+    oval(ctx, cx - 6, cy + 2, 7, 6);
+    ctx.fill();
+    oval(ctx, cx + 6, cy + 1, 7, 6);
+    ctx.fill();
+    ctx.fillStyle = "#5dade2";
+    oval(ctx, cx - 2, cy - 1, 1.2, 1.2);
+    ctx.fill();
+    oval(ctx, cx + 3, cy - 1, 1.2, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Clouds", CLOUD_ZONE.x + 34, CLOUD_ZONE.y - 8);
+}
+
+function drawPlanetPads(ctx) {
+  ctx.fillStyle = "#d6eaf8";
+  roundRect(ctx, PLANET_BED.x, PLANET_BED.y, PLANET_BED.w, PLANET_BED.h, 14);
+  ctx.fill();
+  const colors = ["#f5b041", "#5dade2", "#e59866"];
+  PLANET_PADS.forEach((pad, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, pad.x, pad.y, 14, 14);
+    ctx.fill();
+    ctx.strokeStyle = "#fff8e7";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.ellipse(pad.x, pad.y, 18, 6, -0.4, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, pad.x - 4, pad.y - 2, 1.3, 1.3);
+    ctx.fill();
+    oval(ctx, pad.x + 4, pad.y - 2, 1.3, 1.3);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.arc(pad.x, pad.y + 3, 3, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Planets", PLANET_BED.x + 14, PLANET_BED.y - 8);
+}
+
+function drawTelescope(ctx) {
+  for (const post of SCOPE_POSTS) {
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, post.x + 3, post.y + 8, 8, post.h - 8, 3);
+    ctx.fill();
+  }
+  SCOPE_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#c39bd3" : "#a569bd";
+    roundRect(ctx, wall.x, wall.y - 8, wall.w, 18, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f7efd4";
+    oval(ctx, wall.x + wall.w / 2, wall.y + 1, 4, 4);
+    ctx.fill();
+  });
+  ctx.strokeStyle = "#f4d35e";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(SCOPE_GAP.x + 2, SCOPE_GAP.y + 18);
+  ctx.lineTo(SCOPE_GAP.x + SCOPE_GAP.w - 2, SCOPE_GAP.y + 18);
+  ctx.stroke();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Scope", SCOPE_POSTS[0].x + 18, SCOPE_POSTS[0].y - 8);
+}
+
+function drawSatellites(ctx) {
+  ctx.fillStyle = "#eaf4fb";
+  roundRect(ctx, SAT_ZONE.x, SAT_ZONE.y, SAT_ZONE.w, SAT_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#85c1e9", "#f5cba7", "#d7bde2", "#f9e79f"];
+  SATS.forEach((sat, index) => {
+    const cx = sat.x + sat.w / 2;
+    const cy = sat.y + 16;
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, cx - 8, cy - 6, 16, 14, 4);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 6);
+    ctx.lineTo(cx, cy - 14);
+    ctx.stroke();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, cx, cy - 15, 3, 3);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx - 3, cy - 1, 1.1, 1.1);
+    ctx.fill();
+    oval(ctx, cx + 3, cy - 1, 1.1, 1.1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Orbit", SAT_ZONE.x + 18, SAT_ZONE.y - 8);
+}
+
+function drawCometRibbons(ctx) {
+  ctx.fillStyle = "#fdebd0";
+  roundRect(ctx, COMET_ZONE.x, COMET_ZONE.y, COMET_ZONE.w, COMET_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#f5b041", "#e74c3c", "#f4d35e"];
+  COMET_BLOCKS.forEach((comet, index) => {
+    const cx = comet.x + comet.w / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, cx, comet.y + 16, 8, 8);
+    ctx.fill();
+    ctx.strokeStyle = colors[index % colors.length];
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx, comet.y + 24);
+    ctx.lineTo(cx - 4, comet.y + 42);
+    ctx.lineTo(cx + 4, comet.y + 40);
+    ctx.stroke();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx - 2, comet.y + 14, 1.4, 1.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Comets", COMET_ZONE.x + 28, COMET_ZONE.y - 8);
+}
+
+function paintGlobe(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#5dade2";
+  oval(ctx, 0, 0, 12, 12);
+  ctx.fill();
+  ctx.fillStyle = "#7dcea0";
+  oval(ctx, -3, -1, 5, 4);
+  ctx.fill();
+  oval(ctx, 4, 3, 3.5, 2.6);
+  ctx.fill();
+  ctx.strokeStyle = "#f7efd4";
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 5, 12, 0, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function drawSharedGlobe(ctx, carried) {
+  if (!carried) {
+    paintGlobe(ctx, 1716, 478, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Globe", 1692, 450);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, GLOBE_SPOT.x - 22, GLOBE_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, GLOBE_SPOT.x - 20, GLOBE_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, GLOBE_SPOT.x - 16, GLOBE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, GLOBE_SPOT.x + 10, GLOBE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintGlobe(ctx, GLOBE_SPOT.x, GLOBE_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Globe", GLOBE_SPOT.x - 18, GLOBE_SPOT.y - 16);
+}
+
 function drawSharedMoon(ctx, carried) {
   if (!carried) {
     paintMoon(ctx, 1520, 220, 0.85);
@@ -8549,6 +8753,12 @@ export function drawTown(ctx, player, time) {
   drawNightLights(ctx);
   drawSlippers(ctx);
   drawSharedMoon(ctx, player.carry === "moon");
+  drawCloudPuffs(ctx);
+  drawPlanetPads(ctx);
+  drawTelescope(ctx);
+  drawSatellites(ctx);
+  drawCometRibbons(ctx);
+  drawSharedGlobe(ctx, player.carry === "globe");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
