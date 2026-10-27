@@ -1979,6 +1979,58 @@ export const SLIPPER_BLOCKS = [
 
 export const MOON_SPOT = { x: 1400, y: 1500 };
 
+export const CLOUD_ZONE = { x: 92, y: 220, w: 128, h: 60 };
+
+export const CLOUD_BLOCKS = [
+  { x: 108, y: 220, w: 16, h: 28 },
+  { x: 140, y: 252, w: 16, h: 28 },
+  { x: 172, y: 220, w: 16, h: 28 },
+  { x: 204, y: 252, w: 16, h: 28 },
+];
+
+export const PLANET_BED = { x: 1844, y: 1468, w: 80, h: 56 };
+
+export const PLANET_PADS = [
+  { x: 1860, y: 1476 },
+  { x: 1884, y: 1497 },
+  { x: 1860, y: 1518 },
+];
+
+export const PLANET_RADIUS = 16;
+
+export const SCOPE_POSTS = [
+  { x: 578, y: 1182, w: 14, h: 64 },
+  { x: 660, y: 1182, w: 14, h: 64 },
+];
+
+export const SCOPE_WALLS = [
+  { x: 592, y: 1206, w: 22, h: 12 },
+  { x: 638, y: 1206, w: 22, h: 12 },
+];
+
+export const SCOPE_GAP = { x: 614, y: 1194, w: 24, h: 40 };
+
+export const SCOPE_BAND = { x: 592, y: 1206, w: 68, h: 12 };
+
+export const SAT_ZONE = { x: 528, y: 1752, w: 64, h: 106 };
+
+export const SATS = [
+  { x: 530, y: 1752, w: 34, h: 34 },
+  { x: 556, y: 1776, w: 34, h: 34 },
+  { x: 530, y: 1800, w: 34, h: 34 },
+  { x: 556, y: 1824, w: 34, h: 34 },
+];
+
+export const COMET_ZONE = { x: 890, y: 1100, w: 112, h: 52 };
+
+export const COMET_BLOCKS = [
+  { x: 898, y: 1100, w: 16, h: 52 },
+  { x: 934, y: 1100, w: 16, h: 52 },
+  { x: 970, y: 1100, w: 16, h: 52 },
+];
+
+export const GLOBE_SPOT = { x: 2018, y: 2152 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2202,6 +2254,12 @@ export const STICKERS = [
   { id: "glows", name: "Night-light tip-toer", hint: "You tip-toed past the friendly night lights." },
   { id: "slippers", name: "Slipper weaver", hint: "You weaved between the soft slippers." },
   { id: "moon", name: "Moon friend", hint: "You shared a kind paper moon." },
+  { id: "clouds", name: "Cloud weaver", hint: "You bobbed between the fluffy cloud puffs." },
+  { id: "planets", name: "Planet hopper", hint: "You zigzagged the smiling planet pads." },
+  { id: "scope", name: "Telescope ducker", hint: "You ducked under the cardboard telescope." },
+  { id: "sats", name: "Satellite tip-toer", hint: "You tip-toed past the friendly satellites." },
+  { id: "comets", name: "Comet weaver", hint: "You weaved between the comet ribbons." },
+  { id: "globe", name: "Globe friend", hint: "You shared a kind paper globe." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2429,12 +2487,18 @@ export const CHEERS = {
   glows: "Tip-toe past the friendly night lights!",
   slippers: "Soft slippers said hello!",
   moon: "A kind paper moon to share. Kind!",
+  clouds: "Fluffy clouds said hello!",
+  planets: "Boing! Zigzag hops on the smiling planets!",
+  scope: "Duck under the friendly telescope!",
+  sats: "Tip-toe past the friendly satellites!",
+  comets: "Little comet ribbons said hello!",
+  globe: "A kind paper globe to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe"];
 
 export function defaultStickers() {
   return {
@@ -2660,6 +2724,12 @@ export function defaultStickers() {
     glows: false,
     slippers: false,
     moon: false,
+    clouds: false,
+    planets: false,
+    scope: false,
+    sats: false,
+    comets: false,
+    globe: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -3422,6 +3492,26 @@ export function onSlipperLane(x, y) {
   return inRect(x, y, SLIPPER_ZONE) && !SLIPPER_BLOCKS.some((slipper) => inRect(x, y, slipper));
 }
 
+export function onCloudLane(x, y) {
+  return inRect(x, y, CLOUD_ZONE) && !CLOUD_BLOCKS.some((puff) => inRect(x, y, puff));
+}
+
+export function onPlanetPad(x, y) {
+  return PLANET_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= PLANET_RADIUS);
+}
+
+export function onScopeGap(x, y) {
+  return inRect(x, y, SCOPE_GAP);
+}
+
+export function onSat(x, y) {
+  return SATS.some((sat) => inRect(x, y, sat));
+}
+
+export function onCometLane(x, y) {
+  return inRect(x, y, COMET_ZONE) && !COMET_BLOCKS.some((comet) => inRect(x, y, comet));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -3603,6 +3693,11 @@ export function townPathAt(x, y) {
   if (onCanopyGap(x, y)) return "canopy";
   if (onGlow(x, y)) return "glows";
   if (onSlipperLane(x, y)) return "slippers";
+  if (onCloudLane(x, y)) return "clouds";
+  if (onPlanetPad(x, y)) return "planets";
+  if (onScopeGap(x, y)) return "scope";
+  if (onSat(x, y)) return "sats";
+  if (onCometLane(x, y)) return "comets";
   return "";
 }
 
@@ -4397,6 +4492,27 @@ export function blockedBySlippers(x, y) {
   return SLIPPER_BLOCKS.some((slipper) => inRect(x, y, slipper));
 }
 
+export function blockedByClouds(x, y) {
+  return CLOUD_BLOCKS.some((puff) => inRect(x, y, puff));
+}
+
+export function blockedByPlanets(x, y) {
+  return inRect(x, y, PLANET_BED) && !onPlanetPad(x, y);
+}
+
+export function blockedByScope(x, y) {
+  if (onScopeGap(x, y)) return false;
+  return SCOPE_POSTS.some((post) => inRect(x, y, post)) || SCOPE_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedBySats(x, y) {
+  return inRect(x, y, SAT_ZONE) && !onSat(x, y);
+}
+
+export function blockedByComets(x, y) {
+  return COMET_BLOCKS.some((comet) => inRect(x, y, comet));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -4582,7 +4698,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByPillows(x, y) ||
     blockedByCanopy(x, y) ||
     blockedByGlows(x, y) ||
-    blockedBySlippers(x, y)
+    blockedBySlippers(x, y) ||
+    blockedByClouds(x, y) ||
+    blockedByPlanets(x, y) ||
+    blockedByScope(x, y) ||
+    blockedBySats(x, y) ||
+    blockedByComets(x, y)
   );
 }
 
@@ -4817,6 +4938,11 @@ export function applyCrossingProgress(prev, next) {
     ["canopy", CANOPY_BAND, "y"],
     ["glows", GLOW_ZONE, "y"],
     ["slippers", SLIPPER_ZONE, "y"],
+    ["clouds", CLOUD_ZONE, "x"],
+    ["planets", PLANET_BED, "y"],
+    ["scope", SCOPE_BAND, "y"],
+    ["sats", SAT_ZONE, "y"],
+    ["comets", COMET_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -4915,7 +5041,9 @@ export function applyCrossingProgress(prev, next) {
       onDominoPad(next.x, next.y) ||
       onTeddy(next.x, next.y) ||
       onPillowPad(next.x, next.y) ||
-      onGlow(next.x, next.y),
+      onGlow(next.x, next.y) ||
+      onPlanetPad(next.x, next.y) ||
+      onSat(next.x, next.y),
   };
 }
 
@@ -5429,6 +5557,22 @@ export function shareBookmark(player) {
   });
 }
 
+export function takeGlobe(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "globe", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareGlobe(player) {
+  if (player.carry !== "globe") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), globe: true },
+  });
+}
+
 export function takeMoon(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "moon", pose: "idle", actionBeatMs: 0 });
@@ -5611,5 +5755,6 @@ export function carryLabel(value) {
   if (value === "crown") return "Paper crown";
   if (value === "bookmark") return "Bookmark";
   if (value === "moon") return "Paper moon";
+  if (value === "globe") return "Paper globe";
   return "";
 }

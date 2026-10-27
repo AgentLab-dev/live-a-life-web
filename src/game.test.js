@@ -182,6 +182,11 @@ import {
   blockedByCanopy,
   blockedByGlows,
   blockedBySlippers,
+  blockedByClouds,
+  blockedByPlanets,
+  blockedByScope,
+  blockedBySats,
+  blockedByComets,
   BOOK_SPOT,
   cheerCrossing,
   closeParkGate,
@@ -220,6 +225,7 @@ import {
   CROWN_SPOT,
   BOOKMARK_SPOT,
   MOON_SPOT,
+  GLOBE_SPOT,
   newSticker,
   townPathAt,
   nudgeBookCart,
@@ -405,6 +411,11 @@ import {
   onCanopyGap,
   onGlow,
   onSlipperLane,
+  onCloudLane,
+  onPlanetPad,
+  onScopeGap,
+  onSat,
+  onCometLane,
   openParkGate,
   pushBookCart,
   shareBalloon,
@@ -444,6 +455,7 @@ import {
   shareCrown,
   shareBookmark,
   shareMoon,
+  shareGlobe,
   SNACK_SPOT,
   takeBook,
   takeCard,
@@ -482,6 +494,7 @@ import {
   takeCrown,
   takeBookmark,
   takeMoon,
+  takeGlobe,
 } from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -8193,6 +8206,227 @@ describe("monday story-nook play", () => {
     expect(isBlocked("town", 350, 2076)).toBe(false);
     expect(isBlocked("town", MOON_SPOT.x, MOON_SPOT.y)).toBe(false);
     expect(isBlocked("town", 1520, 240)).toBe(false);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
+  });
+});
+
+describe("tuesday sky-watch play", () => {
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  function townKid(x, y, extra = {}) {
+    return {
+      room: "town",
+      x,
+      y,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      carry: "",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("names cloud, planet, telescope, satellite, and comet paths", () => {
+    expect(townPathAt(132, 232)).toBe("clouds");
+    expect(onCloudLane(132, 232)).toBe(true);
+    expect(townPathAt(116, 232)).toBe("");
+    expect(townPathAt(1860, 1476)).toBe("planets");
+    expect(onPlanetPad(1884, 1497)).toBe(true);
+    expect(townPathAt(1910, 1488)).toBe("");
+    expect(townPathAt(626, 1210)).toBe("scope");
+    expect(onScopeGap(626, 1210)).toBe(true);
+    expect(townPathAt(585, 1210)).toBe("");
+    expect(townPathAt(556, 1790)).toBe("sats");
+    expect(onSat(556, 1790)).toBe(true);
+    expect(townPathAt(530, 1790)).toBe("");
+    expect(townPathAt(924, 1126)).toBe("comets");
+    expect(onCometLane(924, 1126)).toBe(true);
+    expect(townPathAt(906, 1126)).toBe("");
+    expect(townPathAt(1716, 500)).toBe("");
+  });
+
+  it("blocks cloud puffs, planet grass, telescope posts, satellite lawn, and comets but not the walk paths", () => {
+    expect(blockedByClouds(116, 232)).toBe(true);
+    expect(isBlocked("town", 116, 232)).toBe(true);
+    expect(onCloudLane(132, 266)).toBe(true);
+    expect(isBlocked("town", 132, 266)).toBe(false);
+    expect(blockedByPlanets(1910, 1488)).toBe(true);
+    expect(isBlocked("town", 1910, 1488)).toBe(true);
+    expect(onPlanetPad(1860, 1476)).toBe(true);
+    expect(isBlocked("town", 1860, 1476)).toBe(false);
+    expect(blockedByScope(585, 1210)).toBe(true);
+    expect(isBlocked("town", 585, 1210)).toBe(true);
+    expect(onScopeGap(626, 1210)).toBe(true);
+    expect(isBlocked("town", 626, 1210)).toBe(false);
+    expect(blockedBySats(530, 1790)).toBe(true);
+    expect(isBlocked("town", 530, 1790)).toBe(true);
+    expect(onSat(556, 1768)).toBe(true);
+    expect(isBlocked("town", 556, 1768)).toBe(false);
+    expect(blockedByComets(906, 1126)).toBe(true);
+    expect(isBlocked("town", 906, 1126)).toBe(true);
+    expect(onCometLane(924, 1126)).toBe(true);
+    expect(isBlocked("town", 924, 1126)).toBe(false);
+    expect(isBlocked("town", 1716, 500)).toBe(false);
+  });
+
+  it("bobs east through the cloud puffs and earns a sticker", () => {
+    let player = townKid(70, 266);
+    player = walkFrames(player, { x: 132, y: 266 }, 24);
+    player = walkFrames(player, { x: 132, y: 232 }, 20);
+    player = walkFrames(player, { x: 164, y: 232 }, 20);
+    player = walkFrames(player, { x: 164, y: 266 }, 20);
+    player = walkFrames(player, { x: 196, y: 266 }, 20);
+    player = walkFrames(player, { x: 196, y: 232 }, 20);
+    player = walkFrames(player, { x: 250, y: 232 }, 24);
+    expect(player.x).toBeGreaterThan(224);
+    expect(player.stickers.clouds).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(defaultStickers(), player.stickers)).toBe("clouds");
+  });
+
+  it("zigzags the planet pads and earns a sticker", () => {
+    let player = townKid(1860, 1448);
+    player = walkFrames(player, { x: 1860, y: 1476 }, 20);
+    player = walkFrames(player, { x: 1884, y: 1497 }, 20);
+    player = walkFrames(player, { x: 1860, y: 1518 }, 20);
+    player = walkFrames(player, { x: 1860, y: 1548 }, 20);
+    expect(player.y).toBeGreaterThan(1528);
+    expect(player.stickers.planets).toBe(true);
+    expect(player.timer).toBeUndefined();
+  });
+
+  it("walks the telescope, satellites, and comets without a fail state", () => {
+    let player = townKid(626, 1164);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 18);
+    expect(player.y).toBeGreaterThan(1222);
+    expect(player.stickers.scope).toBe(true);
+
+    player = townKid(556, 1728);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 24);
+    expect(player.y).toBeGreaterThan(1862);
+    expect(player.stickers.sats).toBe(true);
+
+    player = townKid(924, 1064);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 20);
+    expect(player.y).toBeGreaterThan(1156);
+    expect(player.stickers.comets).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets tap-to-walk stop at a cloud puff and planet grass instead of punishing", () => {
+    const cloudBump = stepToward(townKid(70, 232), { x: 220, y: 232 }, 80);
+    expect(cloudBump.x).toBeLessThan(108);
+    expect(cloudBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 116, 232)).toBe(true);
+
+    const planetBump = stepToward(townKid(1910, 1448), { x: 1910, y: 1560 }, 80);
+    expect(planetBump.y).toBeLessThan(1488);
+    expect(planetBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1910, 1488)).toBe(true);
+  });
+
+  it("takes and shares a paper globe without money or a timer", () => {
+    const helper = takeGlobe({ room: "town", carry: "", stickers: defaultStickers(), money: 2 });
+    expect(helper.carry).toBe("globe");
+    expect(helper.money).toBeUndefined();
+    expect(
+      visibleActions({ ...helper, x: 1716, y: 500, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+        (action) => action.id === "take-globe",
+      ),
+    ).toBe(false);
+    const shared = shareGlobe({ ...helper, room: "town", x: GLOBE_SPOT.x, y: GLOBE_SPOT.y });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("look");
+    expect(shared.stickers.globe).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+    expect(takePicnic({ ...helper, carry: "globe" }).carry).toBe("globe");
+    expect(takeMoon({ ...helper, carry: "globe" }).carry).toBe("globe");
+  });
+
+  it("cheers a nearby neighbor after a tuesday sky-watch crossing", () => {
+    const people = createPeople();
+    const pip = people.find((person) => person.id === "pip");
+    const next = cheerCrossing(people, "globe", pip.x, pip.y);
+    expect(next.find((person) => person.id === "pip").line).toMatch(/globe|kind/i);
+    expect(next.find((person) => person.id === "pip").bubbleMs).toBe(2400);
+  });
+
+  it("persists tuesday sky-watch stickers and a carried paper globe", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      carry: "globe",
+      stickers: { clouds: true, planets: true, scope: true, sats: true, comets: true, globe: true, coins: 8 },
+      money: 5,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.carry).toBe("globe");
+    expect(loaded.stickers.clouds).toBe(true);
+    expect(loaded.stickers.planets).toBe(true);
+    expect(loaded.stickers.scope).toBe(true);
+    expect(loaded.stickers.sats).toBe(true);
+    expect(loaded.stickers.comets).toBe(true);
+    expect(loaded.stickers.globe).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.carry).toBe("globe");
+  });
+
+  it("shows paper-globe actions without hiding house or shop buttons", () => {
+    const atYard = townKid(1716, 500, { pose: "idle", job: "none" });
+    const ids = visibleActions(atYard).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["take-globe", "stickers"]));
+    expect(ids).not.toContain("share-globe");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+    const withGlobe = townKid(GLOBE_SPOT.x, GLOBE_SPOT.y, { carry: "globe", pose: "idle", job: "none" });
+    expect(visibleActions(withGlobe).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["share-globe", "stickers"]),
+    );
+    expect(isBlocked("town", GLOBE_SPOT.x, GLOBE_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 1716, 500)).toBe(false);
+    expect(isBlocked("town", 480, 660)).toBe(false);
+  });
+
+  it("keeps the house, shop, park, PWA, and USA map paths open around the sky-watch crossings", () => {
+    let player = townKid(560, 920);
+    player = walkFrames(player, { x: 460, y: 980 }, 80);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    player = walkFrames(player, { x: 480, y: 720 }, 120);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(canEnter("town", "bakery")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(canEnter("town", "usa")).toBe(true);
+    expect(isBlocked("town", 1920, 1320)).toBe(false);
+    expect(isBlocked("town", 420, 980)).toBe(false);
+    expect(isBlocked("town", 420, 1400)).toBe(false);
+    expect(isBlocked("town", 132, 232)).toBe(false);
+    expect(isBlocked("town", 1884, 1497)).toBe(false);
+    expect(isBlocked("town", 626, 1210)).toBe(false);
+    expect(isBlocked("town", 556, 1790)).toBe(false);
+    expect(isBlocked("town", 924, 1126)).toBe(false);
+    expect(isBlocked("town", GLOBE_SPOT.x, GLOBE_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 1716, 500)).toBe(false);
     expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
   });
 });
