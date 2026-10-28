@@ -2031,6 +2031,56 @@ export const COMET_BLOCKS = [
 
 export const GLOBE_SPOT = { x: 2018, y: 2152 };
 
+export const KELP_ZONE = { x: 1104, y: 2104, w: 52, h: 92 };
+
+export const KELP_BLOCKS = [
+  { x: 1104, y: 2116, w: 24, h: 14 },
+  { x: 1132, y: 2148, w: 24, h: 14 },
+  { x: 1104, y: 2180, w: 24, h: 14 },
+];
+
+export const ANEMONE_BED = { x: 904, y: 2068, w: 76, h: 48 };
+
+export const ANEMONE_PADS = [
+  { x: 920, y: 2076 },
+  { x: 938, y: 2092 },
+  { x: 920, y: 2108 },
+];
+
+export const ANEMONE_RADIUS = 14;
+
+export const DRIFT_POSTS = [
+  { x: 1848, y: 1664, w: 12, h: 48 },
+  { x: 1916, y: 1664, w: 12, h: 48 },
+];
+
+export const DRIFT_WALLS = [
+  { x: 1860, y: 1680, w: 22, h: 12 },
+  { x: 1894, y: 1680, w: 22, h: 12 },
+];
+
+export const DRIFT_GAP = { x: 1882, y: 1666, w: 12, h: 44 };
+
+export const DRIFT_BAND = { x: 1860, y: 1680, w: 56, h: 12 };
+
+export const CRAB_ZONE = { x: 160, y: 1588, w: 100, h: 44 };
+
+export const CRABS = [
+  { x: 162, y: 1588, w: 46, h: 26 },
+  { x: 196, y: 1602, w: 46, h: 26 },
+  { x: 224, y: 1588, w: 36, h: 26 },
+];
+
+export const GLASS_ZONE = { x: 1544, y: 1936, w: 100, h: 36 };
+
+export const GLASS_BLOCKS = [
+  { x: 1552, y: 1936, w: 14, h: 36 },
+  { x: 1588, y: 1936, w: 14, h: 36 },
+  { x: 1624, y: 1936, w: 14, h: 36 },
+];
+
+export const DOLLAR_SPOT = { x: 536, y: 2188 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2260,6 +2310,12 @@ export const STICKERS = [
   { id: "sats", name: "Satellite tip-toer", hint: "You tip-toed past the friendly satellites." },
   { id: "comets", name: "Comet weaver", hint: "You weaved between the comet ribbons." },
   { id: "globe", name: "Globe friend", hint: "You shared a kind paper globe." },
+  { id: "kelp", name: "Kelp weaver", hint: "You bobbed between the friendly kelp." },
+  { id: "anemones", name: "Anemone hopper", hint: "You zigzagged the smiling anemones." },
+  { id: "drift", name: "Driftwood ducker", hint: "You ducked under the driftwood." },
+  { id: "crabs", name: "Crab tip-toer", hint: "You tip-toed past the friendly crabs." },
+  { id: "glass", name: "Sea-glass weaver", hint: "You weaved between the sea glass." },
+  { id: "dollar", name: "Sand-dollar friend", hint: "You shared a kind sand dollar." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2493,12 +2549,18 @@ export const CHEERS = {
   sats: "Tip-toe past the friendly satellites!",
   comets: "Little comet ribbons said hello!",
   globe: "A kind paper globe to share. Kind!",
+  kelp: "Friendly kelp said hello!",
+  anemones: "Boing! Zigzag hops on the smiling anemones!",
+  drift: "Duck under the cozy driftwood!",
+  crabs: "Tip-toe past the friendly crabs!",
+  glass: "Little sea glass said hello!",
+  dollar: "A kind sand dollar to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar"];
 
 export function defaultStickers() {
   return {
@@ -2730,6 +2792,12 @@ export function defaultStickers() {
     sats: false,
     comets: false,
     globe: false,
+    kelp: false,
+    anemones: false,
+    drift: false,
+    crabs: false,
+    glass: false,
+    dollar: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -3512,6 +3580,26 @@ export function onCometLane(x, y) {
   return inRect(x, y, COMET_ZONE) && !COMET_BLOCKS.some((comet) => inRect(x, y, comet));
 }
 
+export function onKelpLane(x, y) {
+  return inRect(x, y, KELP_ZONE) && !KELP_BLOCKS.some((stalk) => inRect(x, y, stalk));
+}
+
+export function onAnemonePad(x, y) {
+  return ANEMONE_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= ANEMONE_RADIUS);
+}
+
+export function onDriftGap(x, y) {
+  return inRect(x, y, DRIFT_GAP);
+}
+
+export function onCrab(x, y) {
+  return CRABS.some((crab) => inRect(x, y, crab));
+}
+
+export function onGlassLane(x, y) {
+  return inRect(x, y, GLASS_ZONE) && !GLASS_BLOCKS.some((shard) => inRect(x, y, shard));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -3698,6 +3786,11 @@ export function townPathAt(x, y) {
   if (onScopeGap(x, y)) return "scope";
   if (onSat(x, y)) return "sats";
   if (onCometLane(x, y)) return "comets";
+  if (onKelpLane(x, y)) return "kelp";
+  if (onAnemonePad(x, y)) return "anemones";
+  if (onDriftGap(x, y)) return "drift";
+  if (onCrab(x, y)) return "crabs";
+  if (onGlassLane(x, y)) return "glass";
   return "";
 }
 
@@ -4513,6 +4606,27 @@ export function blockedByComets(x, y) {
   return COMET_BLOCKS.some((comet) => inRect(x, y, comet));
 }
 
+export function blockedByKelp(x, y) {
+  return KELP_BLOCKS.some((stalk) => inRect(x, y, stalk));
+}
+
+export function blockedByAnemones(x, y) {
+  return inRect(x, y, ANEMONE_BED) && !onAnemonePad(x, y);
+}
+
+export function blockedByDrift(x, y) {
+  if (onDriftGap(x, y)) return false;
+  return DRIFT_POSTS.some((post) => inRect(x, y, post)) || DRIFT_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByCrabs(x, y) {
+  return inRect(x, y, CRAB_ZONE) && !onCrab(x, y);
+}
+
+export function blockedByGlass(x, y) {
+  return GLASS_BLOCKS.some((shard) => inRect(x, y, shard));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -4703,7 +4817,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByPlanets(x, y) ||
     blockedByScope(x, y) ||
     blockedBySats(x, y) ||
-    blockedByComets(x, y)
+    blockedByComets(x, y) ||
+    blockedByKelp(x, y) ||
+    blockedByAnemones(x, y) ||
+    blockedByDrift(x, y) ||
+    blockedByCrabs(x, y) ||
+    blockedByGlass(x, y)
   );
 }
 
@@ -4943,6 +5062,11 @@ export function applyCrossingProgress(prev, next) {
     ["scope", SCOPE_BAND, "y"],
     ["sats", SAT_ZONE, "y"],
     ["comets", COMET_ZONE, "y"],
+    ["kelp", KELP_ZONE, "y"],
+    ["anemones", ANEMONE_BED, "y"],
+    ["drift", DRIFT_BAND, "y"],
+    ["crabs", CRAB_ZONE, "x"],
+    ["glass", GLASS_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -5043,7 +5167,9 @@ export function applyCrossingProgress(prev, next) {
       onPillowPad(next.x, next.y) ||
       onGlow(next.x, next.y) ||
       onPlanetPad(next.x, next.y) ||
-      onSat(next.x, next.y),
+      onSat(next.x, next.y) ||
+      onAnemonePad(next.x, next.y) ||
+      onCrab(next.x, next.y),
   };
 }
 
@@ -5557,6 +5683,22 @@ export function shareBookmark(player) {
   });
 }
 
+export function takeDollar(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "dollar", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareDollar(player) {
+  if (player.carry !== "dollar") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), dollar: true },
+  });
+}
+
 export function takeGlobe(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "globe", pose: "idle", actionBeatMs: 0 });
@@ -5756,5 +5898,6 @@ export function carryLabel(value) {
   if (value === "bookmark") return "Bookmark";
   if (value === "moon") return "Paper moon";
   if (value === "globe") return "Paper globe";
+  if (value === "dollar") return "Sand dollar";
   return "";
 }

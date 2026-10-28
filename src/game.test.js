@@ -187,6 +187,11 @@ import {
   blockedByScope,
   blockedBySats,
   blockedByComets,
+  blockedByKelp,
+  blockedByAnemones,
+  blockedByDrift,
+  blockedByCrabs,
+  blockedByGlass,
   BOOK_SPOT,
   cheerCrossing,
   closeParkGate,
@@ -226,6 +231,7 @@ import {
   BOOKMARK_SPOT,
   MOON_SPOT,
   GLOBE_SPOT,
+  DOLLAR_SPOT,
   newSticker,
   townPathAt,
   nudgeBookCart,
@@ -416,6 +422,11 @@ import {
   onScopeGap,
   onSat,
   onCometLane,
+  onKelpLane,
+  onAnemonePad,
+  onDriftGap,
+  onCrab,
+  onGlassLane,
   openParkGate,
   pushBookCart,
   shareBalloon,
@@ -456,6 +467,7 @@ import {
   shareBookmark,
   shareMoon,
   shareGlobe,
+  shareDollar,
   SNACK_SPOT,
   takeBook,
   takeCard,
@@ -495,6 +507,7 @@ import {
   takeBookmark,
   takeMoon,
   takeGlobe,
+  takeDollar,
 } from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -8428,6 +8441,236 @@ describe("tuesday sky-watch play", () => {
     expect(isBlocked("town", GLOBE_SPOT.x, GLOBE_SPOT.y)).toBe(false);
     expect(isBlocked("town", 1716, 500)).toBe(false);
     expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
+  });
+});
+
+describe("wednesday tide-pool play", () => {
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  function townKid(x, y, extra = {}) {
+    return {
+      room: "town",
+      x,
+      y,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      carry: "",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("names kelp, anemone, driftwood, crab, and sea-glass paths", () => {
+    expect(townPathAt(1144, 2122)).toBe("kelp");
+    expect(onKelpLane(1144, 2122)).toBe(true);
+    expect(townPathAt(1116, 2122)).toBe("");
+    expect(townPathAt(920, 2076)).toBe("anemones");
+    expect(onAnemonePad(938, 2092)).toBe(true);
+    expect(townPathAt(920, 2092)).toBe("");
+    expect(townPathAt(1888, 1684)).toBe("drift");
+    expect(onDriftGap(1888, 1684)).toBe(true);
+    expect(townPathAt(1854, 1684)).toBe("");
+    expect(townPathAt(185, 1601)).toBe("crabs");
+    expect(onCrab(219, 1615)).toBe(true);
+    expect(townPathAt(185, 1620)).toBe("");
+    expect(townPathAt(1570, 1958)).toBe("glass");
+    expect(onGlassLane(1570, 1958)).toBe(true);
+    expect(townPathAt(1558, 1958)).toBe("");
+    expect(townPathAt(168, 440)).toBe("");
+  });
+
+  it("blocks kelp stalks, anemone grass, driftwood, crab sand, and sea glass but not the walk paths", () => {
+    expect(blockedByKelp(1116, 2122)).toBe(true);
+    expect(isBlocked("town", 1116, 2122)).toBe(true);
+    expect(onKelpLane(1144, 2122)).toBe(true);
+    expect(isBlocked("town", 1144, 2122)).toBe(false);
+    expect(blockedByAnemones(920, 2092)).toBe(true);
+    expect(isBlocked("town", 920, 2092)).toBe(true);
+    expect(onAnemonePad(920, 2076)).toBe(true);
+    expect(isBlocked("town", 920, 2076)).toBe(false);
+    expect(blockedByDrift(1854, 1684)).toBe(true);
+    expect(isBlocked("town", 1854, 1684)).toBe(true);
+    expect(onDriftGap(1888, 1684)).toBe(true);
+    expect(isBlocked("town", 1888, 1684)).toBe(false);
+    expect(blockedByCrabs(185, 1620)).toBe(true);
+    expect(isBlocked("town", 185, 1620)).toBe(true);
+    expect(onCrab(185, 1601)).toBe(true);
+    expect(isBlocked("town", 185, 1601)).toBe(false);
+    expect(blockedByGlass(1558, 1958)).toBe(true);
+    expect(isBlocked("town", 1558, 1958)).toBe(true);
+    expect(onGlassLane(1570, 1958)).toBe(true);
+    expect(isBlocked("town", 1570, 1958)).toBe(false);
+    expect(isBlocked("town", 168, 440)).toBe(false);
+  });
+
+  it("bobs south through the kelp and earns a sticker", () => {
+    let player = townKid(1144, 2084);
+    player = walkFrames(player, { x: 1144, y: 2122 }, 20);
+    player = walkFrames(player, { x: 1144, y: 2138 }, 16);
+    player = walkFrames(player, { x: 1116, y: 2138 }, 16);
+    player = walkFrames(player, { x: 1116, y: 2154 }, 16);
+    player = walkFrames(player, { x: 1116, y: 2170 }, 16);
+    player = walkFrames(player, { x: 1144, y: 2170 }, 16);
+    player = walkFrames(player, { x: 1144, y: 2186 }, 16);
+    player = walkFrames(player, { x: 1144, y: 2224 }, 24);
+    expect(player.y).toBeGreaterThan(2200);
+    expect(player.stickers.kelp).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(defaultStickers(), player.stickers)).toBe("kelp");
+  });
+
+  it("zigzags the anemone pads and earns a sticker", () => {
+    let player = townKid(920, 2028);
+    player = walkFrames(player, { x: 920, y: 2076 }, 24);
+    player = walkFrames(player, { x: 938, y: 2092 }, 20);
+    player = walkFrames(player, { x: 920, y: 2108 }, 20);
+    player = walkFrames(player, { x: 920, y: 2128 }, 20);
+    expect(player.y).toBeGreaterThan(2120);
+    expect(player.stickers.anemones).toBe(true);
+    expect(player.timer).toBeUndefined();
+  });
+
+  it("walks the driftwood, crabs, and sea glass without a fail state", () => {
+    let player = townKid(1888, 1620);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 28);
+    expect(player.y).toBeGreaterThan(1712);
+    expect(player.stickers.drift).toBe(true);
+
+    player = townKid(140, 1600);
+    player = walkFrames(player, { x: 185, y: 1601 }, 20);
+    player = walkFrames(player, { x: 202, y: 1608 }, 16);
+    player = walkFrames(player, { x: 219, y: 1615 }, 16);
+    player = walkFrames(player, { x: 232, y: 1608 }, 16);
+    player = walkFrames(player, { x: 242, y: 1601 }, 16);
+    player = walkFrames(player, { x: 280, y: 1601 }, 20);
+    expect(player.x).toBeGreaterThan(264);
+    expect(player.stickers.crabs).toBe(true);
+
+    player = townKid(1570, 1928);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 36);
+    expect(player.y).toBeGreaterThan(1976);
+    expect(player.stickers.glass).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets tap-to-walk stop at kelp and anemone grass instead of punishing", () => {
+    const kelpBump = stepToward(townKid(1116, 2084), { x: 1116, y: 2200 }, 80);
+    expect(kelpBump.y).toBeLessThan(2116);
+    expect(kelpBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1116, 2122)).toBe(true);
+
+    const anemoneBump = stepToward(townKid(920, 2028), { x: 920, y: 2160 }, 80);
+    expect(anemoneBump.y).toBeLessThan(2092);
+    expect(anemoneBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 920, 2092)).toBe(true);
+  });
+
+  it("takes and shares a sand dollar without money or a timer", () => {
+    const helper = takeDollar({ room: "town", carry: "", stickers: defaultStickers(), money: 2 });
+    expect(helper.carry).toBe("dollar");
+    expect(helper.money).toBeUndefined();
+    expect(
+      visibleActions({ ...helper, x: 168, y: 440, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+        (action) => action.id === "take-dollar",
+      ),
+    ).toBe(false);
+    const shared = shareDollar({ ...helper, room: "town", x: DOLLAR_SPOT.x, y: DOLLAR_SPOT.y });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("look");
+    expect(shared.stickers.dollar).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+    expect(takePicnic({ ...helper, carry: "dollar" }).carry).toBe("dollar");
+    expect(takeGlobe({ ...helper, carry: "dollar" }).carry).toBe("dollar");
+  });
+
+  it("cheers a nearby neighbor after a wednesday tide-pool crossing", () => {
+    const people = createPeople();
+    const pip = people.find((person) => person.id === "pip");
+    const next = cheerCrossing(people, "dollar", pip.x, pip.y);
+    expect(next.find((person) => person.id === "pip").line).toMatch(/dollar|kind/i);
+    expect(next.find((person) => person.id === "pip").bubbleMs).toBe(2400);
+  });
+
+  it("persists wednesday tide-pool stickers and a carried sand dollar", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      carry: "dollar",
+      stickers: { kelp: true, anemones: true, drift: true, crabs: true, glass: true, dollar: true, coins: 8 },
+      money: 5,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.carry).toBe("dollar");
+    expect(loaded.stickers.kelp).toBe(true);
+    expect(loaded.stickers.anemones).toBe(true);
+    expect(loaded.stickers.drift).toBe(true);
+    expect(loaded.stickers.crabs).toBe(true);
+    expect(loaded.stickers.glass).toBe(true);
+    expect(loaded.stickers.dollar).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.carry).toBe("dollar");
+  });
+
+  it("shows sand-dollar actions without hiding house or shop buttons", () => {
+    const atYard = townKid(168, 440, { pose: "idle", job: "none" });
+    const ids = visibleActions(atYard).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["take-dollar", "stickers"]));
+    expect(ids).not.toContain("share-dollar");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+    const withDollar = townKid(DOLLAR_SPOT.x, DOLLAR_SPOT.y, { carry: "dollar", pose: "idle", job: "none" });
+    expect(visibleActions(withDollar).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["share-dollar", "stickers"]),
+    );
+    expect(isBlocked("town", DOLLAR_SPOT.x, DOLLAR_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 168, 440)).toBe(false);
+    expect(isBlocked("town", 480, 660)).toBe(false);
+  });
+
+  it("keeps the house, shop, park, PWA, and USA map paths open around the tide-pool crossings", () => {
+    let player = townKid(560, 920);
+    player = walkFrames(player, { x: 460, y: 980 }, 80);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    player = walkFrames(player, { x: 480, y: 720 }, 120);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(canEnter("town", "bakery")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(canEnter("town", "usa")).toBe(true);
+    expect(isBlocked("town", 1920, 1320)).toBe(false);
+    expect(isBlocked("town", 420, 980)).toBe(false);
+    expect(isBlocked("town", 420, 1400)).toBe(false);
+    expect(isBlocked("town", 1144, 2122)).toBe(false);
+    expect(isBlocked("town", 938, 2092)).toBe(false);
+    expect(isBlocked("town", 1888, 1684)).toBe(false);
+    expect(isBlocked("town", 185, 1601)).toBe(false);
+    expect(isBlocked("town", 1570, 1958)).toBe(false);
+    expect(isBlocked("town", DOLLAR_SPOT.x, DOLLAR_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 168, 440)).toBe(false);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
+    expect(isBlocked("town", 1096, 2034)).toBe(false);
+    expect(isBlocked("town", 840, 880)).toBe(false);
+    expect(isBlocked("town", 700, 880)).toBe(false);
   });
 });
 

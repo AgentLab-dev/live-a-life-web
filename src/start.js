@@ -83,6 +83,8 @@ import {
   shareMoon,
   takeGlobe,
   shareGlobe,
+  takeDollar,
+  shareDollar,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -705,6 +707,18 @@ export function startGame(root) {
     if (id === "share-globe") {
       const before = player.stickers;
       player = shareGlobe(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-dollar") {
+      player = takeDollar(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-dollar") {
+      const before = player.stickers;
+      player = shareDollar(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
