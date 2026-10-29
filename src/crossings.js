@@ -2081,6 +2081,56 @@ export const GLASS_BLOCKS = [
 
 export const DOLLAR_SPOT = { x: 536, y: 2188 };
 
+export const MOUND_ZONE = { x: 528, y: 2028, w: 52, h: 92 };
+
+export const MOUND_BLOCKS = [
+  { x: 528, y: 2040, w: 24, h: 14 },
+  { x: 556, y: 2072, w: 24, h: 14 },
+  { x: 528, y: 2104, w: 24, h: 14 },
+];
+
+export const ICE_BED = { x: 624, y: 1856, w: 76, h: 48 };
+
+export const ICE_PADS = [
+  { x: 640, y: 1864 },
+  { x: 658, y: 1880 },
+  { x: 640, y: 1896 },
+];
+
+export const ICE_RADIUS = 14;
+
+export const IGLOO_POSTS = [
+  { x: 432, y: 1476, w: 12, h: 48 },
+  { x: 500, y: 1476, w: 12, h: 48 },
+];
+
+export const IGLOO_WALLS = [
+  { x: 444, y: 1492, w: 22, h: 12 },
+  { x: 478, y: 1492, w: 22, h: 12 },
+];
+
+export const IGLOO_GAP = { x: 466, y: 1478, w: 12, h: 44 };
+
+export const IGLOO_BAND = { x: 444, y: 1492, w: 56, h: 12 };
+
+export const PENGUIN_ZONE = { x: 1892, y: 2026, w: 100, h: 44 };
+
+export const PENGUINS = [
+  { x: 1894, y: 2026, w: 46, h: 26 },
+  { x: 1928, y: 2040, w: 46, h: 26 },
+  { x: 1956, y: 2026, w: 36, h: 26 },
+];
+
+export const ICICLE_ZONE = { x: 1744, y: 1176, w: 100, h: 36 };
+
+export const ICICLE_BLOCKS = [
+  { x: 1752, y: 1176, w: 14, h: 36 },
+  { x: 1788, y: 1176, w: 14, h: 36 },
+  { x: 1824, y: 1176, w: 14, h: 36 },
+];
+
+export const FLAKE_SPOT = { x: 176, y: 2172 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2316,6 +2366,12 @@ export const STICKERS = [
   { id: "crabs", name: "Crab tip-toer", hint: "You tip-toed past the friendly crabs." },
   { id: "glass", name: "Sea-glass weaver", hint: "You weaved between the sea glass." },
   { id: "dollar", name: "Sand-dollar friend", hint: "You shared a kind sand dollar." },
+  { id: "mounds", name: "Snow-mound weaver", hint: "You bobbed between the friendly snow mounds." },
+  { id: "ices", name: "Ice hopper", hint: "You zigzagged the shiny ice pads." },
+  { id: "igloo", name: "Igloo ducker", hint: "You ducked under the snowy igloo." },
+  { id: "penguins", name: "Penguin tip-toer", hint: "You tip-toed past the friendly penguins." },
+  { id: "icicles", name: "Icicle weaver", hint: "You weaved between the icicles." },
+  { id: "flake", name: "Snowflake friend", hint: "You shared a kind snowflake." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2555,12 +2611,18 @@ export const CHEERS = {
   crabs: "Tip-toe past the friendly crabs!",
   glass: "Little sea glass said hello!",
   dollar: "A kind sand dollar to share. Kind!",
+  mounds: "Friendly snow mounds said hello!",
+  ices: "Boing! Zigzag hops on the shiny ice!",
+  igloo: "Duck under the cozy igloo!",
+  penguins: "Tip-toe past the friendly penguins!",
+  icicles: "Little icicles said hello!",
+  flake: "A kind snowflake to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake"];
 
 export function defaultStickers() {
   return {
@@ -2798,6 +2860,12 @@ export function defaultStickers() {
     crabs: false,
     glass: false,
     dollar: false,
+    mounds: false,
+    ices: false,
+    igloo: false,
+    penguins: false,
+    icicles: false,
+    flake: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -3600,6 +3668,26 @@ export function onGlassLane(x, y) {
   return inRect(x, y, GLASS_ZONE) && !GLASS_BLOCKS.some((shard) => inRect(x, y, shard));
 }
 
+export function onMoundLane(x, y) {
+  return inRect(x, y, MOUND_ZONE) && !MOUND_BLOCKS.some((mound) => inRect(x, y, mound));
+}
+
+export function onIcePad(x, y) {
+  return ICE_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= ICE_RADIUS);
+}
+
+export function onIglooGap(x, y) {
+  return inRect(x, y, IGLOO_GAP);
+}
+
+export function onPenguin(x, y) {
+  return PENGUINS.some((penguin) => inRect(x, y, penguin));
+}
+
+export function onIcicleLane(x, y) {
+  return inRect(x, y, ICICLE_ZONE) && !ICICLE_BLOCKS.some((icicle) => inRect(x, y, icicle));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -3791,6 +3879,11 @@ export function townPathAt(x, y) {
   if (onDriftGap(x, y)) return "drift";
   if (onCrab(x, y)) return "crabs";
   if (onGlassLane(x, y)) return "glass";
+  if (onMoundLane(x, y)) return "mounds";
+  if (onIcePad(x, y)) return "ices";
+  if (onIglooGap(x, y)) return "igloo";
+  if (onPenguin(x, y)) return "penguins";
+  if (onIcicleLane(x, y)) return "icicles";
   return "";
 }
 
@@ -4627,6 +4720,27 @@ export function blockedByGlass(x, y) {
   return GLASS_BLOCKS.some((shard) => inRect(x, y, shard));
 }
 
+export function blockedByMounds(x, y) {
+  return MOUND_BLOCKS.some((mound) => inRect(x, y, mound));
+}
+
+export function blockedByIces(x, y) {
+  return inRect(x, y, ICE_BED) && !onIcePad(x, y);
+}
+
+export function blockedByIgloo(x, y) {
+  if (onIglooGap(x, y)) return false;
+  return IGLOO_POSTS.some((post) => inRect(x, y, post)) || IGLOO_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByPenguins(x, y) {
+  return inRect(x, y, PENGUIN_ZONE) && !onPenguin(x, y);
+}
+
+export function blockedByIcicles(x, y) {
+  return ICICLE_BLOCKS.some((icicle) => inRect(x, y, icicle));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -4822,7 +4936,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByAnemones(x, y) ||
     blockedByDrift(x, y) ||
     blockedByCrabs(x, y) ||
-    blockedByGlass(x, y)
+    blockedByGlass(x, y) ||
+    blockedByMounds(x, y) ||
+    blockedByIces(x, y) ||
+    blockedByIgloo(x, y) ||
+    blockedByPenguins(x, y) ||
+    blockedByIcicles(x, y)
   );
 }
 
@@ -5067,6 +5186,11 @@ export function applyCrossingProgress(prev, next) {
     ["drift", DRIFT_BAND, "y"],
     ["crabs", CRAB_ZONE, "x"],
     ["glass", GLASS_ZONE, "y"],
+    ["mounds", MOUND_ZONE, "y"],
+    ["ices", ICE_BED, "y"],
+    ["igloo", IGLOO_BAND, "y"],
+    ["penguins", PENGUIN_ZONE, "x"],
+    ["icicles", ICICLE_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -5169,7 +5293,9 @@ export function applyCrossingProgress(prev, next) {
       onPlanetPad(next.x, next.y) ||
       onSat(next.x, next.y) ||
       onAnemonePad(next.x, next.y) ||
-      onCrab(next.x, next.y),
+      onCrab(next.x, next.y) ||
+      onIcePad(next.x, next.y) ||
+      onPenguin(next.x, next.y),
   };
 }
 
@@ -5683,6 +5809,22 @@ export function shareBookmark(player) {
   });
 }
 
+export function takeFlake(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "flake", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareFlake(player) {
+  if (player.carry !== "flake") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), flake: true },
+  });
+}
+
 export function takeDollar(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "dollar", pose: "idle", actionBeatMs: 0 });
@@ -5899,5 +6041,6 @@ export function carryLabel(value) {
   if (value === "moon") return "Paper moon";
   if (value === "globe") return "Paper globe";
   if (value === "dollar") return "Sand dollar";
+  if (value === "flake") return "Snowflake";
   return "";
 }
