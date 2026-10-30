@@ -1,4 +1,4 @@
-import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOOKMARK_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, CROWN_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, GLOBE_SPOT, DOLLAR_SPOT, FLAKE_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, KAZOO_SPOT, MARIGOLD_SPOT, MOON_SPOT, MUFFIN_SPOT, MUM_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
+import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOOKMARK_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, CROWN_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, GLOBE_SPOT, DOLLAR_SPOT, FLAKE_SPOT, AMBER_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, KAZOO_SPOT, MARIGOLD_SPOT, MOON_SPOT, MUFFIN_SPOT, MUM_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -151,6 +151,8 @@ export const ACTIONS = {
     { id: "share-dollar", label: "Share sand dollar", x: DOLLAR_SPOT.x, y: DOLLAR_SPOT.y },
     { id: "take-flake", label: "Take snowflake", x: 1780, y: 1330 },
     { id: "share-flake", label: "Share snowflake", x: FLAKE_SPOT.x, y: FLAKE_SPOT.y },
+    { id: "take-amber", label: "Take amber", x: 800, y: 220 },
+    { id: "share-amber", label: "Share amber", x: AMBER_SPOT.x, y: AMBER_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -399,6 +401,8 @@ export function visibleActions(player) {
     if (action.id === "share-dollar" && player.carry !== "dollar") return false;
     if (action.id === "take-flake" && player.carry) return false;
     if (action.id === "share-flake" && player.carry !== "flake") return false;
+    if (action.id === "take-amber" && player.carry) return false;
+    if (action.id === "share-amber" && player.carry !== "amber") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });
