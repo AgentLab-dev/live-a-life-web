@@ -480,6 +480,18 @@ import {
   ICICLE_ZONE,
   ICICLE_BLOCKS,
   FLAKE_SPOT,
+  FERN_ZONE,
+  FERN_BLOCKS,
+  TRACK_BED,
+  TRACK_PADS,
+  DEN_POSTS,
+  DEN_WALLS,
+  DEN_GAP,
+  DINO_ZONE,
+  DINOS,
+  FOSSIL_ZONE,
+  FOSSIL_BLOCKS,
+  AMBER_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1328,6 +1340,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.stroke();
     ctx.fillStyle = "#5dade2";
     oval(ctx, 26, 10, 1.6, 1.6);
+    ctx.fill();
+  }
+  if (look.carry === "amber" && !sleeping) {
+    ctx.fillStyle = "#f6c945";
+    ctx.beginPath();
+    ctx.moveTo(26, 4);
+    ctx.quadraticCurveTo(34, 12, 26, 18);
+    ctx.quadraticCurveTo(18, 12, 26, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff4c2";
+    oval(ctx, 24, 9, 1.4, 2);
     ctx.fill();
   }
   ctx.restore();
@@ -8799,6 +8822,167 @@ function paintFlake(ctx, x, y, scale = 1) {
   ctx.restore();
 }
 
+function drawFerns(ctx) {
+  ctx.fillStyle = "#d5f5e3";
+  roundRect(ctx, FERN_ZONE.x, FERN_ZONE.y, FERN_ZONE.w, FERN_ZONE.h, 12);
+  ctx.fill();
+  FERN_BLOCKS.forEach((fern, index) => {
+    const cx = fern.x + fern.w / 2;
+    ctx.fillStyle = index % 2 === 0 ? "#1e8449" : "#27ae60";
+    ctx.beginPath();
+    ctx.moveTo(cx, fern.y + 12);
+    ctx.quadraticCurveTo(cx - 12, fern.y + 4, cx - 2, fern.y);
+    ctx.quadraticCurveTo(cx, fern.y + 6, cx + 2, fern.y);
+    ctx.quadraticCurveTo(cx + 12, fern.y + 4, cx, fern.y + 12);
+    ctx.fill();
+    ctx.strokeStyle = "#145a32";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(cx, fern.y + 12);
+    ctx.lineTo(cx, fern.y + 2);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Ferns", FERN_ZONE.x + 4, FERN_ZONE.y - 8);
+}
+
+function drawFootprints(ctx) {
+  ctx.fillStyle = "#f5e6c8";
+  roundRect(ctx, TRACK_BED.x, TRACK_BED.y, TRACK_BED.w, TRACK_BED.h, 12);
+  ctx.fill();
+  const colors = ["#c47a3a", "#a5693a", "#d68910"];
+  TRACK_PADS.forEach((pad, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, pad.x, pad.y, 8, 11);
+    ctx.fill();
+    ctx.fillStyle = "#6d4c2f";
+    oval(ctx, pad.x - 5, pad.y - 6, 1.6, 1.6);
+    ctx.fill();
+    oval(ctx, pad.x, pad.y - 8, 1.6, 1.6);
+    ctx.fill();
+    oval(ctx, pad.x + 5, pad.y - 6, 1.6, 1.6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Prints", TRACK_BED.x + 14, TRACK_BED.y - 8);
+}
+
+function drawDen(ctx) {
+  for (const post of DEN_POSTS) {
+    ctx.fillStyle = "#6d4c2f";
+    roundRect(ctx, post.x + 1, post.y, 10, post.h, 4);
+    ctx.fill();
+  }
+  DEN_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#7dcea0" : "#58d68d";
+    roundRect(ctx, wall.x, wall.y - 8, wall.w, 18, 8);
+    ctx.fill();
+    ctx.fillStyle = "#1e8449";
+    oval(ctx, wall.x + 6, wall.y - 2, 2.2, 2.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  roundRect(ctx, DEN_GAP.x, DEN_GAP.y + 18, DEN_GAP.w, 16, 4);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Den", DEN_POSTS[0].x + 18, DEN_POSTS[0].y - 8);
+}
+
+function drawDinos(ctx) {
+  ctx.fillStyle = "#e8f8f5";
+  roundRect(ctx, DINO_ZONE.x, DINO_ZONE.y, DINO_ZONE.w, DINO_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#58d68d", "#f5b041", "#85c1e9"];
+  DINOS.forEach((dino, index) => {
+    const cx = dino.x + dino.w / 2;
+    const cy = dino.y + dino.h / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, cx, cy + 2, 10, 7);
+    ctx.fill();
+    oval(ctx, cx + 6, cy - 4, 5, 5);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx + 7, cy - 5, 1, 1);
+    ctx.fill();
+    ctx.strokeStyle = "#5a3820";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(cx - 4, cy + 6);
+    ctx.lineTo(cx - 6, cy + 11);
+    ctx.moveTo(cx + 2, cy + 6);
+    ctx.lineTo(cx + 4, cy + 11);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Dinos", DINO_ZONE.x + 28, DINO_ZONE.y - 8);
+}
+
+function drawFossils(ctx) {
+  ctx.fillStyle = "#f6e7c1";
+  roundRect(ctx, FOSSIL_ZONE.x, FOSSIL_ZONE.y, FOSSIL_ZONE.w, FOSSIL_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#b9770e", "#aab7b8", "#af601a"];
+  FOSSIL_BLOCKS.forEach((fossil, index) => {
+    const cx = fossil.x + fossil.w / 2;
+    const cy = fossil.y + fossil.h / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, cx, cy, 6, 6);
+    ctx.fill();
+    ctx.strokeStyle = "#fdebd0";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3.2, 0.4, Math.PI * 1.6);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Fossils", FOSSIL_ZONE.x + 22, FOSSIL_ZONE.y - 8);
+}
+
+function paintAmber(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#f6c945";
+  ctx.beginPath();
+  ctx.moveTo(0, -10);
+  ctx.quadraticCurveTo(9, 0, 0, 12);
+  ctx.quadraticCurveTo(-9, 0, 0, -10);
+  ctx.fill();
+  ctx.fillStyle = "#fff4c2";
+  oval(ctx, -2, -2, 2, 3);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedAmber(ctx, carried) {
+  if (!carried) {
+    paintAmber(ctx, 800, 198, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Amber", 776, 170);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, AMBER_SPOT.x - 22, AMBER_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#f6c945";
+  roundRect(ctx, AMBER_SPOT.x - 20, AMBER_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, AMBER_SPOT.x - 16, AMBER_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, AMBER_SPOT.x + 10, AMBER_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintAmber(ctx, AMBER_SPOT.x, AMBER_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Amber", AMBER_SPOT.x - 20, AMBER_SPOT.y - 16);
+}
+
 function drawSharedFlake(ctx, carried) {
   if (!carried) {
     paintFlake(ctx, 1780, 1308, 0.85);
@@ -9162,6 +9346,12 @@ export function drawTown(ctx, player, time) {
   drawPenguins(ctx);
   drawIcicles(ctx);
   drawSharedFlake(ctx, player.carry === "flake");
+  drawFerns(ctx);
+  drawFootprints(ctx);
+  drawDen(ctx);
+  drawDinos(ctx);
+  drawFossils(ctx);
+  drawSharedAmber(ctx, player.carry === "amber");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

@@ -87,6 +87,8 @@ import {
   shareDollar,
   takeFlake,
   shareFlake,
+  takeAmber,
+  shareAmber,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -733,6 +735,18 @@ export function startGame(root) {
     if (id === "share-flake") {
       const before = player.stickers;
       player = shareFlake(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-amber") {
+      player = takeAmber(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-amber") {
+      const before = player.stickers;
+      player = shareAmber(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

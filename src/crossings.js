@@ -2131,6 +2131,56 @@ export const ICICLE_BLOCKS = [
 
 export const FLAKE_SPOT = { x: 176, y: 2172 };
 
+export const FERN_ZONE = { x: 1900, y: 1084, w: 52, h: 92 };
+
+export const FERN_BLOCKS = [
+  { x: 1900, y: 1096, w: 24, h: 14 },
+  { x: 1928, y: 1128, w: 24, h: 14 },
+  { x: 1900, y: 1160, w: 24, h: 14 },
+];
+
+export const TRACK_BED = { x: 236, y: 1932, w: 76, h: 48 };
+
+export const TRACK_PADS = [
+  { x: 252, y: 1940 },
+  { x: 270, y: 1956 },
+  { x: 252, y: 1972 },
+];
+
+export const TRACK_RADIUS = 14;
+
+export const DEN_POSTS = [
+  { x: 1436, y: 844, w: 12, h: 48 },
+  { x: 1504, y: 844, w: 12, h: 48 },
+];
+
+export const DEN_WALLS = [
+  { x: 1448, y: 860, w: 22, h: 12 },
+  { x: 1482, y: 860, w: 22, h: 12 },
+];
+
+export const DEN_GAP = { x: 1470, y: 846, w: 12, h: 44 };
+
+export const DEN_BAND = { x: 1448, y: 860, w: 56, h: 12 };
+
+export const DINO_ZONE = { x: 1676, y: 1804, w: 100, h: 44 };
+
+export const DINOS = [
+  { x: 1678, y: 1804, w: 46, h: 26 },
+  { x: 1712, y: 1818, w: 46, h: 26 },
+  { x: 1740, y: 1804, w: 36, h: 26 },
+];
+
+export const FOSSIL_ZONE = { x: 236, y: 732, w: 100, h: 36 };
+
+export const FOSSIL_BLOCKS = [
+  { x: 244, y: 732, w: 14, h: 36 },
+  { x: 280, y: 732, w: 14, h: 36 },
+  { x: 316, y: 732, w: 14, h: 36 },
+];
+
+export const AMBER_SPOT = { x: 1100, y: 2140 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2372,6 +2422,12 @@ export const STICKERS = [
   { id: "penguins", name: "Penguin tip-toer", hint: "You tip-toed past the friendly penguins." },
   { id: "icicles", name: "Icicle weaver", hint: "You weaved between the icicles." },
   { id: "flake", name: "Snowflake friend", hint: "You shared a kind snowflake." },
+  { id: "ferns", name: "Fern weaver", hint: "You bobbed between the friendly ferns." },
+  { id: "tracks", name: "Footprint hopper", hint: "You zigzagged the sunny footprint pads." },
+  { id: "den", name: "Den ducker", hint: "You ducked under the cozy den." },
+  { id: "dinos", name: "Dino tip-toer", hint: "You tip-toed past the friendly dinos." },
+  { id: "fossils", name: "Fossil weaver", hint: "You weaved between the little fossils." },
+  { id: "amber", name: "Amber friend", hint: "You shared a kind amber drop." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2617,12 +2673,18 @@ export const CHEERS = {
   penguins: "Tip-toe past the friendly penguins!",
   icicles: "Little icicles said hello!",
   flake: "A kind snowflake to share. Kind!",
+  ferns: "Friendly ferns said hello!",
+  tracks: "Boing! Zigzag hops on the sunny footprints!",
+  den: "Duck under the cozy den!",
+  dinos: "Tip-toe past the friendly dinos!",
+  fossils: "Little fossils said hello!",
+  amber: "A kind amber drop to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber"];
 
 export function defaultStickers() {
   return {
@@ -2866,6 +2928,12 @@ export function defaultStickers() {
     penguins: false,
     icicles: false,
     flake: false,
+    ferns: false,
+    tracks: false,
+    den: false,
+    dinos: false,
+    fossils: false,
+    amber: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -3688,6 +3756,26 @@ export function onIcicleLane(x, y) {
   return inRect(x, y, ICICLE_ZONE) && !ICICLE_BLOCKS.some((icicle) => inRect(x, y, icicle));
 }
 
+export function onFernLane(x, y) {
+  return inRect(x, y, FERN_ZONE) && !FERN_BLOCKS.some((fern) => inRect(x, y, fern));
+}
+
+export function onTrackPad(x, y) {
+  return TRACK_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= TRACK_RADIUS);
+}
+
+export function onDenGap(x, y) {
+  return inRect(x, y, DEN_GAP);
+}
+
+export function onDino(x, y) {
+  return DINOS.some((dino) => inRect(x, y, dino));
+}
+
+export function onFossilLane(x, y) {
+  return inRect(x, y, FOSSIL_ZONE) && !FOSSIL_BLOCKS.some((fossil) => inRect(x, y, fossil));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -3884,6 +3972,11 @@ export function townPathAt(x, y) {
   if (onIglooGap(x, y)) return "igloo";
   if (onPenguin(x, y)) return "penguins";
   if (onIcicleLane(x, y)) return "icicles";
+  if (onFernLane(x, y)) return "ferns";
+  if (onTrackPad(x, y)) return "tracks";
+  if (onDenGap(x, y)) return "den";
+  if (onDino(x, y)) return "dinos";
+  if (onFossilLane(x, y)) return "fossils";
   return "";
 }
 
@@ -4741,6 +4834,27 @@ export function blockedByIcicles(x, y) {
   return ICICLE_BLOCKS.some((icicle) => inRect(x, y, icicle));
 }
 
+export function blockedByFerns(x, y) {
+  return FERN_BLOCKS.some((fern) => inRect(x, y, fern));
+}
+
+export function blockedByTracks(x, y) {
+  return inRect(x, y, TRACK_BED) && !onTrackPad(x, y);
+}
+
+export function blockedByDen(x, y) {
+  if (onDenGap(x, y)) return false;
+  return DEN_POSTS.some((post) => inRect(x, y, post)) || DEN_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByDinos(x, y) {
+  return inRect(x, y, DINO_ZONE) && !onDino(x, y);
+}
+
+export function blockedByFossils(x, y) {
+  return FOSSIL_BLOCKS.some((fossil) => inRect(x, y, fossil));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -4941,7 +5055,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByIces(x, y) ||
     blockedByIgloo(x, y) ||
     blockedByPenguins(x, y) ||
-    blockedByIcicles(x, y)
+    blockedByIcicles(x, y) ||
+    blockedByFerns(x, y) ||
+    blockedByTracks(x, y) ||
+    blockedByDen(x, y) ||
+    blockedByDinos(x, y) ||
+    blockedByFossils(x, y)
   );
 }
 
@@ -5191,6 +5310,11 @@ export function applyCrossingProgress(prev, next) {
     ["igloo", IGLOO_BAND, "y"],
     ["penguins", PENGUIN_ZONE, "x"],
     ["icicles", ICICLE_ZONE, "y"],
+    ["ferns", FERN_ZONE, "y"],
+    ["tracks", TRACK_BED, "y"],
+    ["den", DEN_BAND, "y"],
+    ["dinos", DINO_ZONE, "x"],
+    ["fossils", FOSSIL_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -5295,7 +5419,9 @@ export function applyCrossingProgress(prev, next) {
       onAnemonePad(next.x, next.y) ||
       onCrab(next.x, next.y) ||
       onIcePad(next.x, next.y) ||
-      onPenguin(next.x, next.y),
+      onPenguin(next.x, next.y) ||
+      onTrackPad(next.x, next.y) ||
+      onDino(next.x, next.y),
   };
 }
 
@@ -5825,6 +5951,22 @@ export function shareFlake(player) {
   });
 }
 
+export function takeAmber(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "amber", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareAmber(player) {
+  if (player.carry !== "amber") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), amber: true },
+  });
+}
+
 export function takeDollar(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "dollar", pose: "idle", actionBeatMs: 0 });
@@ -6042,5 +6184,6 @@ export function carryLabel(value) {
   if (value === "globe") return "Paper globe";
   if (value === "dollar") return "Sand dollar";
   if (value === "flake") return "Snowflake";
+  if (value === "amber") return "Amber";
   return "";
 }

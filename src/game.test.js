@@ -197,6 +197,11 @@ import {
   blockedByIgloo,
   blockedByPenguins,
   blockedByIcicles,
+  blockedByFerns,
+  blockedByTracks,
+  blockedByDen,
+  blockedByDinos,
+  blockedByFossils,
   BOOK_SPOT,
   cheerCrossing,
   closeParkGate,
@@ -238,6 +243,7 @@ import {
   GLOBE_SPOT,
   DOLLAR_SPOT,
   FLAKE_SPOT,
+  AMBER_SPOT,
   newSticker,
   townPathAt,
   nudgeBookCart,
@@ -438,6 +444,11 @@ import {
   onIglooGap,
   onPenguin,
   onIcicleLane,
+  onFernLane,
+  onTrackPad,
+  onDenGap,
+  onDino,
+  onFossilLane,
   openParkGate,
   pushBookCart,
   shareBalloon,
@@ -480,6 +491,7 @@ import {
   shareGlobe,
   shareDollar,
   shareFlake,
+  shareAmber,
   SNACK_SPOT,
   takeBook,
   takeCard,
@@ -521,6 +533,7 @@ import {
   takeGlobe,
   takeDollar,
   takeFlake,
+  takeAmber,
 } from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -8910,6 +8923,236 @@ describe("thursday snow-day play", () => {
     expect(isBlocked("town", 1770, 1198)).toBe(false);
     expect(isBlocked("town", FLAKE_SPOT.x, FLAKE_SPOT.y)).toBe(false);
     expect(isBlocked("town", 1780, 1330)).toBe(false);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
+    expect(isBlocked("town", 1096, 2034)).toBe(false);
+    expect(isBlocked("town", 840, 880)).toBe(false);
+    expect(isBlocked("town", 700, 880)).toBe(false);
+  });
+});
+
+describe("friday fossil-friend play", () => {
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  function townKid(x, y, extra = {}) {
+    return {
+      room: "town",
+      x,
+      y,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      carry: "",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("names fern, footprint, den, dino, and fossil paths", () => {
+    expect(townPathAt(1940, 1102)).toBe("ferns");
+    expect(onFernLane(1940, 1102)).toBe(true);
+    expect(townPathAt(1912, 1102)).toBe("");
+    expect(townPathAt(252, 1940)).toBe("tracks");
+    expect(onTrackPad(270, 1956)).toBe(true);
+    expect(townPathAt(252, 1956)).toBe("");
+    expect(townPathAt(1476, 864)).toBe("den");
+    expect(onDenGap(1476, 864)).toBe(true);
+    expect(townPathAt(1442, 864)).toBe("");
+    expect(townPathAt(1701, 1817)).toBe("dinos");
+    expect(onDino(1735, 1831)).toBe(true);
+    expect(townPathAt(1701, 1836)).toBe("");
+    expect(townPathAt(262, 754)).toBe("fossils");
+    expect(onFossilLane(262, 754)).toBe(true);
+    expect(townPathAt(250, 754)).toBe("");
+    expect(townPathAt(800, 220)).toBe("");
+  });
+
+  it("blocks ferns, footprint grass, the den, dino lawn, and fossils but not the walk paths", () => {
+    expect(blockedByFerns(1912, 1102)).toBe(true);
+    expect(isBlocked("town", 1912, 1102)).toBe(true);
+    expect(onFernLane(1940, 1102)).toBe(true);
+    expect(isBlocked("town", 1940, 1102)).toBe(false);
+    expect(blockedByTracks(252, 1956)).toBe(true);
+    expect(isBlocked("town", 252, 1956)).toBe(true);
+    expect(onTrackPad(252, 1940)).toBe(true);
+    expect(isBlocked("town", 252, 1940)).toBe(false);
+    expect(blockedByDen(1442, 864)).toBe(true);
+    expect(isBlocked("town", 1442, 864)).toBe(true);
+    expect(onDenGap(1476, 864)).toBe(true);
+    expect(isBlocked("town", 1476, 864)).toBe(false);
+    expect(blockedByDinos(1701, 1836)).toBe(true);
+    expect(isBlocked("town", 1701, 1836)).toBe(true);
+    expect(onDino(1701, 1817)).toBe(true);
+    expect(isBlocked("town", 1701, 1817)).toBe(false);
+    expect(blockedByFossils(250, 754)).toBe(true);
+    expect(isBlocked("town", 250, 754)).toBe(true);
+    expect(onFossilLane(262, 754)).toBe(true);
+    expect(isBlocked("town", 262, 754)).toBe(false);
+    expect(isBlocked("town", 800, 220)).toBe(false);
+  });
+
+  it("bobs south through the ferns and earns a sticker", () => {
+    let player = townKid(1940, 1064);
+    player = walkFrames(player, { x: 1940, y: 1102 }, 20);
+    player = walkFrames(player, { x: 1940, y: 1118 }, 16);
+    player = walkFrames(player, { x: 1912, y: 1118 }, 16);
+    player = walkFrames(player, { x: 1912, y: 1134 }, 16);
+    player = walkFrames(player, { x: 1912, y: 1150 }, 16);
+    player = walkFrames(player, { x: 1940, y: 1150 }, 16);
+    player = walkFrames(player, { x: 1940, y: 1166 }, 16);
+    player = walkFrames(player, { x: 1940, y: 1204 }, 24);
+    expect(player.y).toBeGreaterThan(1180);
+    expect(player.stickers.ferns).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(defaultStickers(), player.stickers)).toBe("ferns");
+  });
+
+  it("zigzags the footprint pads and earns a sticker", () => {
+    let player = townKid(252, 1892);
+    player = walkFrames(player, { x: 252, y: 1940 }, 24);
+    player = walkFrames(player, { x: 270, y: 1956 }, 20);
+    player = walkFrames(player, { x: 252, y: 1972 }, 20);
+    player = walkFrames(player, { x: 252, y: 1992 }, 20);
+    expect(player.y).toBeGreaterThan(1984);
+    expect(player.stickers.tracks).toBe(true);
+    expect(player.timer).toBeUndefined();
+  });
+
+  it("walks the den, dinos, and fossils without a fail state", () => {
+    let player = townKid(1476, 800);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 28);
+    expect(player.y).toBeGreaterThan(892);
+    expect(player.stickers.den).toBe(true);
+
+    player = townKid(1656, 1816);
+    player = walkFrames(player, { x: 1701, y: 1817 }, 20);
+    player = walkFrames(player, { x: 1718, y: 1824 }, 16);
+    player = walkFrames(player, { x: 1735, y: 1831 }, 16);
+    player = walkFrames(player, { x: 1748, y: 1824 }, 16);
+    player = walkFrames(player, { x: 1758, y: 1817 }, 16);
+    player = walkFrames(player, { x: 1796, y: 1817 }, 20);
+    expect(player.x).toBeGreaterThan(1780);
+    expect(player.stickers.dinos).toBe(true);
+
+    player = townKid(262, 724);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 36);
+    expect(player.y).toBeGreaterThan(772);
+    expect(player.stickers.fossils).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets tap-to-walk stop at ferns and footprint grass instead of punishing", () => {
+    const fernBump = stepToward(townKid(1912, 1064), { x: 1912, y: 1204 }, 80);
+    expect(fernBump.y).toBeLessThan(1096);
+    expect(fernBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1912, 1102)).toBe(true);
+
+    const trackBump = stepToward(townKid(252, 1892), { x: 252, y: 2024 }, 80);
+    expect(trackBump.y).toBeLessThan(1956);
+    expect(trackBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 252, 1956)).toBe(true);
+  });
+
+  it("takes and shares an amber drop without money or a timer", () => {
+    const helper = takeAmber({ room: "town", carry: "", stickers: defaultStickers(), money: 2 });
+    expect(helper.carry).toBe("amber");
+    expect(helper.money).toBeUndefined();
+    expect(
+      visibleActions({ ...helper, x: 800, y: 220, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+        (action) => action.id === "take-amber",
+      ),
+    ).toBe(false);
+    const shared = shareAmber({ ...helper, room: "town", x: AMBER_SPOT.x, y: AMBER_SPOT.y });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("look");
+    expect(shared.stickers.amber).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+    expect(takePicnic({ ...helper, carry: "amber" }).carry).toBe("amber");
+    expect(takeFlake({ ...helper, carry: "amber" }).carry).toBe("amber");
+  });
+
+  it("cheers a nearby neighbor after a friday fossil-friend crossing", () => {
+    const people = createPeople();
+    const pip = people.find((person) => person.id === "pip");
+    const next = cheerCrossing(people, "amber", pip.x, pip.y);
+    expect(next.find((person) => person.id === "pip").line).toMatch(/amber|kind|dino/i);
+    expect(next.find((person) => person.id === "pip").bubbleMs).toBe(2400);
+  });
+
+  it("persists friday fossil-friend stickers and a carried amber drop", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      carry: "amber",
+      stickers: { ferns: true, tracks: true, den: true, dinos: true, fossils: true, amber: true, coins: 8 },
+      money: 5,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.carry).toBe("amber");
+    expect(loaded.stickers.ferns).toBe(true);
+    expect(loaded.stickers.tracks).toBe(true);
+    expect(loaded.stickers.den).toBe(true);
+    expect(loaded.stickers.dinos).toBe(true);
+    expect(loaded.stickers.fossils).toBe(true);
+    expect(loaded.stickers.amber).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.carry).toBe("amber");
+  });
+
+  it("shows amber actions without hiding house or shop buttons", () => {
+    const atYard = townKid(800, 220, { pose: "idle", job: "none" });
+    const ids = visibleActions(atYard).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["take-amber", "stickers"]));
+    expect(ids).not.toContain("share-amber");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+    const withAmber = townKid(AMBER_SPOT.x, AMBER_SPOT.y, { carry: "amber", pose: "idle", job: "none" });
+    expect(visibleActions(withAmber).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["share-amber", "stickers"]),
+    );
+    expect(isBlocked("town", AMBER_SPOT.x, AMBER_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 800, 220)).toBe(false);
+    expect(isBlocked("town", 480, 660)).toBe(false);
+  });
+
+  it("keeps the house, shop, park, PWA, and USA map paths open around the fossil-friend crossings", () => {
+    let player = townKid(560, 920);
+    player = walkFrames(player, { x: 460, y: 980 }, 80);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    player = walkFrames(player, { x: 480, y: 720 }, 120);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(canEnter("town", "bakery")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(canEnter("town", "usa")).toBe(true);
+    expect(isBlocked("town", 1920, 1320)).toBe(false);
+    expect(isBlocked("town", 420, 980)).toBe(false);
+    expect(isBlocked("town", 420, 1400)).toBe(false);
+    expect(isBlocked("town", 1940, 1102)).toBe(false);
+    expect(isBlocked("town", 270, 1956)).toBe(false);
+    expect(isBlocked("town", 1476, 864)).toBe(false);
+    expect(isBlocked("town", 1701, 1817)).toBe(false);
+    expect(isBlocked("town", 262, 754)).toBe(false);
+    expect(isBlocked("town", AMBER_SPOT.x, AMBER_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 800, 220)).toBe(false);
     expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
     expect(isBlocked("town", 1096, 2034)).toBe(false);
     expect(isBlocked("town", 840, 880)).toBe(false);
