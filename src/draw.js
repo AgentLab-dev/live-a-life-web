@@ -492,6 +492,18 @@ import {
   FOSSIL_ZONE,
   FOSSIL_BLOCKS,
   AMBER_SPOT,
+  SPRINKLE_ZONE,
+  SPRINKLE_BLOCKS,
+  SCOOP_BED,
+  SCOOP_PADS,
+  WAFFLE_POSTS,
+  WAFFLE_WALLS,
+  WAFFLE_GAP,
+  CHERRY_ZONE,
+  CHERRIES,
+  STRAW_ZONE,
+  STRAW_BLOCKS,
+  POPSICLE_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1351,6 +1363,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#fff4c2";
     oval(ctx, 24, 9, 1.4, 2);
+    ctx.fill();
+  }
+  if (look.carry === "popsicle" && !sleeping) {
+    ctx.fillStyle = "#c48a3a";
+    roundRect(ctx, 24, 14, 4, 8, 1);
+    ctx.fill();
+    ctx.fillStyle = "#ff6b9a";
+    roundRect(ctx, 21, 2, 10, 14, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, 23, 5, 6, 2, 1);
     ctx.fill();
   }
   ctx.restore();
@@ -8959,6 +8982,161 @@ function paintAmber(ctx, x, y, scale = 1) {
   ctx.restore();
 }
 
+function drawSprinkles(ctx) {
+  ctx.fillStyle = "#fdebd0";
+  roundRect(ctx, SPRINKLE_ZONE.x, SPRINKLE_ZONE.y, SPRINKLE_ZONE.w, SPRINKLE_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#ff6b9a", "#f4d35e", "#5dade2"];
+  SPRINKLE_BLOCKS.forEach((jar, index) => {
+    ctx.fillStyle = "#d6eaf8";
+    roundRect(ctx, jar.x + 2, jar.y, jar.w - 4, jar.h, 4);
+    ctx.fill();
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, jar.x + 7, jar.y + 5, 1.6, 1.6);
+    ctx.fill();
+    oval(ctx, jar.x + 14, jar.y + 8, 1.6, 1.6);
+    ctx.fill();
+    ctx.fillStyle = "#5dade2";
+    roundRect(ctx, jar.x + 4, jar.y - 3, jar.w - 8, 4, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Sprinkles", SPRINKLE_ZONE.x - 8, SPRINKLE_ZONE.y - 8);
+}
+
+function drawScoops(ctx) {
+  ctx.fillStyle = "#fdeef4";
+  roundRect(ctx, SCOOP_BED.x, SCOOP_BED.y, SCOOP_BED.w, SCOOP_BED.h, 12);
+  ctx.fill();
+  const colors = ["#ff6b9a", "#7dcea0", "#f7efd4"];
+  SCOOP_PADS.forEach((pad, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, pad.x, pad.y, 9, 8);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    oval(ctx, pad.x - 2, pad.y - 2, 2, 1.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Scoops", SCOOP_BED.x + 12, SCOOP_BED.y - 8);
+}
+
+function drawWaffle(ctx) {
+  for (const post of WAFFLE_POSTS) {
+    ctx.fillStyle = "#e0a15a";
+    roundRect(ctx, post.x + 1, post.y, 10, post.h, 4);
+    ctx.fill();
+    ctx.strokeStyle = "#a56b32";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(post.x + 3, post.y + 4);
+    ctx.lineTo(post.x + 9, post.y + post.h - 4);
+    ctx.moveTo(post.x + 9, post.y + 4);
+    ctx.lineTo(post.x + 3, post.y + post.h - 4);
+    ctx.stroke();
+  }
+  WAFFLE_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#f5cba7" : "#e59866";
+    roundRect(ctx, wall.x, wall.y - 6, wall.w, 16, 6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#a56b32";
+  roundRect(ctx, WAFFLE_GAP.x, WAFFLE_GAP.y + 18, WAFFLE_GAP.w, 16, 4);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Waffle", WAFFLE_POSTS[0].x + 8, WAFFLE_POSTS[0].y - 8);
+}
+
+function drawCherries(ctx) {
+  ctx.fillStyle = "#fdedec";
+  roundRect(ctx, CHERRY_ZONE.x, CHERRY_ZONE.y, CHERRY_ZONE.w, CHERRY_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#e74c3c", "#c0392b", "#ec7063"];
+  CHERRIES.forEach((cherry, index) => {
+    const cx = cherry.x + cherry.w / 2;
+    const cy = cherry.y + cherry.h / 2;
+    ctx.strokeStyle = "#1e8449";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy - 2);
+    ctx.quadraticCurveTo(cx + 4, cy - 10, cx + 8, cy - 8);
+    ctx.stroke();
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, cx - 4, cy + 2, 5, 5);
+    ctx.fill();
+    oval(ctx, cx + 3, cy + 1, 5, 5);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx - 3, cy + 1, 1, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Cherries", CHERRY_ZONE.x + 16, CHERRY_ZONE.y - 8);
+}
+
+function drawStraws(ctx) {
+  ctx.fillStyle = "#eaf6ff";
+  roundRect(ctx, STRAW_ZONE.x, STRAW_ZONE.y, STRAW_ZONE.w, STRAW_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#5dade2", "#ff6b9a", "#f4d35e"];
+  STRAW_BLOCKS.forEach((straw, index) => {
+    const cx = straw.x + straw.w / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, cx - 3, straw.y + 2, 6, straw.h - 4, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, cx - 3, straw.y + 10, 6, 3, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Straws", STRAW_ZONE.x + 24, STRAW_ZONE.y - 8);
+}
+
+function paintPopsicle(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, -2, 6, 4, 8, 1);
+  ctx.fill();
+  ctx.fillStyle = "#ff6b9a";
+  roundRect(ctx, -6, -10, 12, 18, 5);
+  ctx.fill();
+  ctx.fillStyle = "#fff";
+  roundRect(ctx, -4, -6, 8, 3, 1);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedPopsicle(ctx, carried) {
+  if (!carried) {
+    paintPopsicle(ctx, 2286, 2132, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Popsicle", 2254, 2104);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, POPSICLE_SPOT.x - 22, POPSICLE_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#ff6b9a";
+  roundRect(ctx, POPSICLE_SPOT.x - 20, POPSICLE_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, POPSICLE_SPOT.x - 16, POPSICLE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, POPSICLE_SPOT.x + 10, POPSICLE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintPopsicle(ctx, POPSICLE_SPOT.x, POPSICLE_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Popsicle", POPSICLE_SPOT.x - 26, POPSICLE_SPOT.y - 16);
+}
+
 function drawSharedAmber(ctx, carried) {
   if (!carried) {
     paintAmber(ctx, 800, 198, 0.85);
@@ -9352,6 +9530,12 @@ export function drawTown(ctx, player, time) {
   drawDinos(ctx);
   drawFossils(ctx);
   drawSharedAmber(ctx, player.carry === "amber");
+  drawSprinkles(ctx);
+  drawScoops(ctx);
+  drawWaffle(ctx);
+  drawCherries(ctx);
+  drawStraws(ctx);
+  drawSharedPopsicle(ctx, player.carry === "popsicle");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

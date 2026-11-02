@@ -2181,6 +2181,56 @@ export const FOSSIL_BLOCKS = [
 
 export const AMBER_SPOT = { x: 1100, y: 2140 };
 
+export const SPRINKLE_ZONE = { x: 460, y: 1872, w: 52, h: 92 };
+
+export const SPRINKLE_BLOCKS = [
+  { x: 460, y: 1884, w: 24, h: 14 },
+  { x: 488, y: 1916, w: 24, h: 14 },
+  { x: 460, y: 1948, w: 24, h: 14 },
+];
+
+export const SCOOP_BED = { x: 800, y: 2006, w: 76, h: 48 };
+
+export const SCOOP_PADS = [
+  { x: 816, y: 2014 },
+  { x: 834, y: 2030 },
+  { x: 816, y: 2046 },
+];
+
+export const SCOOP_RADIUS = 14;
+
+export const WAFFLE_POSTS = [
+  { x: 992, y: 664, w: 12, h: 48 },
+  { x: 1060, y: 664, w: 12, h: 48 },
+];
+
+export const WAFFLE_WALLS = [
+  { x: 1004, y: 680, w: 22, h: 12 },
+  { x: 1038, y: 680, w: 22, h: 12 },
+];
+
+export const WAFFLE_GAP = { x: 1026, y: 666, w: 12, h: 44 };
+
+export const WAFFLE_BAND = { x: 1004, y: 680, w: 56, h: 12 };
+
+export const CHERRY_ZONE = { x: 1852, y: 390, w: 100, h: 44 };
+
+export const CHERRIES = [
+  { x: 1854, y: 390, w: 46, h: 26 },
+  { x: 1888, y: 404, w: 46, h: 26 },
+  { x: 1916, y: 390, w: 36, h: 26 },
+];
+
+export const STRAW_ZONE = { x: 716, y: 640, w: 100, h: 36 };
+
+export const STRAW_BLOCKS = [
+  { x: 724, y: 640, w: 14, h: 36 },
+  { x: 760, y: 640, w: 14, h: 36 },
+  { x: 796, y: 640, w: 14, h: 36 },
+];
+
+export const POPSICLE_SPOT = { x: 222, y: 2154 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2428,6 +2478,12 @@ export const STICKERS = [
   { id: "dinos", name: "Dino tip-toer", hint: "You tip-toed past the friendly dinos." },
   { id: "fossils", name: "Fossil weaver", hint: "You weaved between the little fossils." },
   { id: "amber", name: "Amber friend", hint: "You shared a kind amber drop." },
+  { id: "sprinkles", name: "Sprinkle weaver", hint: "You bobbed between the sprinkle jars." },
+  { id: "scoops", name: "Scoop hopper", hint: "You zigzagged the ice-cream scoops." },
+  { id: "waffle", name: "Waffle ducker", hint: "You ducked under the waffle cone." },
+  { id: "cherries", name: "Cherry tip-toer", hint: "You tip-toed past the friendly cherries." },
+  { id: "straws", name: "Straw weaver", hint: "You weaved between the paper straws." },
+  { id: "popsicle", name: "Popsicle friend", hint: "You shared a kind popsicle." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2679,12 +2735,18 @@ export const CHEERS = {
   dinos: "Tip-toe past the friendly dinos!",
   fossils: "Little fossils said hello!",
   amber: "A kind amber drop to share. Kind!",
+  sprinkles: "Friendly sprinkle jars said hello!",
+  scoops: "Boing! Zigzag hops on the ice-cream scoops!",
+  waffle: "Duck under the cozy waffle cone!",
+  cherries: "Tip-toe past the friendly cherries!",
+  straws: "Little paper straws said hello!",
+  popsicle: "A kind popsicle to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle"];
 
 export function defaultStickers() {
   return {
@@ -2934,6 +2996,12 @@ export function defaultStickers() {
     dinos: false,
     fossils: false,
     amber: false,
+    sprinkles: false,
+    scoops: false,
+    waffle: false,
+    cherries: false,
+    straws: false,
+    popsicle: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -3776,6 +3844,26 @@ export function onFossilLane(x, y) {
   return inRect(x, y, FOSSIL_ZONE) && !FOSSIL_BLOCKS.some((fossil) => inRect(x, y, fossil));
 }
 
+export function onSprinkleLane(x, y) {
+  return inRect(x, y, SPRINKLE_ZONE) && !SPRINKLE_BLOCKS.some((jar) => inRect(x, y, jar));
+}
+
+export function onScoopPad(x, y) {
+  return SCOOP_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= SCOOP_RADIUS);
+}
+
+export function onWaffleGap(x, y) {
+  return inRect(x, y, WAFFLE_GAP);
+}
+
+export function onCherry(x, y) {
+  return CHERRIES.some((cherry) => inRect(x, y, cherry));
+}
+
+export function onStrawLane(x, y) {
+  return inRect(x, y, STRAW_ZONE) && !STRAW_BLOCKS.some((straw) => inRect(x, y, straw));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -3977,6 +4065,11 @@ export function townPathAt(x, y) {
   if (onDenGap(x, y)) return "den";
   if (onDino(x, y)) return "dinos";
   if (onFossilLane(x, y)) return "fossils";
+  if (onSprinkleLane(x, y)) return "sprinkles";
+  if (onScoopPad(x, y)) return "scoops";
+  if (onWaffleGap(x, y)) return "waffle";
+  if (onCherry(x, y)) return "cherries";
+  if (onStrawLane(x, y)) return "straws";
   return "";
 }
 
@@ -4855,6 +4948,27 @@ export function blockedByFossils(x, y) {
   return FOSSIL_BLOCKS.some((fossil) => inRect(x, y, fossil));
 }
 
+export function blockedBySprinkles(x, y) {
+  return SPRINKLE_BLOCKS.some((jar) => inRect(x, y, jar));
+}
+
+export function blockedByScoops(x, y) {
+  return inRect(x, y, SCOOP_BED) && !onScoopPad(x, y);
+}
+
+export function blockedByWaffle(x, y) {
+  if (onWaffleGap(x, y)) return false;
+  return WAFFLE_POSTS.some((post) => inRect(x, y, post)) || WAFFLE_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByCherries(x, y) {
+  return inRect(x, y, CHERRY_ZONE) && !onCherry(x, y);
+}
+
+export function blockedByStraws(x, y) {
+  return STRAW_BLOCKS.some((straw) => inRect(x, y, straw));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -5060,7 +5174,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByTracks(x, y) ||
     blockedByDen(x, y) ||
     blockedByDinos(x, y) ||
-    blockedByFossils(x, y)
+    blockedByFossils(x, y) ||
+    blockedBySprinkles(x, y) ||
+    blockedByScoops(x, y) ||
+    blockedByWaffle(x, y) ||
+    blockedByCherries(x, y) ||
+    blockedByStraws(x, y)
   );
 }
 
@@ -5315,6 +5434,11 @@ export function applyCrossingProgress(prev, next) {
     ["den", DEN_BAND, "y"],
     ["dinos", DINO_ZONE, "x"],
     ["fossils", FOSSIL_ZONE, "y"],
+    ["sprinkles", SPRINKLE_ZONE, "y"],
+    ["scoops", SCOOP_BED, "y"],
+    ["waffle", WAFFLE_BAND, "y"],
+    ["cherries", CHERRY_ZONE, "x"],
+    ["straws", STRAW_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -5421,7 +5545,9 @@ export function applyCrossingProgress(prev, next) {
       onIcePad(next.x, next.y) ||
       onPenguin(next.x, next.y) ||
       onTrackPad(next.x, next.y) ||
-      onDino(next.x, next.y),
+      onDino(next.x, next.y) ||
+      onScoopPad(next.x, next.y) ||
+      onCherry(next.x, next.y),
   };
 }
 
@@ -5967,6 +6093,22 @@ export function shareAmber(player) {
   });
 }
 
+export function takePopsicle(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "popsicle", pose: "idle", actionBeatMs: 0 });
+}
+
+export function sharePopsicle(player) {
+  if (player.carry !== "popsicle") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), popsicle: true },
+  });
+}
+
 export function takeDollar(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "dollar", pose: "idle", actionBeatMs: 0 });
@@ -6185,5 +6327,6 @@ export function carryLabel(value) {
   if (value === "dollar") return "Sand dollar";
   if (value === "flake") return "Snowflake";
   if (value === "amber") return "Amber";
+  if (value === "popsicle") return "Popsicle";
   return "";
 }
