@@ -2231,6 +2231,56 @@ export const STRAW_BLOCKS = [
 
 export const POPSICLE_SPOT = { x: 222, y: 2154 };
 
+export const BUTTER_ZONE = { x: 1504, y: 140, w: 52, h: 92 };
+
+export const BUTTER_BLOCKS = [
+  { x: 1504, y: 152, w: 24, h: 14 },
+  { x: 1532, y: 184, w: 24, h: 14 },
+  { x: 1504, y: 216, w: 24, h: 14 },
+];
+
+export const PANCAKE_BED = { x: 432, y: 1664, w: 76, h: 48 };
+
+export const PANCAKE_PADS = [
+  { x: 448, y: 1672 },
+  { x: 466, y: 1688 },
+  { x: 448, y: 1706 },
+];
+
+export const PANCAKE_RADIUS = 14;
+
+export const TOASTER_POSTS = [
+  { x: 1190, y: 910, w: 12, h: 48 },
+  { x: 1258, y: 910, w: 12, h: 48 },
+];
+
+export const TOASTER_WALLS = [
+  { x: 1202, y: 926, w: 22, h: 12 },
+  { x: 1236, y: 926, w: 22, h: 12 },
+];
+
+export const TOASTER_GAP = { x: 1224, y: 912, w: 12, h: 44 };
+
+export const TOASTER_BAND = { x: 1202, y: 926, w: 56, h: 12 };
+
+export const TOAST_ZONE = { x: 280, y: 680, w: 100, h: 44 };
+
+export const TOASTS = [
+  { x: 282, y: 680, w: 46, h: 26 },
+  { x: 316, y: 694, w: 46, h: 26 },
+  { x: 344, y: 680, w: 36, h: 26 },
+];
+
+export const SPOON_ZONE = { x: 2352, y: 1640, w: 100, h: 36 };
+
+export const SPOON_BLOCKS = [
+  { x: 2360, y: 1640, w: 14, h: 36 },
+  { x: 2396, y: 1640, w: 14, h: 36 },
+  { x: 2432, y: 1640, w: 14, h: 36 },
+];
+
+export const BANANA_SPOT = { x: 80, y: 1168 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2484,6 +2534,12 @@ export const STICKERS = [
   { id: "cherries", name: "Cherry tip-toer", hint: "You tip-toed past the friendly cherries." },
   { id: "straws", name: "Straw weaver", hint: "You weaved between the paper straws." },
   { id: "popsicle", name: "Popsicle friend", hint: "You shared a kind popsicle." },
+  { id: "butters", name: "Butter weaver", hint: "You bobbed between the butter pats." },
+  { id: "pancakes", name: "Pancake hopper", hint: "You zigzagged the sunny pancakes." },
+  { id: "toaster", name: "Toaster ducker", hint: "You ducked under the friendly toaster." },
+  { id: "toasts", name: "Toast tip-toer", hint: "You tip-toed past the friendly toast." },
+  { id: "spoons", name: "Spoon weaver", hint: "You weaved between the wooden spoons." },
+  { id: "banana", name: "Banana friend", hint: "You shared a kind banana." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2741,12 +2797,18 @@ export const CHEERS = {
   cherries: "Tip-toe past the friendly cherries!",
   straws: "Little paper straws said hello!",
   popsicle: "A kind popsicle to share. Kind!",
+  butters: "Friendly butter pats said hello!",
+  pancakes: "Boing! Zigzag hops on the sunny pancakes!",
+  toaster: "Duck under the cozy toaster!",
+  toasts: "Tip-toe past the friendly toast!",
+  spoons: "Little wooden spoons said hello!",
+  banana: "A kind banana to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana"];
 
 export function defaultStickers() {
   return {
@@ -3002,6 +3064,12 @@ export function defaultStickers() {
     cherries: false,
     straws: false,
     popsicle: false,
+    butters: false,
+    pancakes: false,
+    toaster: false,
+    toasts: false,
+    spoons: false,
+    banana: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -3864,6 +3932,26 @@ export function onStrawLane(x, y) {
   return inRect(x, y, STRAW_ZONE) && !STRAW_BLOCKS.some((straw) => inRect(x, y, straw));
 }
 
+export function onButterLane(x, y) {
+  return inRect(x, y, BUTTER_ZONE) && !BUTTER_BLOCKS.some((pat) => inRect(x, y, pat));
+}
+
+export function onPancakePad(x, y) {
+  return PANCAKE_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= PANCAKE_RADIUS);
+}
+
+export function onToasterGap(x, y) {
+  return inRect(x, y, TOASTER_GAP);
+}
+
+export function onToast(x, y) {
+  return TOASTS.some((toast) => inRect(x, y, toast));
+}
+
+export function onSpoonLane(x, y) {
+  return inRect(x, y, SPOON_ZONE) && !SPOON_BLOCKS.some((spoon) => inRect(x, y, spoon));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -4070,6 +4158,11 @@ export function townPathAt(x, y) {
   if (onWaffleGap(x, y)) return "waffle";
   if (onCherry(x, y)) return "cherries";
   if (onStrawLane(x, y)) return "straws";
+  if (onButterLane(x, y)) return "butters";
+  if (onPancakePad(x, y)) return "pancakes";
+  if (onToasterGap(x, y)) return "toaster";
+  if (onToast(x, y)) return "toasts";
+  if (onSpoonLane(x, y)) return "spoons";
   return "";
 }
 
@@ -4969,6 +5062,27 @@ export function blockedByStraws(x, y) {
   return STRAW_BLOCKS.some((straw) => inRect(x, y, straw));
 }
 
+export function blockedByButters(x, y) {
+  return BUTTER_BLOCKS.some((pat) => inRect(x, y, pat));
+}
+
+export function blockedByPancakes(x, y) {
+  return inRect(x, y, PANCAKE_BED) && !onPancakePad(x, y);
+}
+
+export function blockedByToaster(x, y) {
+  if (onToasterGap(x, y)) return false;
+  return TOASTER_POSTS.some((post) => inRect(x, y, post)) || TOASTER_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByToasts(x, y) {
+  return inRect(x, y, TOAST_ZONE) && !onToast(x, y);
+}
+
+export function blockedBySpoons(x, y) {
+  return SPOON_BLOCKS.some((spoon) => inRect(x, y, spoon));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -5179,7 +5293,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByScoops(x, y) ||
     blockedByWaffle(x, y) ||
     blockedByCherries(x, y) ||
-    blockedByStraws(x, y)
+    blockedByStraws(x, y) ||
+    blockedByButters(x, y) ||
+    blockedByPancakes(x, y) ||
+    blockedByToaster(x, y) ||
+    blockedByToasts(x, y) ||
+    blockedBySpoons(x, y)
   );
 }
 
@@ -5439,6 +5558,11 @@ export function applyCrossingProgress(prev, next) {
     ["waffle", WAFFLE_BAND, "y"],
     ["cherries", CHERRY_ZONE, "x"],
     ["straws", STRAW_ZONE, "y"],
+    ["butters", BUTTER_ZONE, "y"],
+    ["pancakes", PANCAKE_BED, "y"],
+    ["toaster", TOASTER_BAND, "y"],
+    ["toasts", TOAST_ZONE, "x"],
+    ["spoons", SPOON_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -5547,7 +5671,9 @@ export function applyCrossingProgress(prev, next) {
       onTrackPad(next.x, next.y) ||
       onDino(next.x, next.y) ||
       onScoopPad(next.x, next.y) ||
-      onCherry(next.x, next.y),
+      onCherry(next.x, next.y) ||
+      onPancakePad(next.x, next.y) ||
+      onToast(next.x, next.y),
   };
 }
 
@@ -6109,6 +6235,22 @@ export function sharePopsicle(player) {
   });
 }
 
+export function takeBanana(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "banana", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareBanana(player) {
+  if (player.carry !== "banana") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), banana: true },
+  });
+}
+
 export function takeDollar(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "dollar", pose: "idle", actionBeatMs: 0 });
@@ -6328,5 +6470,6 @@ export function carryLabel(value) {
   if (value === "flake") return "Snowflake";
   if (value === "amber") return "Amber";
   if (value === "popsicle") return "Popsicle";
+  if (value === "banana") return "Banana";
   return "";
 }
