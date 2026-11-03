@@ -504,6 +504,18 @@ import {
   STRAW_ZONE,
   STRAW_BLOCKS,
   POPSICLE_SPOT,
+  BUTTER_ZONE,
+  BUTTER_BLOCKS,
+  PANCAKE_BED,
+  PANCAKE_PADS,
+  TOASTER_POSTS,
+  TOASTER_WALLS,
+  TOASTER_GAP,
+  TOAST_ZONE,
+  TOASTS,
+  SPOON_ZONE,
+  SPOON_BLOCKS,
+  BANANA_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1374,6 +1386,18 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#fff";
     roundRect(ctx, 23, 5, 6, 2, 1);
+    ctx.fill();
+  }
+  if (look.carry === "banana" && !sleeping) {
+    ctx.fillStyle = "#f4d35e";
+    ctx.beginPath();
+    ctx.moveTo(22, 16);
+    ctx.quadraticCurveTo(28, 4, 34, 6);
+    ctx.quadraticCurveTo(30, 10, 28, 16);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#6b4f2a";
+    oval(ctx, 33, 6, 1.4, 1.4);
     ctx.fill();
   }
   ctx.restore();
@@ -9137,6 +9161,151 @@ function drawSharedPopsicle(ctx, carried) {
   ctx.fillText("Popsicle", POPSICLE_SPOT.x - 26, POPSICLE_SPOT.y - 16);
 }
 
+function drawButters(ctx) {
+  ctx.fillStyle = "#fff6d8";
+  roundRect(ctx, BUTTER_ZONE.x, BUTTER_ZONE.y, BUTTER_ZONE.w, BUTTER_ZONE.h, 12);
+  ctx.fill();
+  BUTTER_BLOCKS.forEach((pat) => {
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, pat.x, pat.y, pat.w, pat.h, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff8c9";
+    roundRect(ctx, pat.x + 3, pat.y + 3, pat.w - 8, 3, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Butter", BUTTER_ZONE.x - 4, BUTTER_ZONE.y - 8);
+}
+
+function drawPancakes(ctx) {
+  ctx.fillStyle = "#fdebd0";
+  roundRect(ctx, PANCAKE_BED.x, PANCAKE_BED.y, PANCAKE_BED.w, PANCAKE_BED.h, 12);
+  ctx.fill();
+  const colors = ["#e8a838", "#f0c36a", "#d4892a"];
+  PANCAKE_PADS.forEach((pad, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, pad.x, pad.y, 10, 7);
+    ctx.fill();
+    ctx.fillStyle = "#c45c26";
+    oval(ctx, pad.x - 2, pad.y - 1, 1.4, 1.4);
+    ctx.fill();
+    oval(ctx, pad.x + 3, pad.y + 1, 1.2, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pancakes", PANCAKE_BED.x + 4, PANCAKE_BED.y - 8);
+}
+
+function drawToaster(ctx) {
+  for (const post of TOASTER_POSTS) {
+    ctx.fillStyle = "#d5d8dc";
+    roundRect(ctx, post.x, post.y, post.w, post.h, 3);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    oval(ctx, post.x + 6, post.y + post.h - 8, 2, 2);
+    ctx.fill();
+  }
+  TOASTER_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#f7f4ef" : "#ece7df";
+    roundRect(ctx, wall.x, wall.y - 4, wall.w, 14, 4);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    roundRect(ctx, wall.x + 4, wall.y, wall.w - 8, 3, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, TOASTER_GAP.x, TOASTER_GAP.y + 16, TOASTER_GAP.w, 14, 3);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Toaster", TOASTER_POSTS[0].x - 4, TOASTER_POSTS[0].y - 8);
+}
+
+function drawToasts(ctx) {
+  ctx.fillStyle = "#fdebd0";
+  roundRect(ctx, TOAST_ZONE.x, TOAST_ZONE.y, TOAST_ZONE.w, TOAST_ZONE.h, 12);
+  ctx.fill();
+  TOASTS.forEach((toast) => {
+    const cx = toast.x + toast.w / 2;
+    const cy = toast.y + toast.h / 2;
+    ctx.fillStyle = "#c48a3a";
+    roundRect(ctx, toast.x + 4, toast.y + 2, toast.w - 10, toast.h - 4, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f6d7a2";
+    roundRect(ctx, toast.x + 8, toast.y + 6, toast.w - 18, toast.h - 12, 4);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx - 4, cy, 1, 1);
+    ctx.fill();
+    oval(ctx, cx + 4, cy, 1, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Toast", TOAST_ZONE.x + 24, TOAST_ZONE.y + TOAST_ZONE.h + 16);
+}
+
+function drawSpoons(ctx) {
+  ctx.fillStyle = "#f7efd4";
+  roundRect(ctx, SPOON_ZONE.x, SPOON_ZONE.y, SPOON_ZONE.w, SPOON_ZONE.h, 12);
+  ctx.fill();
+  SPOON_BLOCKS.forEach((spoon) => {
+    const cx = spoon.x + spoon.w / 2;
+    ctx.fillStyle = "#c48a3a";
+    roundRect(ctx, cx - 2, spoon.y + 10, 4, spoon.h - 12, 2);
+    ctx.fill();
+    ctx.fillStyle = "#e0b56a";
+    oval(ctx, cx, spoon.y + 8, 6, 5);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Spoons", SPOON_ZONE.x + 22, SPOON_ZONE.y - 8);
+}
+
+function paintBanana(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#f4d35e";
+  ctx.beginPath();
+  ctx.moveTo(-8, 8);
+  ctx.quadraticCurveTo(0, -12, 10, -6);
+  ctx.quadraticCurveTo(2, -2, 0, 8);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#6b4f2a";
+  oval(ctx, 9, -6, 1.6, 1.6);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedBanana(ctx, carried) {
+  if (!carried) {
+    paintBanana(ctx, 2432, 138, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Banana", 2404, 110);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, BANANA_SPOT.x - 22, BANANA_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  roundRect(ctx, BANANA_SPOT.x - 20, BANANA_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, BANANA_SPOT.x - 16, BANANA_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, BANANA_SPOT.x + 10, BANANA_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintBanana(ctx, BANANA_SPOT.x, BANANA_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Banana", BANANA_SPOT.x - 24, BANANA_SPOT.y - 16);
+}
+
 function drawSharedAmber(ctx, carried) {
   if (!carried) {
     paintAmber(ctx, 800, 198, 0.85);
@@ -9536,6 +9705,12 @@ export function drawTown(ctx, player, time) {
   drawCherries(ctx);
   drawStraws(ctx);
   drawSharedPopsicle(ctx, player.carry === "popsicle");
+  drawButters(ctx);
+  drawPancakes(ctx);
+  drawToaster(ctx);
+  drawToasts(ctx);
+  drawSpoons(ctx);
+  drawSharedBanana(ctx, player.carry === "banana");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
