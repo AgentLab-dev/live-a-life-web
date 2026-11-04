@@ -131,6 +131,8 @@ describe("Play boot", () => {
     expect(world).toContain("share-popsicle");
     expect(world).toContain("take-banana");
     expect(world).toContain("share-banana");
+    expect(world).toContain("take-flag");
+    expect(world).toContain("share-flag");
     expect(world).toContain("enter-usa");
     expect(start).toContain("takeBook");
     expect(start).toContain("takeCard");
@@ -215,6 +217,8 @@ describe("Play boot", () => {
     expect(start).toContain("sharePopsicle");
     expect(start).toContain("takeBanana");
     expect(start).toContain("shareBanana");
+    expect(start).toContain("takeFlag");
+    expect(start).toContain("shareFlag");
     expect(start).toContain("pushBookCart");
     expect(start).toContain("enterUsaMap");
     expect(start).toContain("startHop");
