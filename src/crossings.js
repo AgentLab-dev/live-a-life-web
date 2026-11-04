@@ -2281,6 +2281,56 @@ export const SPOON_BLOCKS = [
 
 export const BANANA_SPOT = { x: 80, y: 1168 };
 
+export const COTTON_ZONE = { x: 924, y: 672, w: 52, h: 92 };
+
+export const COTTON_BLOCKS = [
+  { x: 924, y: 684, w: 24, h: 14 },
+  { x: 952, y: 716, w: 24, h: 14 },
+  { x: 924, y: 748, w: 24, h: 14 },
+];
+
+export const POPCORN_BED = { x: 868, y: 1752, w: 76, h: 48 };
+
+export const POPCORN_PADS = [
+  { x: 884, y: 1760 },
+  { x: 902, y: 1776 },
+  { x: 884, y: 1794 },
+];
+
+export const POPCORN_RADIUS = 14;
+
+export const RING_POSTS = [
+  { x: 2040, y: 1010, w: 12, h: 48 },
+  { x: 2108, y: 1010, w: 12, h: 48 },
+];
+
+export const RING_WALLS = [
+  { x: 2052, y: 1026, w: 22, h: 12 },
+  { x: 2086, y: 1026, w: 22, h: 12 },
+];
+
+export const RING_GAP = { x: 2074, y: 1012, w: 12, h: 44 };
+
+export const RING_BAND = { x: 2052, y: 1026, w: 56, h: 12 };
+
+export const TICKET_ZONE = { x: 1584, y: 734, w: 100, h: 44 };
+
+export const TICKETS = [
+  { x: 1586, y: 734, w: 46, h: 26 },
+  { x: 1620, y: 748, w: 46, h: 26 },
+  { x: 1648, y: 734, w: 36, h: 26 },
+];
+
+export const BOTTLE_ZONE = { x: 2124, y: 686, w: 100, h: 36 };
+
+export const BOTTLE_BLOCKS = [
+  { x: 2132, y: 686, w: 14, h: 36 },
+  { x: 2168, y: 686, w: 14, h: 36 },
+  { x: 2204, y: 686, w: 14, h: 36 },
+];
+
+export const FLAG_SPOT = { x: 380, y: 1880 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2540,6 +2590,12 @@ export const STICKERS = [
   { id: "toasts", name: "Toast tip-toer", hint: "You tip-toed past the friendly toast." },
   { id: "spoons", name: "Spoon weaver", hint: "You weaved between the wooden spoons." },
   { id: "banana", name: "Banana friend", hint: "You shared a kind banana." },
+  { id: "cottons", name: "Cotton-candy weaver", hint: "You bobbed between the cotton candy." },
+  { id: "popcorns", name: "Popcorn hopper", hint: "You zigzagged the popcorn puffs." },
+  { id: "rings", name: "Ring ducker", hint: "You ducked under the ring toss." },
+  { id: "tickets", name: "Ticket tip-toer", hint: "You tip-toed past the prize tickets." },
+  { id: "bottles", name: "Bottle weaver", hint: "You weaved between the milk bottles." },
+  { id: "flag", name: "Flag friend", hint: "You shared a kind prize flag." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2803,12 +2859,18 @@ export const CHEERS = {
   toasts: "Tip-toe past the friendly toast!",
   spoons: "Little wooden spoons said hello!",
   banana: "A kind banana to share. Kind!",
+  cottons: "Fluffy cotton candy said hello!",
+  popcorns: "Boing! Zigzag hops on the popcorn!",
+  rings: "Duck under the ring toss!",
+  tickets: "Tip-toe past the prize tickets!",
+  bottles: "Little milk bottles said hello!",
+  flag: "A kind prize flag to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag"];
 
 export function defaultStickers() {
   return {
@@ -3070,6 +3132,12 @@ export function defaultStickers() {
     toasts: false,
     spoons: false,
     banana: false,
+    cottons: false,
+    popcorns: false,
+    rings: false,
+    tickets: false,
+    bottles: false,
+    flag: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -3952,6 +4020,26 @@ export function onSpoonLane(x, y) {
   return inRect(x, y, SPOON_ZONE) && !SPOON_BLOCKS.some((spoon) => inRect(x, y, spoon));
 }
 
+export function onCottonLane(x, y) {
+  return inRect(x, y, COTTON_ZONE) && !COTTON_BLOCKS.some((puff) => inRect(x, y, puff));
+}
+
+export function onPopcornPad(x, y) {
+  return POPCORN_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= POPCORN_RADIUS);
+}
+
+export function onRingGap(x, y) {
+  return inRect(x, y, RING_GAP);
+}
+
+export function onTicket(x, y) {
+  return TICKETS.some((ticket) => inRect(x, y, ticket));
+}
+
+export function onBottleLane(x, y) {
+  return inRect(x, y, BOTTLE_ZONE) && !BOTTLE_BLOCKS.some((bottle) => inRect(x, y, bottle));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -4163,6 +4251,11 @@ export function townPathAt(x, y) {
   if (onToasterGap(x, y)) return "toaster";
   if (onToast(x, y)) return "toasts";
   if (onSpoonLane(x, y)) return "spoons";
+  if (onCottonLane(x, y)) return "cottons";
+  if (onPopcornPad(x, y)) return "popcorns";
+  if (onRingGap(x, y)) return "rings";
+  if (onTicket(x, y)) return "tickets";
+  if (onBottleLane(x, y)) return "bottles";
   return "";
 }
 
@@ -5083,6 +5176,27 @@ export function blockedBySpoons(x, y) {
   return SPOON_BLOCKS.some((spoon) => inRect(x, y, spoon));
 }
 
+export function blockedByCottons(x, y) {
+  return COTTON_BLOCKS.some((puff) => inRect(x, y, puff));
+}
+
+export function blockedByPopcorns(x, y) {
+  return inRect(x, y, POPCORN_BED) && !onPopcornPad(x, y);
+}
+
+export function blockedByRings(x, y) {
+  if (onRingGap(x, y)) return false;
+  return RING_POSTS.some((post) => inRect(x, y, post)) || RING_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByTickets(x, y) {
+  return inRect(x, y, TICKET_ZONE) && !onTicket(x, y);
+}
+
+export function blockedByBottles(x, y) {
+  return BOTTLE_BLOCKS.some((bottle) => inRect(x, y, bottle));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -5298,7 +5412,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByPancakes(x, y) ||
     blockedByToaster(x, y) ||
     blockedByToasts(x, y) ||
-    blockedBySpoons(x, y)
+    blockedBySpoons(x, y) ||
+    blockedByCottons(x, y) ||
+    blockedByPopcorns(x, y) ||
+    blockedByRings(x, y) ||
+    blockedByTickets(x, y) ||
+    blockedByBottles(x, y)
   );
 }
 
@@ -5563,6 +5682,11 @@ export function applyCrossingProgress(prev, next) {
     ["toaster", TOASTER_BAND, "y"],
     ["toasts", TOAST_ZONE, "x"],
     ["spoons", SPOON_ZONE, "y"],
+    ["cottons", COTTON_ZONE, "y"],
+    ["popcorns", POPCORN_BED, "y"],
+    ["rings", RING_BAND, "y"],
+    ["tickets", TICKET_ZONE, "x"],
+    ["bottles", BOTTLE_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -5673,7 +5797,9 @@ export function applyCrossingProgress(prev, next) {
       onScoopPad(next.x, next.y) ||
       onCherry(next.x, next.y) ||
       onPancakePad(next.x, next.y) ||
-      onToast(next.x, next.y),
+      onToast(next.x, next.y) ||
+      onPopcornPad(next.x, next.y) ||
+      onTicket(next.x, next.y),
   };
 }
 
@@ -6251,6 +6377,22 @@ export function shareBanana(player) {
   });
 }
 
+export function takeFlag(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "flag", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareFlag(player) {
+  if (player.carry !== "flag") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), flag: true },
+  });
+}
+
 export function takeDollar(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "dollar", pose: "idle", actionBeatMs: 0 });
@@ -6471,5 +6613,6 @@ export function carryLabel(value) {
   if (value === "amber") return "Amber";
   if (value === "popsicle") return "Popsicle";
   if (value === "banana") return "Banana";
+  if (value === "flag") return "Prize flag";
   return "";
 }

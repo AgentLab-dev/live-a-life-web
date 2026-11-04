@@ -516,6 +516,18 @@ import {
   SPOON_ZONE,
   SPOON_BLOCKS,
   BANANA_SPOT,
+  COTTON_ZONE,
+  COTTON_BLOCKS,
+  POPCORN_BED,
+  POPCORN_PADS,
+  RING_POSTS,
+  RING_WALLS,
+  RING_GAP,
+  TICKET_ZONE,
+  TICKETS,
+  BOTTLE_ZONE,
+  BOTTLE_BLOCKS,
+  FLAG_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1398,6 +1410,25 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#6b4f2a";
     oval(ctx, 33, 6, 1.4, 1.4);
+    ctx.fill();
+  }
+  if (look.carry === "flag" && !sleeping) {
+    ctx.fillStyle = "#c48a3a";
+    roundRect(ctx, 30, 3, 3, 16, 1);
+    ctx.fill();
+    ctx.fillStyle = "#e74c3c";
+    ctx.beginPath();
+    ctx.moveTo(33, 4);
+    ctx.lineTo(44, 9);
+    ctx.lineTo(33, 14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    ctx.beginPath();
+    ctx.moveTo(33, 7);
+    ctx.lineTo(40, 9);
+    ctx.lineTo(33, 11);
+    ctx.closePath();
     ctx.fill();
   }
   ctx.restore();
@@ -9306,6 +9337,166 @@ function drawSharedBanana(ctx, carried) {
   ctx.fillText("Banana", BANANA_SPOT.x - 24, BANANA_SPOT.y - 16);
 }
 
+function drawCottons(ctx) {
+  ctx.fillStyle = "#ffe4f2";
+  roundRect(ctx, COTTON_ZONE.x, COTTON_ZONE.y, COTTON_ZONE.w, COTTON_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#ff8fc7", "#7ec8ff", "#ff8fc7"];
+  COTTON_BLOCKS.forEach((puff, index) => {
+    const cx = puff.x + puff.w / 2;
+    const cy = puff.y + puff.h / 2;
+    ctx.fillStyle = "#f7c7a3";
+    roundRect(ctx, cx - 1, cy + 2, 2, 8, 1);
+    ctx.fill();
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, cx, cy - 1, 9, 6);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    oval(ctx, cx - 3, cy - 2, 2, 1.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Cotton candy", COTTON_ZONE.x - 18, COTTON_ZONE.y - 8);
+}
+
+function drawPopcorns(ctx) {
+  ctx.fillStyle = "#fff1f4";
+  roundRect(ctx, POPCORN_BED.x, POPCORN_BED.y, POPCORN_BED.w, POPCORN_BED.h, 12);
+  ctx.fill();
+  ctx.fillStyle = "#e74c3c";
+  roundRect(ctx, POPCORN_BED.x + 4, POPCORN_BED.y + 4, 6, POPCORN_BED.h - 8, 3);
+  ctx.fill();
+  POPCORN_PADS.forEach((pad) => {
+    ctx.fillStyle = "#fff7d6";
+    oval(ctx, pad.x, pad.y, 8, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, pad.x - 3, pad.y - 1, 2.2, 2);
+    ctx.fill();
+    oval(ctx, pad.x + 3, pad.y + 1, 2, 1.8);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    oval(ctx, pad.x, pad.y - 2, 1.4, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Popcorn", POPCORN_BED.x + 8, POPCORN_BED.y - 8);
+}
+
+function drawRings(ctx) {
+  for (const post of RING_POSTS) {
+    ctx.fillStyle = "#c48a3a";
+    roundRect(ctx, post.x + 3, post.y, 6, post.h, 3);
+    ctx.fill();
+  }
+  const colors = ["#e74c3c", "#5b8def"];
+  RING_WALLS.forEach((wall, index) => {
+    ctx.strokeStyle = colors[index % colors.length];
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    oval(ctx, wall.x + wall.w / 2, wall.y + 2, wall.w / 2, 7);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#f4d35e";
+  roundRect(ctx, RING_GAP.x, RING_GAP.y + 16, RING_GAP.w, 10, 3);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Ring toss", RING_POSTS[0].x - 8, RING_POSTS[0].y - 8);
+}
+
+function drawTickets(ctx) {
+  ctx.fillStyle = "#fff6e8";
+  roundRect(ctx, TICKET_ZONE.x, TICKET_ZONE.y, TICKET_ZONE.w, TICKET_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#ff8fc7", "#7ec8ff", "#f4d35e"];
+  TICKETS.forEach((ticket, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, ticket.x + 4, ticket.y + 3, ticket.w - 10, ticket.h - 6, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, ticket.x + 8, ticket.y + 7, 8, ticket.h - 14, 2);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, ticket.x + ticket.w - 14, ticket.y + ticket.h / 2, 1.3, 1.3);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Tickets", TICKET_ZONE.x + 22, TICKET_ZONE.y + TICKET_ZONE.h + 16);
+}
+
+function drawBottles(ctx) {
+  ctx.fillStyle = "#e7f6ff";
+  roundRect(ctx, BOTTLE_ZONE.x, BOTTLE_ZONE.y, BOTTLE_ZONE.w, BOTTLE_ZONE.h, 12);
+  ctx.fill();
+  BOTTLE_BLOCKS.forEach((bottle) => {
+    const cx = bottle.x + bottle.w / 2;
+    ctx.fillStyle = "#d7eefc";
+    roundRect(ctx, cx - 4, bottle.y + 10, 8, bottle.h - 14, 3);
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    roundRect(ctx, cx - 2, bottle.y + 4, 4, 8, 2);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, cx - 2, bottle.y + 16, 3, 8, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Bottles", BOTTLE_ZONE.x + 22, BOTTLE_ZONE.y - 8);
+}
+
+function paintFlag(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#c48a3a";
+  roundRect(ctx, -1, -8, 3, 18, 1);
+  ctx.fill();
+  ctx.fillStyle = "#e74c3c";
+  ctx.beginPath();
+  ctx.moveTo(2, -8);
+  ctx.lineTo(14, -2);
+  ctx.lineTo(2, 4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  ctx.beginPath();
+  ctx.moveTo(2, -4);
+  ctx.lineTo(9, -2);
+  ctx.lineTo(2, 0);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedFlag(ctx, carried) {
+  if (!carried) {
+    paintFlag(ctx, 1940, 138, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Prize flag", 1904, 110);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, FLAG_SPOT.x - 22, FLAG_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#e74c3c";
+  roundRect(ctx, FLAG_SPOT.x - 20, FLAG_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, FLAG_SPOT.x - 16, FLAG_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, FLAG_SPOT.x + 10, FLAG_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintFlag(ctx, FLAG_SPOT.x, FLAG_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Prize flag", FLAG_SPOT.x - 30, FLAG_SPOT.y - 16);
+}
+
 function drawSharedAmber(ctx, carried) {
   if (!carried) {
     paintAmber(ctx, 800, 198, 0.85);
@@ -9711,6 +9902,12 @@ export function drawTown(ctx, player, time) {
   drawToasts(ctx);
   drawSpoons(ctx);
   drawSharedBanana(ctx, player.carry === "banana");
+  drawCottons(ctx);
+  drawPopcorns(ctx);
+  drawRings(ctx);
+  drawTickets(ctx);
+  drawBottles(ctx);
+  drawSharedFlag(ctx, player.carry === "flag");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
