@@ -2331,6 +2331,56 @@ export const BOTTLE_BLOCKS = [
 
 export const FLAG_SPOT = { x: 380, y: 1880 };
 
+export const TEACUP_ZONE = { x: 1696, y: 764, w: 52, h: 92 };
+
+export const TEACUP_BLOCKS = [
+  { x: 1696, y: 776, w: 24, h: 14 },
+  { x: 1724, y: 808, w: 24, h: 14 },
+  { x: 1696, y: 840, w: 24, h: 14 },
+];
+
+export const SAUCER_BED = { x: 392, y: 196, w: 76, h: 48 };
+
+export const SAUCER_PADS = [
+  { x: 408, y: 204 },
+  { x: 426, y: 220 },
+  { x: 408, y: 238 },
+];
+
+export const SAUCER_RADIUS = 14;
+
+export const CLOTH_POSTS = [
+  { x: 1256, y: 140, w: 12, h: 48 },
+  { x: 1324, y: 140, w: 12, h: 48 },
+];
+
+export const CLOTH_WALLS = [
+  { x: 1268, y: 156, w: 22, h: 12 },
+  { x: 1302, y: 156, w: 22, h: 12 },
+];
+
+export const CLOTH_GAP = { x: 1290, y: 142, w: 12, h: 44 };
+
+export const CLOTH_BAND = { x: 1268, y: 156, w: 56, h: 12 };
+
+export const TEAPOT_ZONE = { x: 2240, y: 564, w: 100, h: 44 };
+
+export const TEAPOTS = [
+  { x: 2242, y: 564, w: 46, h: 26 },
+  { x: 2276, y: 578, w: 46, h: 26 },
+  { x: 2304, y: 564, w: 36, h: 26 },
+];
+
+export const SUGAR_ZONE = { x: 612, y: 118, w: 100, h: 36 };
+
+export const SUGAR_BLOCKS = [
+  { x: 620, y: 118, w: 14, h: 36 },
+  { x: 656, y: 118, w: 14, h: 36 },
+  { x: 692, y: 118, w: 14, h: 36 },
+];
+
+export const SCONE_SPOT = { x: 160, y: 1880 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2596,6 +2646,12 @@ export const STICKERS = [
   { id: "tickets", name: "Ticket tip-toer", hint: "You tip-toed past the prize tickets." },
   { id: "bottles", name: "Bottle weaver", hint: "You weaved between the milk bottles." },
   { id: "flag", name: "Flag friend", hint: "You shared a kind prize flag." },
+  { id: "teacups", name: "Teacup weaver", hint: "You bobbed between the teacups." },
+  { id: "saucers", name: "Saucer hopper", hint: "You zigzagged the saucer pads." },
+  { id: "cloth", name: "Cloth ducker", hint: "You ducked under the tablecloth." },
+  { id: "teapots", name: "Teapot tip-toer", hint: "You tip-toed past the friendly teapots." },
+  { id: "sugars", name: "Sugar weaver", hint: "You weaved between the sugar cubes." },
+  { id: "scone", name: "Scone friend", hint: "You shared a kind scone." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2865,12 +2921,18 @@ export const CHEERS = {
   tickets: "Tip-toe past the prize tickets!",
   bottles: "Little milk bottles said hello!",
   flag: "A kind prize flag to share. Kind!",
+  teacups: "Friendly teacups said hello!",
+  saucers: "Boing! Zigzag hops on the saucers!",
+  cloth: "Duck under the sunny tablecloth!",
+  teapots: "Tip-toe past the friendly teapots!",
+  sugars: "Little sugar cubes said hello!",
+  scone: "A kind scone to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone"];
 
 export function defaultStickers() {
   return {
@@ -3138,6 +3200,12 @@ export function defaultStickers() {
     tickets: false,
     bottles: false,
     flag: false,
+    teacups: false,
+    saucers: false,
+    cloth: false,
+    teapots: false,
+    sugars: false,
+    scone: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -4040,6 +4108,26 @@ export function onBottleLane(x, y) {
   return inRect(x, y, BOTTLE_ZONE) && !BOTTLE_BLOCKS.some((bottle) => inRect(x, y, bottle));
 }
 
+export function onTeacupLane(x, y) {
+  return inRect(x, y, TEACUP_ZONE) && !TEACUP_BLOCKS.some((cup) => inRect(x, y, cup));
+}
+
+export function onSaucerPad(x, y) {
+  return SAUCER_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= SAUCER_RADIUS);
+}
+
+export function onClothGap(x, y) {
+  return inRect(x, y, CLOTH_GAP);
+}
+
+export function onTeapot(x, y) {
+  return TEAPOTS.some((pot) => inRect(x, y, pot));
+}
+
+export function onSugarLane(x, y) {
+  return inRect(x, y, SUGAR_ZONE) && !SUGAR_BLOCKS.some((cube) => inRect(x, y, cube));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -4256,6 +4344,11 @@ export function townPathAt(x, y) {
   if (onRingGap(x, y)) return "rings";
   if (onTicket(x, y)) return "tickets";
   if (onBottleLane(x, y)) return "bottles";
+  if (onTeacupLane(x, y)) return "teacups";
+  if (onSaucerPad(x, y)) return "saucers";
+  if (onClothGap(x, y)) return "cloth";
+  if (onTeapot(x, y)) return "teapots";
+  if (onSugarLane(x, y)) return "sugars";
   return "";
 }
 
@@ -5197,6 +5290,27 @@ export function blockedByBottles(x, y) {
   return BOTTLE_BLOCKS.some((bottle) => inRect(x, y, bottle));
 }
 
+export function blockedByTeacups(x, y) {
+  return TEACUP_BLOCKS.some((cup) => inRect(x, y, cup));
+}
+
+export function blockedBySaucers(x, y) {
+  return inRect(x, y, SAUCER_BED) && !onSaucerPad(x, y);
+}
+
+export function blockedByCloth(x, y) {
+  if (onClothGap(x, y)) return false;
+  return CLOTH_POSTS.some((post) => inRect(x, y, post)) || CLOTH_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByTeapots(x, y) {
+  return inRect(x, y, TEAPOT_ZONE) && !onTeapot(x, y);
+}
+
+export function blockedBySugars(x, y) {
+  return SUGAR_BLOCKS.some((cube) => inRect(x, y, cube));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -5417,7 +5531,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByPopcorns(x, y) ||
     blockedByRings(x, y) ||
     blockedByTickets(x, y) ||
-    blockedByBottles(x, y)
+    blockedByBottles(x, y) ||
+    blockedByTeacups(x, y) ||
+    blockedBySaucers(x, y) ||
+    blockedByCloth(x, y) ||
+    blockedByTeapots(x, y) ||
+    blockedBySugars(x, y)
   );
 }
 
@@ -5687,6 +5806,11 @@ export function applyCrossingProgress(prev, next) {
     ["rings", RING_BAND, "y"],
     ["tickets", TICKET_ZONE, "x"],
     ["bottles", BOTTLE_ZONE, "y"],
+    ["teacups", TEACUP_ZONE, "y"],
+    ["saucers", SAUCER_BED, "y"],
+    ["cloth", CLOTH_BAND, "y"],
+    ["teapots", TEAPOT_ZONE, "x"],
+    ["sugars", SUGAR_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -5799,7 +5923,9 @@ export function applyCrossingProgress(prev, next) {
       onPancakePad(next.x, next.y) ||
       onToast(next.x, next.y) ||
       onPopcornPad(next.x, next.y) ||
-      onTicket(next.x, next.y),
+      onTicket(next.x, next.y) ||
+      onSaucerPad(next.x, next.y) ||
+      onTeapot(next.x, next.y),
   };
 }
 
@@ -6393,6 +6519,22 @@ export function shareFlag(player) {
   });
 }
 
+export function takeScone(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "scone", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareScone(player) {
+  if (player.carry !== "scone") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), scone: true },
+  });
+}
+
 export function takeDollar(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "dollar", pose: "idle", actionBeatMs: 0 });
@@ -6614,5 +6756,6 @@ export function carryLabel(value) {
   if (value === "popsicle") return "Popsicle";
   if (value === "banana") return "Banana";
   if (value === "flag") return "Prize flag";
+  if (value === "scone") return "Scone";
   return "";
 }
