@@ -528,6 +528,18 @@ import {
   BOTTLE_ZONE,
   BOTTLE_BLOCKS,
   FLAG_SPOT,
+  TEACUP_ZONE,
+  TEACUP_BLOCKS,
+  SAUCER_BED,
+  SAUCER_PADS,
+  CLOTH_POSTS,
+  CLOTH_WALLS,
+  CLOTH_GAP,
+  TEAPOT_ZONE,
+  TEAPOTS,
+  SUGAR_ZONE,
+  SUGAR_BLOCKS,
+  SCONE_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1429,6 +1441,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.lineTo(40, 9);
     ctx.lineTo(33, 11);
     ctx.closePath();
+    ctx.fill();
+  }
+  if (look.carry === "scone" && !sleeping) {
+    ctx.fillStyle = "#e7b15a";
+    oval(ctx, 30, 12, 8, 6);
+    ctx.fill();
+    ctx.fillStyle = "#f3d7a1";
+    oval(ctx, 28, 10, 3, 2);
+    ctx.fill();
+    ctx.fillStyle = "#e07a5f";
+    oval(ctx, 32, 12, 1.6, 1.4);
     ctx.fill();
   }
   ctx.restore();
@@ -9473,6 +9496,172 @@ function paintFlag(ctx, x, y, scale = 1) {
   ctx.restore();
 }
 
+function drawTeacups(ctx) {
+  ctx.fillStyle = "#fff4ea";
+  roundRect(ctx, TEACUP_ZONE.x, TEACUP_ZONE.y, TEACUP_ZONE.w, TEACUP_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#fff", "#f7d6e6", "#d6ecff"];
+  TEACUP_BLOCKS.forEach((cup, index) => {
+    const cx = cup.x + cup.w / 2;
+    const cy = cup.y + cup.h / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, cx - 7, cy - 4, 14, 10, 4);
+    ctx.fill();
+    ctx.strokeStyle = "#e7b15a";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx + 8, cy + 1, 3, -1.2, 1.2);
+    ctx.stroke();
+    ctx.fillStyle = "#c48a3a";
+    oval(ctx, cx, cy + 6, 8, 2);
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx - 2, cy, 1, 1);
+    ctx.fill();
+    oval(ctx, cx + 2, cy, 1, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Teacups", TEACUP_ZONE.x - 6, TEACUP_ZONE.y - 8);
+}
+
+function drawSaucers(ctx) {
+  ctx.fillStyle = "#f3efe4";
+  roundRect(ctx, SAUCER_BED.x, SAUCER_BED.y, SAUCER_BED.w, SAUCER_BED.h, 12);
+  ctx.fill();
+  SAUCER_PADS.forEach((pad) => {
+    ctx.fillStyle = "#fff";
+    oval(ctx, pad.x, pad.y, 10, 6);
+    ctx.fill();
+    ctx.strokeStyle = "#e7b15a";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    oval(ctx, pad.x, pad.y, 7, 4);
+    ctx.stroke();
+    ctx.fillStyle = "#f7d6e6";
+    oval(ctx, pad.x, pad.y, 3, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Saucers", SAUCER_BED.x + 8, SAUCER_BED.y - 8);
+}
+
+function drawCloth(ctx) {
+  for (const post of CLOTH_POSTS) {
+    ctx.fillStyle = "#c48a3a";
+    roundRect(ctx, post.x + 3, post.y, 6, post.h, 3);
+    ctx.fill();
+  }
+  CLOTH_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#f7d6e6" : "#d6ecff";
+    roundRect(ctx, wall.x, wall.y, wall.w, wall.h, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, wall.x + 3, wall.y + 3, wall.w - 6, 3, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#fff";
+  roundRect(ctx, CLOTH_GAP.x, CLOTH_GAP.y + 18, CLOTH_GAP.w, 8, 2);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Tablecloth", CLOTH_POSTS[0].x - 16, CLOTH_POSTS[0].y - 8);
+}
+
+function drawTeapots(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, TEAPOT_ZONE.x, TEAPOT_ZONE.y, TEAPOT_ZONE.w, TEAPOT_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#f7d6e6", "#d6ecff", "#fff"];
+  TEAPOTS.forEach((pot, index) => {
+    const cx = pot.x + pot.w / 2;
+    const cy = pot.y + pot.h / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, cx, cy + 2, 10, 7);
+    ctx.fill();
+    ctx.fillStyle = "#e7b15a";
+    roundRect(ctx, cx - 3, cy - 8, 6, 4, 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(cx + 8, cy);
+    ctx.lineTo(cx + 14, cy + 2);
+    ctx.lineTo(cx + 8, cy + 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx - 3, cy + 1, 1, 1);
+    ctx.fill();
+    oval(ctx, cx + 2, cy + 1, 1, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Teapots", TEAPOT_ZONE.x + 18, TEAPOT_ZONE.y + TEAPOT_ZONE.h + 16);
+}
+
+function drawSugars(ctx) {
+  ctx.fillStyle = "#f7f3ea";
+  roundRect(ctx, SUGAR_ZONE.x, SUGAR_ZONE.y, SUGAR_ZONE.w, SUGAR_ZONE.h, 12);
+  ctx.fill();
+  SUGAR_BLOCKS.forEach((cube) => {
+    const cx = cube.x + cube.w / 2;
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, cx - 5, cube.y + 8, 10, 16, 2);
+    ctx.fill();
+    ctx.fillStyle = "#f3efe4";
+    roundRect(ctx, cx - 5, cube.y + 8, 10, 4, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#e7b15a";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(cx - 5, cube.y + 8, 10, 16);
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Sugar cubes", SUGAR_ZONE.x + 4, SUGAR_ZONE.y - 8);
+}
+
+function paintScone(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#e7b15a";
+  oval(ctx, 0, 2, 10, 7);
+  ctx.fill();
+  ctx.fillStyle = "#f3d7a1";
+  oval(ctx, -2, -1, 4, 2.4);
+  ctx.fill();
+  ctx.fillStyle = "#e07a5f";
+  oval(ctx, 3, 2, 2, 1.6);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedScone(ctx, carried) {
+  if (!carried) {
+    paintScone(ctx, 1856, 98, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Scone", 1832, 70);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, SCONE_SPOT.x - 22, SCONE_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#e7b15a";
+  roundRect(ctx, SCONE_SPOT.x - 20, SCONE_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, SCONE_SPOT.x - 16, SCONE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, SCONE_SPOT.x + 10, SCONE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintScone(ctx, SCONE_SPOT.x, SCONE_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Scone", SCONE_SPOT.x - 18, SCONE_SPOT.y - 16);
+}
+
 function drawSharedFlag(ctx, carried) {
   if (!carried) {
     paintFlag(ctx, 1940, 138, 0.85);
@@ -9908,6 +10097,12 @@ export function drawTown(ctx, player, time) {
   drawTickets(ctx);
   drawBottles(ctx);
   drawSharedFlag(ctx, player.carry === "flag");
+  drawTeacups(ctx);
+  drawSaucers(ctx);
+  drawCloth(ctx);
+  drawTeapots(ctx);
+  drawSugars(ctx);
+  drawSharedScone(ctx, player.carry === "scone");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
