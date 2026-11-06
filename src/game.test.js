@@ -222,6 +222,11 @@ import {
   blockedByCloth,
   blockedByTeapots,
   blockedBySugars,
+  blockedBySpines,
+  blockedByStories,
+  blockedByShelf,
+  blockedByPages,
+  blockedByPencils,
   BOOK_SPOT,
   cheerCrossing,
   closeParkGate,
@@ -268,6 +273,7 @@ import {
   BANANA_SPOT,
   FLAG_SPOT,
   SCONE_SPOT,
+  HEART_SPOT,
   newSticker,
   townPathAt,
   nudgeBookCart,
@@ -493,6 +499,11 @@ import {
   onClothGap,
   onTeapot,
   onSugarLane,
+  onSpineLane,
+  onStoryPad,
+  onShelfGap,
+  onPage,
+  onPencilLane,
   openParkGate,
   pushBookCart,
   shareBalloon,
@@ -540,6 +551,7 @@ import {
   shareBanana,
   shareFlag,
   shareScone,
+  shareHeart,
   SNACK_SPOT,
   takeBook,
   takeCard,
@@ -586,6 +598,7 @@ import {
   takeBanana,
   takeFlag,
   takeScone,
+  takeHeart,
 } from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -10125,6 +10138,236 @@ describe("thursday tea-garden play", () => {
     expect(isBlocked("town", 638, 140)).toBe(false);
     expect(isBlocked("town", SCONE_SPOT.x, SCONE_SPOT.y)).toBe(false);
     expect(isBlocked("town", 1856, 120)).toBe(false);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
+    expect(isBlocked("town", 1096, 2034)).toBe(false);
+    expect(isBlocked("town", 840, 880)).toBe(false);
+    expect(isBlocked("town", 700, 880)).toBe(false);
+  });
+});
+
+describe("friday bookstore-window play", () => {
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  function townKid(x, y, extra = {}) {
+    return {
+      room: "town",
+      x,
+      y,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      carry: "",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("names book-spine, storybook, bookshelf, page, and pencil paths", () => {
+    expect(townPathAt(1784, 1480)).toBe("spines");
+    expect(onSpineLane(1784, 1480)).toBe(true);
+    expect(townPathAt(1756, 1480)).toBe("");
+    expect(townPathAt(640, 212)).toBe("stories");
+    expect(onStoryPad(658, 228)).toBe(true);
+    expect(townPathAt(632, 226)).toBe("");
+    expect(townPathAt(2224, 256)).toBe("shelf");
+    expect(onShelfGap(2224, 256)).toBe(true);
+    expect(townPathAt(2190, 256)).toBe("");
+    expect(townPathAt(1437, 251)).toBe("pages");
+    expect(onPage(1454, 258)).toBe(true);
+    expect(townPathAt(1437, 270)).toBe("");
+    expect(townPathAt(1970, 138)).toBe("pencils");
+    expect(onPencilLane(1970, 138)).toBe(true);
+    expect(townPathAt(1958, 138)).toBe("");
+    expect(townPathAt(2320, 304)).toBe("");
+  });
+
+  it("blocks book spines, storybook grass, the bookshelf, page lawn, and pencils but not the walk paths", () => {
+    expect(blockedBySpines(1756, 1480)).toBe(true);
+    expect(isBlocked("town", 1756, 1480)).toBe(true);
+    expect(onSpineLane(1784, 1480)).toBe(true);
+    expect(isBlocked("town", 1784, 1480)).toBe(false);
+    expect(blockedByStories(632, 226)).toBe(true);
+    expect(isBlocked("town", 632, 226)).toBe(true);
+    expect(onStoryPad(640, 212)).toBe(true);
+    expect(isBlocked("town", 640, 212)).toBe(false);
+    expect(blockedByShelf(2190, 256)).toBe(true);
+    expect(isBlocked("town", 2190, 256)).toBe(true);
+    expect(onShelfGap(2224, 256)).toBe(true);
+    expect(isBlocked("town", 2224, 256)).toBe(false);
+    expect(blockedByPages(1437, 270)).toBe(true);
+    expect(isBlocked("town", 1437, 270)).toBe(true);
+    expect(onPage(1437, 251)).toBe(true);
+    expect(isBlocked("town", 1437, 251)).toBe(false);
+    expect(blockedByPencils(1958, 138)).toBe(true);
+    expect(isBlocked("town", 1958, 138)).toBe(true);
+    expect(onPencilLane(1970, 138)).toBe(true);
+    expect(isBlocked("town", 1970, 138)).toBe(false);
+    expect(isBlocked("town", 2320, 304)).toBe(false);
+  });
+
+  it("bobs south through the book spines and earns a sticker", () => {
+    let player = townKid(1784, 1442);
+    player = walkFrames(player, { x: 1784, y: 1480 }, 20);
+    player = walkFrames(player, { x: 1784, y: 1496 }, 16);
+    player = walkFrames(player, { x: 1756, y: 1496 }, 16);
+    player = walkFrames(player, { x: 1756, y: 1512 }, 16);
+    player = walkFrames(player, { x: 1756, y: 1528 }, 16);
+    player = walkFrames(player, { x: 1784, y: 1528 }, 16);
+    player = walkFrames(player, { x: 1784, y: 1544 }, 16);
+    player = walkFrames(player, { x: 1784, y: 1582 }, 24);
+    expect(player.y).toBeGreaterThan(1558);
+    expect(player.stickers.spines).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(defaultStickers(), player.stickers)).toBe("spines");
+  });
+
+  it("zigzags the storybooks and earns a sticker", () => {
+    let player = townKid(640, 164);
+    player = walkFrames(player, { x: 640, y: 212 }, 24);
+    player = walkFrames(player, { x: 658, y: 228 }, 20);
+    player = walkFrames(player, { x: 640, y: 238 }, 20);
+    player = walkFrames(player, { x: 640, y: 264 }, 20);
+    expect(player.y).toBeGreaterThan(256);
+    expect(player.stickers.stories).toBe(true);
+    expect(player.timer).toBeUndefined();
+  });
+
+  it("walks the bookshelf, pages, and pencils without a fail state", () => {
+    let player = townKid(2224, 200);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 28);
+    expect(player.y).toBeGreaterThan(288);
+    expect(player.stickers.shelf).toBe(true);
+
+    player = townKid(1392, 251);
+    player = walkFrames(player, { x: 1437, y: 251 }, 20);
+    player = walkFrames(player, { x: 1454, y: 258 }, 16);
+    player = walkFrames(player, { x: 1471, y: 265 }, 16);
+    player = walkFrames(player, { x: 1484, y: 258 }, 16);
+    player = walkFrames(player, { x: 1494, y: 251 }, 16);
+    player = walkFrames(player, { x: 1532, y: 251 }, 20);
+    expect(player.x).toBeGreaterThan(1516);
+    expect(player.stickers.pages).toBe(true);
+
+    player = townKid(1970, 112);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 36);
+    expect(player.y).toBeGreaterThan(160);
+    expect(player.stickers.pencils).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets tap-to-walk stop at book spines and storybook grass instead of punishing", () => {
+    const spineBump = stepToward(townKid(1756, 1442), { x: 1756, y: 1582 }, 80);
+    expect(spineBump.y).toBeLessThan(1474);
+    expect(spineBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1756, 1480)).toBe(true);
+
+    const storyBump = stepToward(townKid(640, 164), { x: 640, y: 272 }, 80);
+    expect(storyBump.y).toBeLessThan(228);
+    expect(storyBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 632, 226)).toBe(true);
+  });
+
+  it("takes and shares a paper heart without money or a timer", () => {
+    const helper = takeHeart({ room: "town", carry: "", stickers: defaultStickers(), money: 2 });
+    expect(helper.carry).toBe("heart");
+    expect(helper.money).toBeUndefined();
+    expect(
+      visibleActions({ ...helper, x: 2320, y: 304, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+        (action) => action.id === "take-heart",
+      ),
+    ).toBe(false);
+    const shared = shareHeart({ ...helper, room: "town", x: HEART_SPOT.x, y: HEART_SPOT.y });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("look");
+    expect(shared.stickers.heart).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+    expect(takePicnic({ ...helper, carry: "heart" }).carry).toBe("heart");
+    expect(takeScone({ ...helper, carry: "heart" }).carry).toBe("heart");
+  });
+
+  it("cheers a nearby neighbor after a friday bookstore-window crossing", () => {
+    const people = createPeople();
+    const pip = people.find((person) => person.id === "pip");
+    const next = cheerCrossing(people, "heart", pip.x, pip.y);
+    expect(next.find((person) => person.id === "pip").line).toMatch(/heart|kind|book/i);
+    expect(next.find((person) => person.id === "pip").bubbleMs).toBe(2400);
+  });
+
+  it("persists friday bookstore-window stickers and a carried paper heart", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      carry: "heart",
+      stickers: { spines: true, stories: true, shelf: true, pages: true, pencils: true, heart: true, coins: 8 },
+      money: 5,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.carry).toBe("heart");
+    expect(loaded.stickers.spines).toBe(true);
+    expect(loaded.stickers.stories).toBe(true);
+    expect(loaded.stickers.shelf).toBe(true);
+    expect(loaded.stickers.pages).toBe(true);
+    expect(loaded.stickers.pencils).toBe(true);
+    expect(loaded.stickers.heart).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.carry).toBe("heart");
+  });
+
+  it("shows paper-heart actions without hiding house or shop buttons", () => {
+    const atYard = townKid(2320, 304, { pose: "idle", job: "none" });
+    const ids = visibleActions(atYard).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["take-heart", "stickers"]));
+    expect(ids).not.toContain("share-heart");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+    const withHeart = townKid(HEART_SPOT.x, HEART_SPOT.y, { carry: "heart", pose: "idle", job: "none" });
+    expect(visibleActions(withHeart).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["share-heart", "stickers"]),
+    );
+    expect(isBlocked("town", HEART_SPOT.x, HEART_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 2320, 304)).toBe(false);
+    expect(isBlocked("town", 480, 660)).toBe(false);
+  });
+
+  it("keeps the house, shop, park, PWA, and USA map paths open around the bookstore-window crossings", () => {
+    let player = townKid(560, 920);
+    player = walkFrames(player, { x: 460, y: 980 }, 80);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    player = walkFrames(player, { x: 480, y: 720 }, 120);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(canEnter("town", "bakery")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(canEnter("town", "usa")).toBe(true);
+    expect(isBlocked("town", 1920, 1320)).toBe(false);
+    expect(isBlocked("town", 420, 980)).toBe(false);
+    expect(isBlocked("town", 420, 1400)).toBe(false);
+    expect(isBlocked("town", 1784, 1480)).toBe(false);
+    expect(isBlocked("town", 658, 228)).toBe(false);
+    expect(isBlocked("town", 2224, 256)).toBe(false);
+    expect(isBlocked("town", 1437, 251)).toBe(false);
+    expect(isBlocked("town", 1970, 138)).toBe(false);
+    expect(isBlocked("town", HEART_SPOT.x, HEART_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 2320, 304)).toBe(false);
     expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
     expect(isBlocked("town", 1096, 2034)).toBe(false);
     expect(isBlocked("town", 840, 880)).toBe(false);
