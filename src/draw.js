@@ -540,6 +540,18 @@ import {
   SUGAR_ZONE,
   SUGAR_BLOCKS,
   SCONE_SPOT,
+  SPINE_ZONE,
+  SPINE_BLOCKS,
+  STORY_BED,
+  STORY_PADS,
+  SHELF_POSTS,
+  SHELF_WALLS,
+  SHELF_GAP,
+  PAGE_ZONE,
+  PAGES,
+  PENCIL_ZONE,
+  PENCIL_BLOCKS,
+  HEART_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1452,6 +1464,19 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#e07a5f";
     oval(ctx, 32, 12, 1.6, 1.4);
+    ctx.fill();
+  }
+  if (look.carry === "heart" && !sleeping) {
+    ctx.fillStyle = "#e07a8a";
+    oval(ctx, 26, 9, 4, 3.4);
+    ctx.fill();
+    oval(ctx, 32, 9, 4, 3.4);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(22, 11);
+    ctx.lineTo(36, 11);
+    ctx.lineTo(29, 18);
+    ctx.closePath();
     ctx.fill();
   }
   ctx.restore();
@@ -9638,6 +9663,169 @@ function paintScone(ctx, x, y, scale = 1) {
   ctx.restore();
 }
 
+function drawSpines(ctx) {
+  ctx.fillStyle = "#f4efe4";
+  roundRect(ctx, SPINE_ZONE.x, SPINE_ZONE.y, SPINE_ZONE.w, SPINE_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#e07a8a", "#5b8def", "#7dcea0"];
+  SPINE_BLOCKS.forEach((spine, index) => {
+    const cx = spine.x + spine.w / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, cx - 5, spine.y, 10, spine.h, 2);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, cx - 3, spine.y + 2, 6, 2, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Book spines", SPINE_ZONE.x - 18, SPINE_ZONE.y - 8);
+}
+
+function drawStories(ctx) {
+  ctx.fillStyle = "#efe6d6";
+  roundRect(ctx, STORY_BED.x, STORY_BED.y, STORY_BED.w, STORY_BED.h, 12);
+  ctx.fill();
+  const covers = ["#e07a8a", "#5b8def", "#f4b942"];
+  STORY_PADS.forEach((pad, index) => {
+    ctx.fillStyle = covers[index % covers.length];
+    roundRect(ctx, pad.x - 9, pad.y - 6, 18, 12, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, pad.x - 1, pad.y - 5, 2, 10, 1);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, pad.x - 7, pad.y - 3, 5, 1, 1);
+    ctx.fill();
+    roundRect(ctx, pad.x + 2, pad.y - 3, 5, 1, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Storybooks", STORY_BED.x + 2, STORY_BED.y - 8);
+}
+
+function drawShelf(ctx) {
+  for (const post of SHELF_POSTS) {
+    ctx.fillStyle = "#c48a3a";
+    roundRect(ctx, post.x + 2, post.y, 8, post.h, 2);
+    ctx.fill();
+  }
+  SHELF_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#7dcea0" : "#5b8def";
+    roundRect(ctx, wall.x, wall.y, wall.w, wall.h, 2);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, wall.x + 3, wall.y + 3, 4, 6, 1);
+    ctx.fill();
+    roundRect(ctx, wall.x + 9, wall.y + 3, 4, 6, 1);
+    ctx.fill();
+    roundRect(ctx, wall.x + 15, wall.y + 3, 4, 6, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, SHELF_GAP.x, SHELF_GAP.y + 18, SHELF_GAP.w, 8, 2);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Bookshelf", SHELF_POSTS[0].x - 8, SHELF_POSTS[0].y - 8);
+}
+
+function drawPages(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, PAGE_ZONE.x, PAGE_ZONE.y, PAGE_ZONE.w, PAGE_ZONE.h, 12);
+  ctx.fill();
+  const inks = ["#d6ecff", "#f7d6e6", "#fff"];
+  PAGES.forEach((page, index) => {
+    ctx.fillStyle = inks[index % inks.length];
+    roundRect(ctx, page.x + 4, page.y + 4, page.w - 8, page.h - 8, 3);
+    ctx.fill();
+    ctx.strokeStyle = "#e7b15a";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(page.x + 4, page.y + 4, page.w - 8, page.h - 8);
+    ctx.fillStyle = "#5b8def";
+    roundRect(ctx, page.x + 8, page.y + 8, page.w - 18, 2, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pages", PAGE_ZONE.x + 28, PAGE_ZONE.y + PAGE_ZONE.h + 16);
+}
+
+function drawPencils(ctx) {
+  ctx.fillStyle = "#f7f3ea";
+  roundRect(ctx, PENCIL_ZONE.x, PENCIL_ZONE.y, PENCIL_ZONE.w, PENCIL_ZONE.h, 12);
+  ctx.fill();
+  const paints = ["#f4b942", "#e07a8a", "#5b8def"];
+  PENCIL_BLOCKS.forEach((pencil, index) => {
+    const cx = pencil.x + pencil.w / 2;
+    ctx.fillStyle = paints[index % paints.length];
+    roundRect(ctx, cx - 3, pencil.y + 8, 6, 20, 2);
+    ctx.fill();
+    ctx.fillStyle = "#f4d7b5";
+    ctx.beginPath();
+    ctx.moveTo(cx - 3, pencil.y + 8);
+    ctx.lineTo(cx, pencil.y + 2);
+    ctx.lineTo(cx + 3, pencil.y + 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#5a3820";
+    oval(ctx, cx, pencil.y + 4, 1, 1);
+    ctx.fill();
+    ctx.fillStyle = "#e07a8a";
+    roundRect(ctx, cx - 3, pencil.y + 22, 6, 4, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pencils", PENCIL_ZONE.x + 22, PENCIL_ZONE.y - 8);
+}
+
+function paintHeart(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#e07a8a";
+  oval(ctx, -4, -2, 5, 4);
+  ctx.fill();
+  oval(ctx, 4, -2, 5, 4);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(-8, 0);
+  ctx.lineTo(8, 0);
+  ctx.lineTo(0, 9);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#fff";
+  oval(ctx, -5, -3, 1.4, 1);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedHeart(ctx, carried) {
+  if (!carried) {
+    paintHeart(ctx, 2320, 282, 0.85);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Paper heart", 2274, 254);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, HEART_SPOT.x - 22, HEART_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#e07a8a";
+  roundRect(ctx, HEART_SPOT.x - 20, HEART_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, HEART_SPOT.x - 16, HEART_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, HEART_SPOT.x + 10, HEART_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintHeart(ctx, HEART_SPOT.x, HEART_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Paper heart", HEART_SPOT.x - 36, HEART_SPOT.y - 16);
+}
+
 function drawSharedScone(ctx, carried) {
   if (!carried) {
     paintScone(ctx, 1856, 98, 0.85);
@@ -10103,6 +10291,12 @@ export function drawTown(ctx, player, time) {
   drawTeapots(ctx);
   drawSugars(ctx);
   drawSharedScone(ctx, player.carry === "scone");
+  drawSpines(ctx);
+  drawStories(ctx);
+  drawShelf(ctx);
+  drawPages(ctx);
+  drawPencils(ctx);
+  drawSharedHeart(ctx, player.carry === "heart");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

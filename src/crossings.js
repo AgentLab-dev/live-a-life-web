@@ -2381,6 +2381,56 @@ export const SUGAR_BLOCKS = [
 
 export const SCONE_SPOT = { x: 160, y: 1880 };
 
+export const SPINE_ZONE = { x: 1744, y: 1462, w: 52, h: 92 };
+
+export const SPINE_BLOCKS = [
+  { x: 1744, y: 1474, w: 24, h: 14 },
+  { x: 1772, y: 1506, w: 24, h: 14 },
+  { x: 1744, y: 1538, w: 24, h: 14 },
+];
+
+export const STORY_BED = { x: 624, y: 204, w: 76, h: 48 };
+
+export const STORY_PADS = [
+  { x: 640, y: 212 },
+  { x: 658, y: 228 },
+  { x: 640, y: 238 },
+];
+
+export const STORY_RADIUS = 14;
+
+export const SHELF_POSTS = [
+  { x: 2184, y: 232, w: 12, h: 48 },
+  { x: 2252, y: 232, w: 12, h: 48 },
+];
+
+export const SHELF_WALLS = [
+  { x: 2196, y: 248, w: 22, h: 12 },
+  { x: 2230, y: 248, w: 22, h: 12 },
+];
+
+export const SHELF_GAP = { x: 2218, y: 234, w: 12, h: 44 };
+
+export const SHELF_BAND = { x: 2196, y: 248, w: 56, h: 12 };
+
+export const PAGE_ZONE = { x: 1412, y: 238, w: 100, h: 44 };
+
+export const PAGES = [
+  { x: 1414, y: 238, w: 46, h: 26 },
+  { x: 1448, y: 252, w: 46, h: 26 },
+  { x: 1476, y: 238, w: 36, h: 26 },
+];
+
+export const PENCIL_ZONE = { x: 1944, y: 120, w: 100, h: 36 };
+
+export const PENCIL_BLOCKS = [
+  { x: 1952, y: 120, w: 14, h: 36 },
+  { x: 1988, y: 120, w: 14, h: 36 },
+  { x: 2024, y: 120, w: 14, h: 36 },
+];
+
+export const HEART_SPOT = { x: 264, y: 2004 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2652,6 +2702,12 @@ export const STICKERS = [
   { id: "teapots", name: "Teapot tip-toer", hint: "You tip-toed past the friendly teapots." },
   { id: "sugars", name: "Sugar weaver", hint: "You weaved between the sugar cubes." },
   { id: "scone", name: "Scone friend", hint: "You shared a kind scone." },
+  { id: "spines", name: "Book-spine weaver", hint: "You bobbed between the book spines." },
+  { id: "stories", name: "Story hopper", hint: "You zigzagged the storybook pads." },
+  { id: "shelf", name: "Shelf ducker", hint: "You ducked under the bookshelf." },
+  { id: "pages", name: "Page tip-toer", hint: "You tip-toed across the open pages." },
+  { id: "pencils", name: "Pencil weaver", hint: "You weaved between the pencils." },
+  { id: "heart", name: "Heart friend", hint: "You shared a kind paper heart." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -2927,12 +2983,18 @@ export const CHEERS = {
   teapots: "Tip-toe past the friendly teapots!",
   sugars: "Little sugar cubes said hello!",
   scone: "A kind scone to share. Kind!",
+  spines: "Friendly book spines said hello!",
+  stories: "Boing! Zigzag hops on the storybooks!",
+  shelf: "Duck under the cozy bookshelf!",
+  pages: "Tip-toe across the open pages!",
+  pencils: "Little pencils said hello!",
+  heart: "A kind paper heart to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart"];
 
 export function defaultStickers() {
   return {
@@ -3206,6 +3268,12 @@ export function defaultStickers() {
     teapots: false,
     sugars: false,
     scone: false,
+    spines: false,
+    stories: false,
+    shelf: false,
+    pages: false,
+    pencils: false,
+    heart: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -4128,6 +4196,26 @@ export function onSugarLane(x, y) {
   return inRect(x, y, SUGAR_ZONE) && !SUGAR_BLOCKS.some((cube) => inRect(x, y, cube));
 }
 
+export function onSpineLane(x, y) {
+  return inRect(x, y, SPINE_ZONE) && !SPINE_BLOCKS.some((spine) => inRect(x, y, spine));
+}
+
+export function onStoryPad(x, y) {
+  return STORY_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= STORY_RADIUS);
+}
+
+export function onShelfGap(x, y) {
+  return inRect(x, y, SHELF_GAP);
+}
+
+export function onPage(x, y) {
+  return PAGES.some((page) => inRect(x, y, page));
+}
+
+export function onPencilLane(x, y) {
+  return inRect(x, y, PENCIL_ZONE) && !PENCIL_BLOCKS.some((pencil) => inRect(x, y, pencil));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -4349,6 +4437,11 @@ export function townPathAt(x, y) {
   if (onClothGap(x, y)) return "cloth";
   if (onTeapot(x, y)) return "teapots";
   if (onSugarLane(x, y)) return "sugars";
+  if (onSpineLane(x, y)) return "spines";
+  if (onStoryPad(x, y)) return "stories";
+  if (onShelfGap(x, y)) return "shelf";
+  if (onPage(x, y)) return "pages";
+  if (onPencilLane(x, y)) return "pencils";
   return "";
 }
 
@@ -5311,6 +5404,27 @@ export function blockedBySugars(x, y) {
   return SUGAR_BLOCKS.some((cube) => inRect(x, y, cube));
 }
 
+export function blockedBySpines(x, y) {
+  return SPINE_BLOCKS.some((spine) => inRect(x, y, spine));
+}
+
+export function blockedByStories(x, y) {
+  return inRect(x, y, STORY_BED) && !onStoryPad(x, y);
+}
+
+export function blockedByShelf(x, y) {
+  if (onShelfGap(x, y)) return false;
+  return SHELF_POSTS.some((post) => inRect(x, y, post)) || SHELF_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByPages(x, y) {
+  return inRect(x, y, PAGE_ZONE) && !onPage(x, y);
+}
+
+export function blockedByPencils(x, y) {
+  return PENCIL_BLOCKS.some((pencil) => inRect(x, y, pencil));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -5536,7 +5650,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedBySaucers(x, y) ||
     blockedByCloth(x, y) ||
     blockedByTeapots(x, y) ||
-    blockedBySugars(x, y)
+    blockedBySugars(x, y) ||
+    blockedBySpines(x, y) ||
+    blockedByStories(x, y) ||
+    blockedByShelf(x, y) ||
+    blockedByPages(x, y) ||
+    blockedByPencils(x, y)
   );
 }
 
@@ -5811,6 +5930,11 @@ export function applyCrossingProgress(prev, next) {
     ["cloth", CLOTH_BAND, "y"],
     ["teapots", TEAPOT_ZONE, "x"],
     ["sugars", SUGAR_ZONE, "y"],
+    ["spines", SPINE_ZONE, "y"],
+    ["stories", STORY_BED, "y"],
+    ["shelf", SHELF_BAND, "y"],
+    ["pages", PAGE_ZONE, "x"],
+    ["pencils", PENCIL_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -5925,7 +6049,9 @@ export function applyCrossingProgress(prev, next) {
       onPopcornPad(next.x, next.y) ||
       onTicket(next.x, next.y) ||
       onSaucerPad(next.x, next.y) ||
-      onTeapot(next.x, next.y),
+      onTeapot(next.x, next.y) ||
+      onStoryPad(next.x, next.y) ||
+      onPage(next.x, next.y),
   };
 }
 
@@ -6519,6 +6645,22 @@ export function shareFlag(player) {
   });
 }
 
+export function takeHeart(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "heart", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareHeart(player) {
+  if (player.carry !== "heart") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), heart: true },
+  });
+}
+
 export function takeScone(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "scone", pose: "idle", actionBeatMs: 0 });
@@ -6757,5 +6899,6 @@ export function carryLabel(value) {
   if (value === "banana") return "Banana";
   if (value === "flag") return "Prize flag";
   if (value === "scone") return "Scone";
+  if (value === "heart") return "Paper heart";
   return "";
 }

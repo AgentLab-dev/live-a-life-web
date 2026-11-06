@@ -97,6 +97,8 @@ import {
   shareFlag,
   takeScone,
   shareScone,
+  takeHeart,
+  shareHeart,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -803,6 +805,18 @@ export function startGame(root) {
     if (id === "share-scone") {
       const before = player.stickers;
       player = shareScone(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-heart") {
+      player = takeHeart(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-heart") {
+      const before = player.stickers;
+      player = shareHeart(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
