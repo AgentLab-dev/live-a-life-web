@@ -552,6 +552,18 @@ import {
   PENCIL_ZONE,
   PENCIL_BLOCKS,
   HEART_SPOT,
+  PEEL_ZONE,
+  PEEL_BLOCKS,
+  OLIVE_BED,
+  OLIVE_PADS,
+  MITT_POSTS,
+  MITT_WALLS,
+  MITT_GAP,
+  BASIL_ZONE,
+  BASILS,
+  NAPKIN_ZONE,
+  NAPKIN_BLOCKS,
+  BREAD_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1477,6 +1489,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.lineTo(36, 11);
     ctx.lineTo(29, 18);
     ctx.closePath();
+    ctx.fill();
+  }
+  if (look.carry === "bread" && !sleeping) {
+    ctx.fillStyle = "#e7b15a";
+    roundRect(ctx, 22, 8, 16, 6, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f3d7a1";
+    oval(ctx, 26, 10, 2, 1.2);
+    ctx.fill();
+    ctx.fillStyle = "#c45c26";
+    oval(ctx, 34, 11, 1.2, 1.2);
     ctx.fill();
   }
   ctx.restore();
@@ -9802,6 +9825,156 @@ function paintHeart(ctx, x, y, scale = 1) {
   ctx.restore();
 }
 
+function drawPeels(ctx) {
+  ctx.fillStyle = "#f7efd4";
+  roundRect(ctx, PEEL_ZONE.x, PEEL_ZONE.y, PEEL_ZONE.w, PEEL_ZONE.h, 12);
+  ctx.fill();
+  PEEL_BLOCKS.forEach((peel, index) => {
+    const cx = peel.x + peel.w / 2;
+    ctx.fillStyle = "#c48a3a";
+    roundRect(ctx, cx - 2, peel.y, 4, peel.h, 2);
+    ctx.fill();
+    ctx.fillStyle = index === 1 ? "#e07a5f" : "#f4d35e";
+    oval(ctx, cx, peel.y + 4, 8, 5);
+    ctx.fill();
+    ctx.fillStyle = "#fff4c2";
+    oval(ctx, cx - 2, peel.y + 3, 2, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pizza peels", PEEL_ZONE.x - 22, PEEL_ZONE.y - 8);
+}
+
+function drawOlives(ctx) {
+  ctx.fillStyle = "#e7f6d8";
+  roundRect(ctx, OLIVE_BED.x, OLIVE_BED.y, OLIVE_BED.w, OLIVE_BED.h, 12);
+  ctx.fill();
+  OLIVE_PADS.forEach((pad) => {
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, pad.x, pad.y, 8, 6);
+    ctx.fill();
+    ctx.fillStyle = "#7dcea0";
+    oval(ctx, pad.x - 2, pad.y - 1, 3, 2);
+    ctx.fill();
+    ctx.fillStyle = "#e07a5f";
+    oval(ctx, pad.x + 1, pad.y, 1.6, 1.6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Olives", OLIVE_BED.x + 16, OLIVE_BED.y - 8);
+}
+
+function drawMitt(ctx) {
+  for (const post of MITT_POSTS) {
+    ctx.fillStyle = "#e07a8a";
+    roundRect(ctx, post.x + 1, post.y, 10, post.h, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, post.x + 2, post.y + post.h - 10, 8, 8, 2);
+    ctx.fill();
+  }
+  MITT_WALLS.forEach((wall) => {
+    ctx.fillStyle = "#f4b6c2";
+    roundRect(ctx, wall.x, wall.y, wall.w, wall.h, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, wall.x + 3, wall.y + 3, 6, 4, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, MITT_GAP.x, MITT_GAP.y + 16, MITT_GAP.w, 8, 2);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Oven mitt", MITT_POSTS[0].x - 10, MITT_POSTS[0].y - 8);
+}
+
+function drawBasil(ctx) {
+  ctx.fillStyle = "#e7f6d8";
+  roundRect(ctx, BASIL_ZONE.x, BASIL_ZONE.y, BASIL_ZONE.w, BASIL_ZONE.h, 12);
+  ctx.fill();
+  BASILS.forEach((leaf) => {
+    const cx = leaf.x + leaf.w / 2;
+    const cy = leaf.y + leaf.h / 2;
+    ctx.fillStyle = "#2d6a4f";
+    oval(ctx, cx, cy, 10, 6);
+    ctx.fill();
+    ctx.strokeStyle = "#7dcea0";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - 6, cy);
+    ctx.lineTo(cx + 6, cy);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Basil", BASIL_ZONE.x + 32, BASIL_ZONE.y + BASIL_ZONE.h + 16);
+}
+
+function drawNapkins(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, NAPKIN_ZONE.x, NAPKIN_ZONE.y, NAPKIN_ZONE.w, NAPKIN_ZONE.h, 12);
+  ctx.fill();
+  const cloths = ["#fff", "#f7d6e6", "#d6ecff"];
+  NAPKIN_BLOCKS.forEach((napkin, index) => {
+    const cx = napkin.x + napkin.w / 2;
+    ctx.fillStyle = cloths[index % cloths.length];
+    roundRect(ctx, cx - 5, napkin.y + 6, 10, 18, 2);
+    ctx.fill();
+    ctx.strokeStyle = "#e7b15a";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(cx - 5, napkin.y + 6, 10, 18);
+    ctx.fillStyle = "#f4b942";
+    roundRect(ctx, cx - 5, napkin.y + 12, 10, 2, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Napkins", NAPKIN_ZONE.x + 16, NAPKIN_ZONE.y - 8);
+}
+
+function paintBread(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#e7b15a";
+  roundRect(ctx, -10, -3, 20, 6, 3);
+  ctx.fill();
+  ctx.fillStyle = "#f3d7a1";
+  oval(ctx, -4, -1, 3, 1.4);
+  ctx.fill();
+  ctx.fillStyle = "#c45c26";
+  oval(ctx, 6, 0, 1.4, 1.4);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawSharedBread(ctx, carried) {
+  if (!carried) {
+    paintBread(ctx, 2360, 558, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Breadstick", 2316, 530);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, BREAD_SPOT.x - 22, BREAD_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#e7b15a";
+  roundRect(ctx, BREAD_SPOT.x - 20, BREAD_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, BREAD_SPOT.x - 16, BREAD_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, BREAD_SPOT.x + 10, BREAD_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintBread(ctx, BREAD_SPOT.x, BREAD_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Breadstick", BREAD_SPOT.x - 32, BREAD_SPOT.y - 16);
+}
+
 function drawSharedHeart(ctx, carried) {
   if (!carried) {
     paintHeart(ctx, 2320, 282, 0.85);
@@ -10297,6 +10470,12 @@ export function drawTown(ctx, player, time) {
   drawPages(ctx);
   drawPencils(ctx);
   drawSharedHeart(ctx, player.carry === "heart");
+  drawPeels(ctx);
+  drawOlives(ctx);
+  drawMitt(ctx);
+  drawBasil(ctx);
+  drawNapkins(ctx);
+  drawSharedBread(ctx, player.carry === "bread");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
