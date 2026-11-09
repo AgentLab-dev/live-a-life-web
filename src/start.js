@@ -99,6 +99,8 @@ import {
   shareScone,
   takeHeart,
   shareHeart,
+  takeBread,
+  shareBread,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -817,6 +819,18 @@ export function startGame(root) {
     if (id === "share-heart") {
       const before = player.stickers;
       player = shareHeart(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-bread") {
+      player = takeBread(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-bread") {
+      const before = player.stickers;
+      player = shareBread(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
