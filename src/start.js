@@ -101,6 +101,8 @@ import {
   shareHeart,
   takeBread,
   shareBread,
+  takeDonut,
+  shareDonut,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -831,6 +833,18 @@ export function startGame(root) {
     if (id === "share-bread") {
       const before = player.stickers;
       player = shareBread(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-donut") {
+      player = takeDonut(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-donut") {
+      const before = player.stickers;
+      player = shareDonut(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

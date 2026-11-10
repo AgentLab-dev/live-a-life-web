@@ -564,6 +564,18 @@ import {
   NAPKIN_ZONE,
   NAPKIN_BLOCKS,
   BREAD_SPOT,
+  RACK_ZONE,
+  RACK_BLOCKS,
+  GLAZE_BED,
+  GLAZE_PADS,
+  TOQUE_POSTS,
+  TOQUE_WALLS,
+  TOQUE_GAP,
+  ICING_ZONE,
+  ICINGS,
+  PIPING_ZONE,
+  PIPING_BLOCKS,
+  DONUT_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1500,6 +1512,23 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#c45c26";
     oval(ctx, 34, 11, 1.2, 1.2);
+    ctx.fill();
+  }
+  if (look.carry === "donut" && !sleeping) {
+    ctx.fillStyle = "#e07a8a";
+    oval(ctx, 30, 12, 7, 5);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, 30, 12, 2.4, 1.8);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 27, 10, 1.1, 0.9);
+    ctx.fill();
+    ctx.fillStyle = "#5b8def";
+    oval(ctx, 33, 11, 1, 0.8);
+    ctx.fill();
+    ctx.fillStyle = "#3f9b4a";
+    oval(ctx, 31, 14, 1, 0.8);
     ctx.fill();
   }
   ctx.restore();
@@ -9951,6 +9980,160 @@ function paintBread(ctx, x, y, scale = 1) {
   ctx.restore();
 }
 
+function paintDonut(ctx, x, y, scale = 1, color = "#e07a8a") {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = color;
+  oval(ctx, 0, 0, 8, 6);
+  ctx.fill();
+  ctx.fillStyle = "#fff4d2";
+  oval(ctx, 0, 0, 3, 2.2);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, -3, -2, 1.2, 1);
+  ctx.fill();
+  ctx.fillStyle = "#5b8def";
+  oval(ctx, 2, -1, 1, 1);
+  ctx.fill();
+  ctx.fillStyle = "#3f9b4a";
+  oval(ctx, 1, 2, 1, 1);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawRacks(ctx) {
+  ctx.fillStyle = "#f7efd4";
+  roundRect(ctx, RACK_ZONE.x, RACK_ZONE.y, RACK_ZONE.w, RACK_ZONE.h, 12);
+  ctx.fill();
+  const glazes = ["#e07a8a", "#f4d35e", "#c48a3a"];
+  RACK_BLOCKS.forEach((rack, index) => {
+    const cx = rack.x + rack.w / 2;
+    ctx.fillStyle = "#8d6e4c";
+    roundRect(ctx, cx - 2, rack.y, 4, rack.h, 2);
+    ctx.fill();
+    paintDonut(ctx, cx, rack.y + 4, 0.7, glazes[index % glazes.length]);
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Donut racks", RACK_ZONE.x - 28, RACK_ZONE.y - 8);
+}
+
+function drawGlazes(ctx) {
+  ctx.fillStyle = "#fde2ea";
+  roundRect(ctx, GLAZE_BED.x, GLAZE_BED.y, GLAZE_BED.w, GLAZE_BED.h, 12);
+  ctx.fill();
+  const colors = ["#e07a8a", "#f4d35e", "#d4a574"];
+  GLAZE_PADS.forEach((pad, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, pad.x, pad.y, 8, 6);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    oval(ctx, pad.x - 2, pad.y - 1, 2.2, 1.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Glaze dots", GLAZE_BED.x + 4, GLAZE_BED.y - 8);
+}
+
+function drawToque(ctx) {
+  for (const post of TOQUE_POSTS) {
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, post.x + 1, post.y + 10, 10, post.h - 10, 4);
+    ctx.fill();
+    ctx.fillStyle = "#f4f7fb";
+    oval(ctx, post.x + 6, post.y + 8, 8, 7);
+    ctx.fill();
+    ctx.fillStyle = "#e7b15a";
+    roundRect(ctx, post.x + 2, post.y + post.h - 8, 8, 6, 2);
+    ctx.fill();
+  }
+  TOQUE_WALLS.forEach((wall) => {
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, wall.x, wall.y, wall.w, wall.h, 3);
+    ctx.fill();
+    ctx.strokeStyle = "#d9e2ec";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(wall.x + 1, wall.y + 2, wall.w - 2, wall.h - 4);
+  });
+  ctx.fillStyle = "#fff";
+  roundRect(ctx, TOQUE_GAP.x, TOQUE_GAP.y + 16, TOQUE_GAP.w, 8, 2);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Baker hat", TOQUE_POSTS[0].x - 8, TOQUE_POSTS[0].y - 8);
+}
+
+function drawIcing(ctx) {
+  ctx.fillStyle = "#fff0f4";
+  roundRect(ctx, ICING_ZONE.x, ICING_ZONE.y, ICING_ZONE.w, ICING_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#e07a8a", "#f4d35e", "#7ec8e3"];
+  ICINGS.forEach((swirl, index) => {
+    const cx = swirl.x + swirl.w / 2;
+    const cy = swirl.y + swirl.h / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, cx, cy, 10, 6);
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 5, 3, 0, 0, Math.PI * 1.4);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Icing", ICING_ZONE.x + 32, ICING_ZONE.y + ICING_ZONE.h + 16);
+}
+
+function drawPiping(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, PIPING_ZONE.x, PIPING_ZONE.y, PIPING_ZONE.w, PIPING_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#e07a8a", "#7ec8e3", "#f4d35e"];
+  PIPING_BLOCKS.forEach((bag, index) => {
+    const cx = bag.x + bag.w / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    ctx.beginPath();
+    ctx.moveTo(cx - 6, bag.y + 4);
+    ctx.lineTo(cx + 6, bag.y + 4);
+    ctx.lineTo(cx, bag.y + 22);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#dfe7ef";
+    roundRect(ctx, cx - 2, bag.y + 20, 4, 6, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Piping bags", PIPING_ZONE.x + 8, PIPING_ZONE.y - 8);
+}
+
+function drawSharedDonut(ctx, carried) {
+  if (!carried) {
+    paintDonut(ctx, 2240, 178, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Donut", 2216, 150);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, DONUT_SPOT.x - 22, DONUT_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#e07a8a";
+  roundRect(ctx, DONUT_SPOT.x - 20, DONUT_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, DONUT_SPOT.x - 16, DONUT_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, DONUT_SPOT.x + 10, DONUT_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintDonut(ctx, DONUT_SPOT.x, DONUT_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Donut", DONUT_SPOT.x - 18, DONUT_SPOT.y - 16);
+}
+
 function drawSharedBread(ctx, carried) {
   if (!carried) {
     paintBread(ctx, 2360, 558, 0.9);
@@ -10476,6 +10659,12 @@ export function drawTown(ctx, player, time) {
   drawBasil(ctx);
   drawNapkins(ctx);
   drawSharedBread(ctx, player.carry === "bread");
+  drawRacks(ctx);
+  drawGlazes(ctx);
+  drawToque(ctx);
+  drawIcing(ctx);
+  drawPiping(ctx);
+  drawSharedDonut(ctx, player.carry === "donut");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

@@ -225,6 +225,8 @@ describe("Play boot", () => {
     expect(start).toContain("shareHeart");
     expect(start).toContain("takeBread");
     expect(start).toContain("shareBread");
+    expect(start).toContain("takeDonut");
+    expect(start).toContain("shareDonut");
     expect(start).toContain("pushBookCart");
     expect(start).toContain("enterUsaMap");
     expect(start).toContain("startHop");
