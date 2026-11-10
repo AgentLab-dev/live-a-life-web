@@ -232,6 +232,11 @@ import {
   blockedByMitt,
   blockedByBasil,
   blockedByNapkins,
+  blockedByRacks,
+  blockedByGlazes,
+  blockedByToque,
+  blockedByIcing,
+  blockedByPiping,
   BOOK_SPOT,
   cheerCrossing,
   closeParkGate,
@@ -280,6 +285,7 @@ import {
   SCONE_SPOT,
   HEART_SPOT,
   BREAD_SPOT,
+  DONUT_SPOT,
   newSticker,
   townPathAt,
   nudgeBookCart,
@@ -515,6 +521,11 @@ import {
   onMittGap,
   onBasil,
   onNapkinLane,
+  onRackLane,
+  onGlazePad,
+  onToqueGap,
+  onIcing,
+  onPipingLane,
   openParkGate,
   pushBookCart,
   shareBalloon,
@@ -564,6 +575,7 @@ import {
   shareScone,
   shareHeart,
   shareBread,
+  shareDonut,
   SNACK_SPOT,
   takeBook,
   takeCard,
@@ -612,6 +624,7 @@ import {
   takeScone,
   takeHeart,
   takeBread,
+  takeDonut,
 } from "./crossings.js";
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
@@ -10611,6 +10624,238 @@ describe("monday pizza-kitchen play", () => {
     expect(isBlocked("town", 266, 234)).toBe(false);
     expect(isBlocked("town", BREAD_SPOT.x, BREAD_SPOT.y)).toBe(false);
     expect(isBlocked("town", 2360, 580)).toBe(false);
+    expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
+    expect(isBlocked("town", 1096, 2034)).toBe(false);
+    expect(isBlocked("town", 840, 880)).toBe(false);
+    expect(isBlocked("town", 700, 880)).toBe(false);
+  });
+});
+
+describe("tuesday donut-shop play", () => {
+  function walkFrames(player, target, frames = 48) {
+    let next = player;
+    for (let i = 0; i < frames; i += 1) {
+      next = stepToward(next, typeof target === "function" ? target(next) : target, 40);
+    }
+    return next;
+  }
+
+  function townKid(x, y, extra = {}) {
+    return {
+      room: "town",
+      x,
+      y,
+      pose: "idle",
+      facing: 1,
+      actionBeatMs: 0,
+      parkGateOpen: true,
+      bookCartOut: true,
+      carry: "",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("names donut-rack, glaze, baker-hat, icing, and piping paths", () => {
+    expect(townPathAt(1460, 1000)).toBe("racks");
+    expect(onRackLane(1460, 1000)).toBe(true);
+    expect(townPathAt(1432, 1000)).toBe("");
+    expect(townPathAt(1724, 892)).toBe("glazes");
+    expect(onGlazePad(1742, 908)).toBe(true);
+    expect(townPathAt(1716, 906)).toBe("");
+    expect(townPathAt(836, 1266)).toBe("toque");
+    expect(onToqueGap(836, 1266)).toBe(true);
+    expect(townPathAt(802, 1266)).toBe("");
+    expect(townPathAt(1317, 899)).toBe("icing");
+    expect(onIcing(1334, 906)).toBe(true);
+    expect(townPathAt(1317, 918)).toBe("");
+    expect(townPathAt(1126, 1028)).toBe("piping");
+    expect(onPipingLane(1126, 1028)).toBe(true);
+    expect(townPathAt(1114, 1028)).toBe("");
+    expect(townPathAt(2240, 200)).toBe("");
+  });
+
+  it("blocks donut racks, glaze grass, the baker hat, icing lawn, and piping bags but not the walk paths", () => {
+    expect(blockedByRacks(1432, 1000)).toBe(true);
+    expect(isBlocked("town", 1432, 1000)).toBe(true);
+    expect(onRackLane(1460, 1000)).toBe(true);
+    expect(isBlocked("town", 1460, 1000)).toBe(false);
+    expect(blockedByGlazes(1716, 906)).toBe(true);
+    expect(isBlocked("town", 1716, 906)).toBe(true);
+    expect(onGlazePad(1724, 892)).toBe(true);
+    expect(isBlocked("town", 1724, 892)).toBe(false);
+    expect(blockedByToque(802, 1266)).toBe(true);
+    expect(isBlocked("town", 802, 1266)).toBe(true);
+    expect(onToqueGap(836, 1266)).toBe(true);
+    expect(isBlocked("town", 836, 1266)).toBe(false);
+    expect(blockedByIcing(1317, 918)).toBe(true);
+    expect(isBlocked("town", 1317, 918)).toBe(true);
+    expect(onIcing(1317, 899)).toBe(true);
+    expect(isBlocked("town", 1317, 899)).toBe(false);
+    expect(blockedByPiping(1114, 1028)).toBe(true);
+    expect(isBlocked("town", 1114, 1028)).toBe(true);
+    expect(onPipingLane(1126, 1028)).toBe(true);
+    expect(isBlocked("town", 1126, 1028)).toBe(false);
+    expect(isBlocked("town", 2240, 200)).toBe(false);
+  });
+
+  it("bobs south through the donut racks and earns a sticker", () => {
+    let player = townKid(1460, 962);
+    player = walkFrames(player, { x: 1460, y: 1000 }, 20);
+    player = walkFrames(player, { x: 1460, y: 1016 }, 16);
+    player = walkFrames(player, { x: 1432, y: 1016 }, 16);
+    player = walkFrames(player, { x: 1432, y: 1032 }, 16);
+    player = walkFrames(player, { x: 1432, y: 1048 }, 16);
+    player = walkFrames(player, { x: 1460, y: 1048 }, 16);
+    player = walkFrames(player, { x: 1460, y: 1064 }, 16);
+    player = walkFrames(player, { x: 1460, y: 1080 }, 16);
+    player = walkFrames(player, { x: 1440, y: 1080 }, 16);
+    player = walkFrames(player, { x: 1440, y: 1110 }, 20);
+    expect(player.y).toBeGreaterThan(1078);
+    expect(player.stickers.racks).toBe(true);
+    expect(player.money).toBeUndefined();
+    expect(newSticker(defaultStickers(), player.stickers)).toBe("racks");
+  });
+
+  it("zigzags the glaze dots and earns a sticker", () => {
+    let player = townKid(1724, 844);
+    player = walkFrames(player, { x: 1724, y: 892 }, 24);
+    player = walkFrames(player, { x: 1742, y: 908 }, 20);
+    player = walkFrames(player, { x: 1724, y: 918 }, 20);
+    player = walkFrames(player, { x: 1724, y: 944 }, 20);
+    expect(player.y).toBeGreaterThan(936);
+    expect(player.stickers.glazes).toBe(true);
+    expect(player.timer).toBeUndefined();
+  });
+
+  it("walks the baker hat, icing swirls, and piping bags without a fail state", () => {
+    let player = townKid(836, 1210);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 28);
+    expect(player.y).toBeGreaterThan(1298);
+    expect(player.stickers.toque).toBe(true);
+
+    player = townKid(1272, 899);
+    player = walkFrames(player, { x: 1317, y: 899 }, 20);
+    player = walkFrames(player, { x: 1334, y: 906 }, 16);
+    player = walkFrames(player, { x: 1351, y: 913 }, 16);
+    player = walkFrames(player, { x: 1364, y: 906 }, 16);
+    player = walkFrames(player, { x: 1374, y: 899 }, 16);
+    player = walkFrames(player, { x: 1412, y: 899 }, 20);
+    expect(player.x).toBeGreaterThan(1396);
+    expect(player.stickers.icing).toBe(true);
+
+    player = townKid(1126, 1002);
+    player = walkFrames(player, (now) => heldWalkTarget(now, "down"), 36);
+    expect(player.y).toBeGreaterThan(1050);
+    expect(player.stickers.piping).toBe(true);
+    expect(player.needs).toBeUndefined();
+  });
+
+  it("lets tap-to-walk stop at donut racks and glaze grass instead of punishing", () => {
+    const rackBump = stepToward(townKid(1432, 962), { x: 1432, y: 1102 }, 80);
+    expect(rackBump.y).toBeLessThan(994);
+    expect(rackBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1432, 1000)).toBe(true);
+
+    const glazeBump = stepToward(townKid(1724, 844), { x: 1724, y: 952 }, 80);
+    expect(glazeBump.y).toBeLessThan(908);
+    expect(glazeBump.stickers).toEqual(defaultStickers());
+    expect(isBlocked("town", 1716, 906)).toBe(true);
+  });
+
+  it("takes and shares a donut without money or a timer", () => {
+    const helper = takeDonut({ room: "town", carry: "", stickers: defaultStickers(), money: 2 });
+    expect(helper.carry).toBe("donut");
+    expect(helper.money).toBeUndefined();
+    expect(
+      visibleActions({ ...helper, x: 2240, y: 200, pose: "idle", actionBeatMs: 0, job: "none" }).some(
+        (action) => action.id === "take-donut",
+      ),
+    ).toBe(false);
+    const shared = shareDonut({ ...helper, room: "town", x: DONUT_SPOT.x, y: DONUT_SPOT.y });
+    expect(shared.carry).toBe("");
+    expect(shared.pose).toBe("look");
+    expect(shared.stickers.donut).toBe(true);
+    expect(shared.timer).toBeUndefined();
+    expect(shared.score).toBeUndefined();
+    expect(takePicnic({ ...helper, carry: "donut" }).carry).toBe("donut");
+    expect(takeBread({ ...helper, carry: "donut" }).carry).toBe("donut");
+  });
+
+  it("cheers a nearby neighbor after a tuesday donut-shop crossing", () => {
+    const people = createPeople();
+    const pip = people.find((person) => person.id === "pip");
+    const next = cheerCrossing(people, "donut", pip.x, pip.y);
+    expect(next.find((person) => person.id === "pip").line).toMatch(/donut|kind|glaze/i);
+    expect(next.find((person) => person.id === "pip").bubbleMs).toBe(2400);
+  });
+
+  it("persists tuesday donut-shop stickers and a carried donut", () => {
+    const storage = new Map();
+    const api = {
+      getItem: (key) => storage.get(key) ?? null,
+      setItem: (key, value) => storage.set(key, value),
+    };
+    writeSave(api, {
+      carry: "donut",
+      stickers: { racks: true, glazes: true, toque: true, icing: true, piping: true, donut: true, coins: 8 },
+      money: 5,
+    });
+    const loaded = loadSave(api);
+    expect(loaded.carry).toBe("donut");
+    expect(loaded.stickers.racks).toBe(true);
+    expect(loaded.stickers.glazes).toBe(true);
+    expect(loaded.stickers.toque).toBe(true);
+    expect(loaded.stickers.icing).toBe(true);
+    expect(loaded.stickers.piping).toBe(true);
+    expect(loaded.stickers.donut).toBe(true);
+    expect(loaded.stickers.coins).toBeUndefined();
+    expect(loaded.money).toBeUndefined();
+    const player = spawnPlayer(loaded);
+    expect(player.carry).toBe("donut");
+  });
+
+  it("shows donut actions without hiding house or shop buttons", () => {
+    const atYard = townKid(2240, 200, { pose: "idle", job: "none" });
+    const ids = visibleActions(atYard).map((action) => action.id);
+    expect(ids).toEqual(expect.arrayContaining(["take-donut", "stickers"]));
+    expect(ids).not.toContain("share-donut");
+    const atHouse = { room: "town", x: 480, y: 680, pose: "idle", actionBeatMs: 0, job: "none" };
+    expect(visibleActions(atHouse).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door", "stickers"]),
+    );
+    const withDonut = townKid(DONUT_SPOT.x, DONUT_SPOT.y, { carry: "donut", pose: "idle", job: "none" });
+    expect(visibleActions(withDonut).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["share-donut", "stickers"]),
+    );
+    expect(isBlocked("town", DONUT_SPOT.x, DONUT_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 2240, 200)).toBe(false);
+    expect(isBlocked("town", 480, 660)).toBe(false);
+  });
+
+  it("keeps the house, shop, park, PWA, and USA map paths open around the donut-shop crossings", () => {
+    let player = townKid(560, 920);
+    player = walkFrames(player, { x: 460, y: 980 }, 80);
+    expect(isBlocked("town", player.x, player.y)).toBe(false);
+    player = walkFrames(player, { x: 480, y: 720 }, 120);
+    expect(visibleActions({ ...player, pose: "idle", actionBeatMs: 0, job: "none" }).map((action) => action.id)).toEqual(
+      expect.arrayContaining(["enter-house", "paint-house", "name-door"]),
+    );
+    expect(canEnter("town", "living")).toBe(true);
+    expect(canEnter("town", "cafe")).toBe(true);
+    expect(canEnter("town", "bakery")).toBe(true);
+    expect(canEnter("town", "library")).toBe(true);
+    expect(canEnter("town", "usa")).toBe(true);
+    expect(isBlocked("town", 1920, 1320)).toBe(false);
+    expect(isBlocked("town", 420, 980)).toBe(false);
+    expect(isBlocked("town", 420, 1400)).toBe(false);
+    expect(isBlocked("town", 1460, 1000)).toBe(false);
+    expect(isBlocked("town", 1742, 908)).toBe(false);
+    expect(isBlocked("town", 836, 1266)).toBe(false);
+    expect(isBlocked("town", 1317, 899)).toBe(false);
+    expect(isBlocked("town", 1126, 1028)).toBe(false);
+    expect(isBlocked("town", DONUT_SPOT.x, DONUT_SPOT.y)).toBe(false);
+    expect(isBlocked("town", 2240, 200)).toBe(false);
     expect(isBlocked("town", MAP_STAND.x, MAP_STAND.y)).toBe(false);
     expect(isBlocked("town", 1096, 2034)).toBe(false);
     expect(isBlocked("town", 840, 880)).toBe(false);

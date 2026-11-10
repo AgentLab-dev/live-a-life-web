@@ -2481,6 +2481,56 @@ export const NAPKIN_BLOCKS = [
 
 export const BREAD_SPOT = { x: 1840, y: 1824 };
 
+export const RACK_ZONE = { x: 1420, y: 982, w: 52, h: 92 };
+
+export const RACK_BLOCKS = [
+  { x: 1420, y: 994, w: 24, h: 14 },
+  { x: 1448, y: 1026, w: 24, h: 14 },
+  { x: 1420, y: 1058, w: 24, h: 14 },
+];
+
+export const GLAZE_BED = { x: 1708, y: 884, w: 76, h: 48 };
+
+export const GLAZE_PADS = [
+  { x: 1724, y: 892 },
+  { x: 1742, y: 908 },
+  { x: 1724, y: 918 },
+];
+
+export const GLAZE_RADIUS = 14;
+
+export const TOQUE_POSTS = [
+  { x: 796, y: 1242, w: 12, h: 48 },
+  { x: 864, y: 1242, w: 12, h: 48 },
+];
+
+export const TOQUE_WALLS = [
+  { x: 808, y: 1258, w: 22, h: 12 },
+  { x: 842, y: 1258, w: 22, h: 12 },
+];
+
+export const TOQUE_GAP = { x: 830, y: 1244, w: 12, h: 44 };
+
+export const TOQUE_BAND = { x: 808, y: 1258, w: 56, h: 12 };
+
+export const ICING_ZONE = { x: 1292, y: 886, w: 100, h: 44 };
+
+export const ICINGS = [
+  { x: 1294, y: 886, w: 46, h: 26 },
+  { x: 1328, y: 900, w: 46, h: 26 },
+  { x: 1356, y: 886, w: 36, h: 26 },
+];
+
+export const PIPING_ZONE = { x: 1100, y: 1010, w: 100, h: 36 };
+
+export const PIPING_BLOCKS = [
+  { x: 1108, y: 1010, w: 14, h: 36 },
+  { x: 1144, y: 1010, w: 14, h: 36 },
+  { x: 1180, y: 1010, w: 14, h: 36 },
+];
+
+export const DONUT_SPOT = { x: 140, y: 2000 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2764,6 +2814,12 @@ export const STICKERS = [
   { id: "basil", name: "Basil tip-toer", hint: "You tip-toed across the basil leaves." },
   { id: "napkins", name: "Napkin weaver", hint: "You weaved between the napkins." },
   { id: "bread", name: "Breadstick friend", hint: "You shared a kind breadstick." },
+  { id: "racks", name: "Donut-rack weaver", hint: "You bobbed between the donut racks." },
+  { id: "glazes", name: "Glaze hopper", hint: "You zigzagged the shiny glaze dots." },
+  { id: "toque", name: "Toque ducker", hint: "You ducked under the baker hat." },
+  { id: "icing", name: "Icing tip-toer", hint: "You tip-toed across the icing swirls." },
+  { id: "piping", name: "Piping weaver", hint: "You weaved between the piping bags." },
+  { id: "donut", name: "Donut friend", hint: "You shared a kind donut." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -3051,12 +3107,18 @@ export const CHEERS = {
   basil: "Tip-toe across the basil leaves!",
   napkins: "Little napkins said hello!",
   bread: "A kind breadstick to share. Kind!",
+  racks: "Friendly donut racks said hello!",
+  glazes: "Boing! Zigzag hops on the glaze dots!",
+  toque: "Duck under the cozy baker hat!",
+  icing: "Tip-toe across the icing swirls!",
+  piping: "Little piping bags said hello!",
+  donut: "A kind donut to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread", "donut"];
 
 export function defaultStickers() {
   return {
@@ -3342,6 +3404,12 @@ export function defaultStickers() {
     basil: false,
     napkins: false,
     bread: false,
+    racks: false,
+    glazes: false,
+    toque: false,
+    icing: false,
+    piping: false,
+    donut: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -4304,6 +4372,26 @@ export function onNapkinLane(x, y) {
   return inRect(x, y, NAPKIN_ZONE) && !NAPKIN_BLOCKS.some((napkin) => inRect(x, y, napkin));
 }
 
+export function onRackLane(x, y) {
+  return inRect(x, y, RACK_ZONE) && !RACK_BLOCKS.some((rack) => inRect(x, y, rack));
+}
+
+export function onGlazePad(x, y) {
+  return GLAZE_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= GLAZE_RADIUS);
+}
+
+export function onToqueGap(x, y) {
+  return inRect(x, y, TOQUE_GAP);
+}
+
+export function onIcing(x, y) {
+  return ICINGS.some((swirl) => inRect(x, y, swirl));
+}
+
+export function onPipingLane(x, y) {
+  return inRect(x, y, PIPING_ZONE) && !PIPING_BLOCKS.some((bag) => inRect(x, y, bag));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -4535,6 +4623,11 @@ export function townPathAt(x, y) {
   if (onMittGap(x, y)) return "mitt";
   if (onBasil(x, y)) return "basil";
   if (onNapkinLane(x, y)) return "napkins";
+  if (onRackLane(x, y)) return "racks";
+  if (onGlazePad(x, y)) return "glazes";
+  if (onToqueGap(x, y)) return "toque";
+  if (onIcing(x, y)) return "icing";
+  if (onPipingLane(x, y)) return "piping";
   return "";
 }
 
@@ -5539,6 +5632,27 @@ export function blockedByNapkins(x, y) {
   return NAPKIN_BLOCKS.some((napkin) => inRect(x, y, napkin));
 }
 
+export function blockedByRacks(x, y) {
+  return RACK_BLOCKS.some((rack) => inRect(x, y, rack));
+}
+
+export function blockedByGlazes(x, y) {
+  return inRect(x, y, GLAZE_BED) && !onGlazePad(x, y);
+}
+
+export function blockedByToque(x, y) {
+  if (onToqueGap(x, y)) return false;
+  return TOQUE_POSTS.some((post) => inRect(x, y, post)) || TOQUE_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByIcing(x, y) {
+  return inRect(x, y, ICING_ZONE) && !onIcing(x, y);
+}
+
+export function blockedByPiping(x, y) {
+  return PIPING_BLOCKS.some((bag) => inRect(x, y, bag));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -5774,7 +5888,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByOlives(x, y) ||
     blockedByMitt(x, y) ||
     blockedByBasil(x, y) ||
-    blockedByNapkins(x, y)
+    blockedByNapkins(x, y) ||
+    blockedByRacks(x, y) ||
+    blockedByGlazes(x, y) ||
+    blockedByToque(x, y) ||
+    blockedByIcing(x, y) ||
+    blockedByPiping(x, y)
   );
 }
 
@@ -6059,6 +6178,11 @@ export function applyCrossingProgress(prev, next) {
     ["mitt", MITT_BAND, "y"],
     ["basil", BASIL_ZONE, "x"],
     ["napkins", NAPKIN_ZONE, "y"],
+    ["racks", RACK_ZONE, "y"],
+    ["glazes", GLAZE_BED, "y"],
+    ["toque", TOQUE_BAND, "y"],
+    ["icing", ICING_ZONE, "x"],
+    ["piping", PIPING_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -6177,7 +6301,9 @@ export function applyCrossingProgress(prev, next) {
       onStoryPad(next.x, next.y) ||
       onPage(next.x, next.y) ||
       onOlivePad(next.x, next.y) ||
-      onBasil(next.x, next.y),
+      onBasil(next.x, next.y) ||
+      onGlazePad(next.x, next.y) ||
+      onIcing(next.x, next.y),
   };
 }
 
@@ -6787,6 +6913,22 @@ export function shareHeart(player) {
   });
 }
 
+export function takeDonut(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "donut", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareDonut(player) {
+  if (player.carry !== "donut") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), donut: true },
+  });
+}
+
 export function takeBread(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "bread", pose: "idle", actionBeatMs: 0 });
@@ -7043,5 +7185,6 @@ export function carryLabel(value) {
   if (value === "scone") return "Scone";
   if (value === "heart") return "Paper heart";
   if (value === "bread") return "Breadstick";
+  if (value === "donut") return "Donut";
   return "";
 }
