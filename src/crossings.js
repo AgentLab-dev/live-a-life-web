@@ -2531,6 +2531,56 @@ export const PIPING_BLOCKS = [
 
 export const DONUT_SPOT = { x: 140, y: 2000 };
 
+export const BLENDER_ZONE = { x: 894, y: 804, w: 52, h: 92 };
+
+export const BLENDER_BLOCKS = [
+  { x: 894, y: 816, w: 24, h: 14 },
+  { x: 922, y: 848, w: 24, h: 14 },
+  { x: 894, y: 880, w: 24, h: 14 },
+];
+
+export const MANGO_BED = { x: 670, y: 1348, w: 76, h: 48 };
+
+export const MANGO_PADS = [
+  { x: 686, y: 1356 },
+  { x: 704, y: 1372 },
+  { x: 686, y: 1382 },
+];
+
+export const MANGO_RADIUS = 14;
+
+export const LID_POSTS = [
+  { x: 894, y: 1360, w: 12, h: 48 },
+  { x: 962, y: 1360, w: 12, h: 48 },
+];
+
+export const LID_WALLS = [
+  { x: 906, y: 1376, w: 22, h: 12 },
+  { x: 940, y: 1376, w: 22, h: 12 },
+];
+
+export const LID_GAP = { x: 928, y: 1362, w: 12, h: 44 };
+
+export const LID_BAND = { x: 906, y: 1376, w: 56, h: 12 };
+
+export const CITRUS_ZONE = { x: 2052, y: 242, w: 100, h: 40 };
+
+export const CITRUS = [
+  { x: 2054, y: 240, w: 46, h: 26 },
+  { x: 2088, y: 254, w: 46, h: 26 },
+  { x: 2116, y: 240, w: 36, h: 26 },
+];
+
+export const TUMBLER_ZONE = { x: 1086, y: 856, w: 100, h: 36 };
+
+export const TUMBLER_BLOCKS = [
+  { x: 1094, y: 856, w: 14, h: 36 },
+  { x: 1130, y: 856, w: 14, h: 36 },
+  { x: 1166, y: 856, w: 14, h: 36 },
+];
+
+export const SMOOTHIE_SPOT = { x: 70, y: 500 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2820,6 +2870,12 @@ export const STICKERS = [
   { id: "icing", name: "Icing tip-toer", hint: "You tip-toed across the icing swirls." },
   { id: "piping", name: "Piping weaver", hint: "You weaved between the piping bags." },
   { id: "donut", name: "Donut friend", hint: "You shared a kind donut." },
+  { id: "blenders", name: "Blender weaver", hint: "You bobbed between the smoothie blenders." },
+  { id: "mangos", name: "Mango hopper", hint: "You zigzagged the sunny mango pads." },
+  { id: "lid", name: "Lid ducker", hint: "You ducked under the smoothie cup lid." },
+  { id: "citrus", name: "Citrus tip-toer", hint: "You tip-toed across the citrus slices." },
+  { id: "tumblers", name: "Tumbler weaver", hint: "You weaved between the tumblers." },
+  { id: "smoothie", name: "Smoothie friend", hint: "You shared a kind smoothie." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -3113,12 +3169,18 @@ export const CHEERS = {
   icing: "Tip-toe across the icing swirls!",
   piping: "Little piping bags said hello!",
   donut: "A kind donut to share. Kind!",
+  blenders: "Friendly blenders said hello!",
+  mangos: "Boing! Zigzag hops on the mangos!",
+  lid: "Duck under the cozy cup lid!",
+  citrus: "Tip-toe across the citrus slices!",
+  tumblers: "Little tumblers said hello!",
+  smoothie: "A kind smoothie to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread", "donut"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread", "donut", "smoothie"];
 
 export function defaultStickers() {
   return {
@@ -3410,6 +3472,12 @@ export function defaultStickers() {
     icing: false,
     piping: false,
     donut: false,
+    blenders: false,
+    mangos: false,
+    lid: false,
+    citrus: false,
+    tumblers: false,
+    smoothie: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -4392,6 +4460,26 @@ export function onPipingLane(x, y) {
   return inRect(x, y, PIPING_ZONE) && !PIPING_BLOCKS.some((bag) => inRect(x, y, bag));
 }
 
+export function onBlenderLane(x, y) {
+  return inRect(x, y, BLENDER_ZONE) && !BLENDER_BLOCKS.some((jar) => inRect(x, y, jar));
+}
+
+export function onMangoPad(x, y) {
+  return MANGO_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= MANGO_RADIUS);
+}
+
+export function onLidGap(x, y) {
+  return inRect(x, y, LID_GAP);
+}
+
+export function onCitrus(x, y) {
+  return CITRUS.some((slice) => inRect(x, y, slice));
+}
+
+export function onTumblerLane(x, y) {
+  return inRect(x, y, TUMBLER_ZONE) && !TUMBLER_BLOCKS.some((cup) => inRect(x, y, cup));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -4628,6 +4716,11 @@ export function townPathAt(x, y) {
   if (onToqueGap(x, y)) return "toque";
   if (onIcing(x, y)) return "icing";
   if (onPipingLane(x, y)) return "piping";
+  if (onBlenderLane(x, y)) return "blenders";
+  if (onMangoPad(x, y)) return "mangos";
+  if (onLidGap(x, y)) return "lid";
+  if (onCitrus(x, y)) return "citrus";
+  if (onTumblerLane(x, y)) return "tumblers";
   return "";
 }
 
@@ -5653,6 +5746,27 @@ export function blockedByPiping(x, y) {
   return PIPING_BLOCKS.some((bag) => inRect(x, y, bag));
 }
 
+export function blockedByBlenders(x, y) {
+  return BLENDER_BLOCKS.some((jar) => inRect(x, y, jar));
+}
+
+export function blockedByMangos(x, y) {
+  return inRect(x, y, MANGO_BED) && !onMangoPad(x, y);
+}
+
+export function blockedByLid(x, y) {
+  if (onLidGap(x, y)) return false;
+  return LID_POSTS.some((post) => inRect(x, y, post)) || LID_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByCitrus(x, y) {
+  return inRect(x, y, CITRUS_ZONE) && !onCitrus(x, y);
+}
+
+export function blockedByTumblers(x, y) {
+  return TUMBLER_BLOCKS.some((cup) => inRect(x, y, cup));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -5893,7 +6007,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByGlazes(x, y) ||
     blockedByToque(x, y) ||
     blockedByIcing(x, y) ||
-    blockedByPiping(x, y)
+    blockedByPiping(x, y) ||
+    blockedByBlenders(x, y) ||
+    blockedByMangos(x, y) ||
+    blockedByLid(x, y) ||
+    blockedByCitrus(x, y) ||
+    blockedByTumblers(x, y)
   );
 }
 
@@ -6183,6 +6302,11 @@ export function applyCrossingProgress(prev, next) {
     ["toque", TOQUE_BAND, "y"],
     ["icing", ICING_ZONE, "x"],
     ["piping", PIPING_ZONE, "y"],
+    ["blenders", BLENDER_ZONE, "y"],
+    ["mangos", MANGO_BED, "y"],
+    ["lid", LID_BAND, "y"],
+    ["citrus", CITRUS_ZONE, "x"],
+    ["tumblers", TUMBLER_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -6303,7 +6427,9 @@ export function applyCrossingProgress(prev, next) {
       onOlivePad(next.x, next.y) ||
       onBasil(next.x, next.y) ||
       onGlazePad(next.x, next.y) ||
-      onIcing(next.x, next.y),
+      onIcing(next.x, next.y) ||
+      onMangoPad(next.x, next.y) ||
+      onCitrus(next.x, next.y),
   };
 }
 
@@ -6913,6 +7039,22 @@ export function shareHeart(player) {
   });
 }
 
+export function takeSmoothie(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "smoothie", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareSmoothie(player) {
+  if (player.carry !== "smoothie") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), smoothie: true },
+  });
+}
+
 export function takeDonut(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "donut", pose: "idle", actionBeatMs: 0 });
@@ -7186,5 +7328,6 @@ export function carryLabel(value) {
   if (value === "heart") return "Paper heart";
   if (value === "bread") return "Breadstick";
   if (value === "donut") return "Donut";
+  if (value === "smoothie") return "Smoothie";
   return "";
 }

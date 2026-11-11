@@ -1,4 +1,4 @@
-import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOOKMARK_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, CROWN_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, GLOBE_SPOT, DOLLAR_SPOT, FLAKE_SPOT, AMBER_SPOT, POPSICLE_SPOT, BANANA_SPOT, FLAG_SPOT, SCONE_SPOT, HEART_SPOT, BREAD_SPOT, DONUT_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, KAZOO_SPOT, MARIGOLD_SPOT, MOON_SPOT, MUFFIN_SPOT, MUM_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
+import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOOKMARK_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, CROWN_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, GLOBE_SPOT, DOLLAR_SPOT, FLAKE_SPOT, AMBER_SPOT, POPSICLE_SPOT, BANANA_SPOT, FLAG_SPOT, SCONE_SPOT, HEART_SPOT, BREAD_SPOT, DONUT_SPOT, SMOOTHIE_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, KAZOO_SPOT, MARIGOLD_SPOT, MOON_SPOT, MUFFIN_SPOT, MUM_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -167,6 +167,8 @@ export const ACTIONS = {
     { id: "share-bread", label: "Share breadstick", x: BREAD_SPOT.x, y: BREAD_SPOT.y },
     { id: "take-donut", label: "Take donut", x: 2240, y: 200 },
     { id: "share-donut", label: "Share donut", x: DONUT_SPOT.x, y: DONUT_SPOT.y },
+    { id: "take-smoothie", label: "Take smoothie", x: 2440, y: 700 },
+    { id: "share-smoothie", label: "Share smoothie", x: SMOOTHIE_SPOT.x, y: SMOOTHIE_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -431,6 +433,8 @@ export function visibleActions(player) {
     if (action.id === "share-bread" && player.carry !== "bread") return false;
     if (action.id === "take-donut" && player.carry) return false;
     if (action.id === "share-donut" && player.carry !== "donut") return false;
+    if (action.id === "take-smoothie" && player.carry) return false;
+    if (action.id === "share-smoothie" && player.carry !== "smoothie") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });
