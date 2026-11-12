@@ -2581,6 +2581,56 @@ export const TUMBLER_BLOCKS = [
 
 export const SMOOTHIE_SPOT = { x: 70, y: 500 };
 
+export const TWIST_ZONE = { x: 1228, y: 672, w: 52, h: 92 };
+
+export const TWIST_BLOCKS = [
+  { x: 1228, y: 684, w: 24, h: 14 },
+  { x: 1256, y: 716, w: 24, h: 14 },
+  { x: 1228, y: 748, w: 24, h: 14 },
+];
+
+export const SALT_BED = { x: 900, y: 1852, w: 76, h: 48 };
+
+export const SALT_PADS = [
+  { x: 916, y: 1860 },
+  { x: 934, y: 1876 },
+  { x: 916, y: 1886 },
+];
+
+export const SALT_RADIUS = 14;
+
+export const MUSTARD_POSTS = [
+  { x: 1280, y: 966, w: 12, h: 48 },
+  { x: 1348, y: 966, w: 12, h: 48 },
+];
+
+export const MUSTARD_WALLS = [
+  { x: 1292, y: 982, w: 22, h: 12 },
+  { x: 1326, y: 982, w: 22, h: 12 },
+];
+
+export const MUSTARD_GAP = { x: 1314, y: 968, w: 12, h: 44 };
+
+export const MUSTARD_BAND = { x: 1292, y: 982, w: 56, h: 12 };
+
+export const SESAME_ZONE = { x: 2272, y: 700, w: 100, h: 40 };
+
+export const SESAMES = [
+  { x: 2274, y: 698, w: 46, h: 26 },
+  { x: 2308, y: 712, w: 46, h: 26 },
+  { x: 2336, y: 698, w: 36, h: 26 },
+];
+
+export const DIP_ZONE = { x: 1404, y: 912, w: 100, h: 36 };
+
+export const DIP_BLOCKS = [
+  { x: 1412, y: 912, w: 14, h: 36 },
+  { x: 1448, y: 912, w: 14, h: 36 },
+  { x: 1484, y: 912, w: 14, h: 36 },
+];
+
+export const PRETZEL_SPOT = { x: 486, y: 1984 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2876,6 +2926,12 @@ export const STICKERS = [
   { id: "citrus", name: "Citrus tip-toer", hint: "You tip-toed across the citrus slices." },
   { id: "tumblers", name: "Tumbler weaver", hint: "You weaved between the tumblers." },
   { id: "smoothie", name: "Smoothie friend", hint: "You shared a kind smoothie." },
+  { id: "twists", name: "Pretzel-rack weaver", hint: "You bobbed between the pretzel racks." },
+  { id: "salts", name: "Salt hopper", hint: "You zigzagged the salty pretzel dots." },
+  { id: "mustard", name: "Mustard ducker", hint: "You ducked under the mustard cups." },
+  { id: "sesames", name: "Sesame tip-toer", hint: "You tip-toed across the sesame seeds." },
+  { id: "dips", name: "Dip weaver", hint: "You weaved between the dip cups." },
+  { id: "pretzel", name: "Pretzel friend", hint: "You shared a kind pretzel." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -3175,12 +3231,18 @@ export const CHEERS = {
   citrus: "Tip-toe across the citrus slices!",
   tumblers: "Little tumblers said hello!",
   smoothie: "A kind smoothie to share. Kind!",
+  twists: "Friendly pretzel racks said hello!",
+  salts: "Boing! Zigzag hops on the salt dots!",
+  mustard: "Duck under the cozy mustard cups!",
+  sesames: "Tip-toe across the sesame seeds!",
+  dips: "Little dip cups said hello!",
+  pretzel: "A kind pretzel to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread", "donut", "smoothie"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread", "donut", "smoothie", "pretzel"];
 
 export function defaultStickers() {
   return {
@@ -3478,6 +3540,12 @@ export function defaultStickers() {
     citrus: false,
     tumblers: false,
     smoothie: false,
+    twists: false,
+    salts: false,
+    mustard: false,
+    sesames: false,
+    dips: false,
+    pretzel: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -4480,6 +4548,26 @@ export function onTumblerLane(x, y) {
   return inRect(x, y, TUMBLER_ZONE) && !TUMBLER_BLOCKS.some((cup) => inRect(x, y, cup));
 }
 
+export function onTwistLane(x, y) {
+  return inRect(x, y, TWIST_ZONE) && !TWIST_BLOCKS.some((rack) => inRect(x, y, rack));
+}
+
+export function onSaltPad(x, y) {
+  return SALT_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= SALT_RADIUS);
+}
+
+export function onMustardGap(x, y) {
+  return inRect(x, y, MUSTARD_GAP);
+}
+
+export function onSesame(x, y) {
+  return SESAMES.some((seed) => inRect(x, y, seed));
+}
+
+export function onDipLane(x, y) {
+  return inRect(x, y, DIP_ZONE) && !DIP_BLOCKS.some((cup) => inRect(x, y, cup));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -4721,6 +4809,11 @@ export function townPathAt(x, y) {
   if (onLidGap(x, y)) return "lid";
   if (onCitrus(x, y)) return "citrus";
   if (onTumblerLane(x, y)) return "tumblers";
+  if (onTwistLane(x, y)) return "twists";
+  if (onSaltPad(x, y)) return "salts";
+  if (onMustardGap(x, y)) return "mustard";
+  if (onSesame(x, y)) return "sesames";
+  if (onDipLane(x, y)) return "dips";
   return "";
 }
 
@@ -5767,6 +5860,27 @@ export function blockedByTumblers(x, y) {
   return TUMBLER_BLOCKS.some((cup) => inRect(x, y, cup));
 }
 
+export function blockedByTwists(x, y) {
+  return TWIST_BLOCKS.some((rack) => inRect(x, y, rack));
+}
+
+export function blockedBySalts(x, y) {
+  return inRect(x, y, SALT_BED) && !onSaltPad(x, y);
+}
+
+export function blockedByMustard(x, y) {
+  if (onMustardGap(x, y)) return false;
+  return MUSTARD_POSTS.some((post) => inRect(x, y, post)) || MUSTARD_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedBySesames(x, y) {
+  return inRect(x, y, SESAME_ZONE) && !onSesame(x, y);
+}
+
+export function blockedByDips(x, y) {
+  return DIP_BLOCKS.some((cup) => inRect(x, y, cup));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -6012,7 +6126,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByMangos(x, y) ||
     blockedByLid(x, y) ||
     blockedByCitrus(x, y) ||
-    blockedByTumblers(x, y)
+    blockedByTumblers(x, y) ||
+    blockedByTwists(x, y) ||
+    blockedBySalts(x, y) ||
+    blockedByMustard(x, y) ||
+    blockedBySesames(x, y) ||
+    blockedByDips(x, y)
   );
 }
 
@@ -6307,6 +6426,11 @@ export function applyCrossingProgress(prev, next) {
     ["lid", LID_BAND, "y"],
     ["citrus", CITRUS_ZONE, "x"],
     ["tumblers", TUMBLER_ZONE, "y"],
+    ["twists", TWIST_ZONE, "y"],
+    ["salts", SALT_BED, "y"],
+    ["mustard", MUSTARD_BAND, "y"],
+    ["sesames", SESAME_ZONE, "x"],
+    ["dips", DIP_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -6429,7 +6553,9 @@ export function applyCrossingProgress(prev, next) {
       onGlazePad(next.x, next.y) ||
       onIcing(next.x, next.y) ||
       onMangoPad(next.x, next.y) ||
-      onCitrus(next.x, next.y),
+      onCitrus(next.x, next.y) ||
+      onSaltPad(next.x, next.y) ||
+      onSesame(next.x, next.y),
   };
 }
 
@@ -7055,6 +7181,22 @@ export function shareSmoothie(player) {
   });
 }
 
+export function takePretzel(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "pretzel", pose: "idle", actionBeatMs: 0 });
+}
+
+export function sharePretzel(player) {
+  if (player.carry !== "pretzel") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), pretzel: true },
+  });
+}
+
 export function takeDonut(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "donut", pose: "idle", actionBeatMs: 0 });
@@ -7329,5 +7471,6 @@ export function carryLabel(value) {
   if (value === "bread") return "Breadstick";
   if (value === "donut") return "Donut";
   if (value === "smoothie") return "Smoothie";
+  if (value === "pretzel") return "Pretzel";
   return "";
 }

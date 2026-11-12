@@ -105,6 +105,8 @@ import {
   shareDonut,
   takeSmoothie,
   shareSmoothie,
+  takePretzel,
+  sharePretzel,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -859,6 +861,18 @@ export function startGame(root) {
     if (id === "share-smoothie") {
       const before = player.stickers;
       player = shareSmoothie(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-pretzel") {
+      player = takePretzel(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-pretzel") {
+      const before = player.stickers;
+      player = sharePretzel(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();
