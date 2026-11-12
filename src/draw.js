@@ -588,6 +588,18 @@ import {
   TUMBLER_ZONE,
   TUMBLER_BLOCKS,
   SMOOTHIE_SPOT,
+  TWIST_ZONE,
+  TWIST_BLOCKS,
+  SALT_BED,
+  SALT_PADS,
+  MUSTARD_POSTS,
+  MUSTARD_WALLS,
+  MUSTARD_GAP,
+  SESAME_ZONE,
+  SESAMES,
+  DIP_ZONE,
+  DIP_BLOCKS,
+  PRETZEL_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1555,6 +1567,23 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#fff";
     oval(ctx, 28, 6, 4, 2);
+    ctx.fill();
+  }
+  if (look.carry === "pretzel" && !sleeping) {
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.arc(28, 10, 5, 0.4, Math.PI * 1.7);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(24, 14);
+    ctx.quadraticCurveTo(32, 18, 34, 10);
+    ctx.stroke();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, 26, 8, 1, 0.8);
+    ctx.fill();
+    oval(ctx, 31, 12, 1, 0.8);
     ctx.fill();
   }
   ctx.restore();
@@ -10277,6 +10306,167 @@ function drawTumblers(ctx) {
   ctx.fillText("Tumblers", TUMBLER_ZONE.x + 16, TUMBLER_ZONE.y - 8);
 }
 
+function paintPretzel(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.strokeStyle = "#c45c26";
+  ctx.lineWidth = 4;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.arc(0, 2, 8, 0.3, Math.PI * 1.75);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-6, 8);
+  ctx.quadraticCurveTo(4, 14, 8, 2);
+  ctx.stroke();
+  ctx.fillStyle = "#e7b15a";
+  oval(ctx, -2, 0, 2, 1.4);
+  ctx.fill();
+  ctx.fillStyle = "#fff8e7";
+  oval(ctx, -4, -2, 1.1, 0.9);
+  ctx.fill();
+  oval(ctx, 2, 2, 1, 0.8);
+  ctx.fill();
+  oval(ctx, 5, 6, 1, 0.8);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawTwists(ctx) {
+  ctx.fillStyle = "#fff3d6";
+  roundRect(ctx, TWIST_ZONE.x, TWIST_ZONE.y, TWIST_ZONE.w, TWIST_ZONE.h, 12);
+  ctx.fill();
+  TWIST_BLOCKS.forEach((rack) => {
+    const cx = rack.x + rack.w / 2;
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.arc(cx, rack.y + 7, 6, 0.4, Math.PI * 1.7);
+    ctx.stroke();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx - 2, rack.y + 5, 1, 0.7);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pretzels", TWIST_ZONE.x - 8, TWIST_ZONE.y - 8);
+}
+
+function drawSalts(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, SALT_BED.x, SALT_BED.y, SALT_BED.w, SALT_BED.h, 12);
+  ctx.fill();
+  SALT_PADS.forEach((pad) => {
+    ctx.fillStyle = "#e7b15a";
+    oval(ctx, pad.x, pad.y, 8, 6);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x - 3, pad.y - 1, 1.2, 1);
+    ctx.fill();
+    oval(ctx, pad.x + 2, pad.y + 1, 1, 0.8);
+    ctx.fill();
+    oval(ctx, pad.x - 1, pad.y + 2, 0.9, 0.7);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Salt dots", SALT_BED.x + 4, SALT_BED.y - 8);
+}
+
+function drawMustard(ctx) {
+  for (const post of MUSTARD_POSTS) {
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, post.x, post.y + 10, post.w, post.h - 10, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, post.x + 6, post.y + 8, 7, 5);
+    ctx.fill();
+    ctx.fillStyle = "#e7b15a";
+    oval(ctx, post.x + 6, post.y + 8, 3, 2);
+    ctx.fill();
+  }
+  MUSTARD_WALLS.forEach((wall) => {
+    ctx.fillStyle = "#f4d35e";
+    roundRect(ctx, wall.x, wall.y, wall.w, wall.h, 4);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, wall.x + 3, wall.y + 3, wall.w - 6, 4, 2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, MUSTARD_GAP.x, MUSTARD_GAP.y + 16, MUSTARD_GAP.w, 6, 2);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Mustard", MUSTARD_POSTS[0].x - 6, MUSTARD_POSTS[0].y - 8);
+}
+
+function drawSesames(ctx) {
+  ctx.fillStyle = "#fff3d6";
+  roundRect(ctx, SESAME_ZONE.x, SESAME_ZONE.y, SESAME_ZONE.w, SESAME_ZONE.h, 12);
+  ctx.fill();
+  SESAMES.forEach((seed) => {
+    const cx = seed.x + seed.w / 2;
+    const cy = seed.y + seed.h / 2;
+    ctx.fillStyle = "#e7b15a";
+    oval(ctx, cx, cy, 9, 5);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx - 3, cy - 1, 1.2, 0.8);
+    ctx.fill();
+    oval(ctx, cx + 2, cy + 1, 1, 0.7);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Sesame", SESAME_ZONE.x + 24, SESAME_ZONE.y - 8);
+}
+
+function drawDips(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, DIP_ZONE.x, DIP_ZONE.y, DIP_ZONE.w, DIP_ZONE.h, 12);
+  ctx.fill();
+  const sauces = ["#f4d35e", "#e07a5f", "#f4a3c2"];
+  DIP_BLOCKS.forEach((cup, index) => {
+    const cx = cup.x + cup.w / 2;
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, cx - 6, cup.y + 8, 12, cup.h - 10, 3);
+    ctx.fill();
+    ctx.fillStyle = sauces[index % sauces.length];
+    oval(ctx, cx, cup.y + 12, 4, 2.4);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Dip cups", DIP_ZONE.x + 18, DIP_ZONE.y - 8);
+}
+
+function drawSharedPretzel(ctx, carried) {
+  if (!carried) {
+    paintPretzel(ctx, 1978, 388, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Pretzel", 1948, 360);
+  }
+  ctx.fillStyle = "#fff8e7";
+  roundRect(ctx, PRETZEL_SPOT.x - 22, PRETZEL_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#e7b15a";
+  roundRect(ctx, PRETZEL_SPOT.x - 20, PRETZEL_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, PRETZEL_SPOT.x - 16, PRETZEL_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, PRETZEL_SPOT.x + 10, PRETZEL_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintPretzel(ctx, PRETZEL_SPOT.x, PRETZEL_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Pretzel", PRETZEL_SPOT.x - 22, PRETZEL_SPOT.y - 16);
+}
+
 function drawSharedSmoothie(ctx, carried) {
   if (!carried) {
     paintSmoothie(ctx, 2440, 678, 0.9);
@@ -10862,6 +11052,12 @@ export function drawTown(ctx, player, time) {
   drawCitrus(ctx);
   drawTumblers(ctx);
   drawSharedSmoothie(ctx, player.carry === "smoothie");
+  drawTwists(ctx);
+  drawSalts(ctx);
+  drawMustard(ctx);
+  drawSesames(ctx);
+  drawDips(ctx);
+  drawSharedPretzel(ctx, player.carry === "pretzel");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
