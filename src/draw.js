@@ -600,6 +600,18 @@ import {
   DIP_ZONE,
   DIP_BLOCKS,
   PRETZEL_SPOT,
+  MACARON_ZONE,
+  MACARON_BLOCKS,
+  ALMOND_BED,
+  ALMOND_PADS,
+  DOILY_POSTS,
+  DOILY_WALLS,
+  DOILY_GAP,
+  FILLING_ZONE,
+  FILLINGS,
+  WHISK_ZONE,
+  WHISK_BLOCKS,
+  MACARON_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1584,6 +1596,17 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     oval(ctx, 26, 8, 1, 0.8);
     ctx.fill();
     oval(ctx, 31, 12, 1, 0.8);
+    ctx.fill();
+  }
+  if (look.carry === "macaron" && !sleeping) {
+    ctx.fillStyle = "#f4a3c2";
+    oval(ctx, 30, 8, 6, 3);
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    oval(ctx, 30, 11, 5, 1.4);
+    ctx.fill();
+    ctx.fillStyle = "#9ad7c4";
+    oval(ctx, 30, 14, 6, 3);
     ctx.fill();
   }
   ctx.restore();
@@ -10443,6 +10466,158 @@ function drawDips(ctx) {
   ctx.fillText("Dip cups", DIP_ZONE.x + 18, DIP_ZONE.y - 8);
 }
 
+function paintMacaron(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#f4a3c2";
+  oval(ctx, 0, -4, 8, 3.4);
+  ctx.fill();
+  ctx.fillStyle = "#f4d35e";
+  oval(ctx, 0, 0, 7, 1.6);
+  ctx.fill();
+  ctx.fillStyle = "#9ad7c4";
+  oval(ctx, 0, 4, 8, 3.4);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawMacaronTowers(ctx) {
+  ctx.fillStyle = "#fff0f4";
+  roundRect(ctx, MACARON_ZONE.x, MACARON_ZONE.y, MACARON_ZONE.w, MACARON_ZONE.h, 12);
+  ctx.fill();
+  const shells = ["#f4a3c2", "#9ad7c4", "#f4d35e"];
+  MACARON_BLOCKS.forEach((tower, index) => {
+    const cx = tower.x + tower.w / 2;
+    const cy = tower.y + 7;
+    ctx.fillStyle = shells[index % shells.length];
+    oval(ctx, cx, cy - 2, 7, 2.6);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, cx, cy, 6, 1.2);
+    ctx.fill();
+    ctx.fillStyle = shells[(index + 1) % shells.length];
+    oval(ctx, cx, cy + 2, 7, 2.6);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Macarons", MACARON_ZONE.x - 10, MACARON_ZONE.y - 8);
+}
+
+function drawAlmonds(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, ALMOND_BED.x, ALMOND_BED.y, ALMOND_BED.w, ALMOND_BED.h, 12);
+  ctx.fill();
+  ALMOND_PADS.forEach((pad) => {
+    ctx.fillStyle = "#e7b15a";
+    oval(ctx, pad.x, pad.y, 8, 5);
+    ctx.fill();
+    ctx.fillStyle = "#fff8e7";
+    oval(ctx, pad.x - 2, pad.y - 1, 2, 1.2);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Almonds", ALMOND_BED.x + 8, ALMOND_BED.y - 8);
+}
+
+function drawDoily(ctx) {
+  for (const post of DOILY_POSTS) {
+    ctx.fillStyle = "#fff";
+    roundRect(ctx, post.x, post.y + 8, post.w, post.h - 8, 4);
+    ctx.fill();
+    ctx.strokeStyle = "#f4a3c2";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(post.x + 6, post.y + 16, 5, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  DOILY_WALLS.forEach((wall) => {
+    ctx.fillStyle = "#fff8e7";
+    roundRect(ctx, wall.x, wall.y, wall.w, wall.h, 4);
+    ctx.fill();
+    ctx.strokeStyle = "#f4a3c2";
+    ctx.lineWidth = 1.2;
+    ctx.strokeRect(wall.x + 2, wall.y + 2, wall.w - 4, wall.h - 4);
+  });
+  ctx.fillStyle = "#fff";
+  roundRect(ctx, DOILY_GAP.x, DOILY_GAP.y + 16, DOILY_GAP.w, 6, 2);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Doily", DOILY_POSTS[0].x - 2, DOILY_POSTS[0].y - 8);
+}
+
+function drawFillings(ctx) {
+  ctx.fillStyle = "#fff0f4";
+  roundRect(ctx, FILLING_ZONE.x, FILLING_ZONE.y, FILLING_ZONE.w, FILLING_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#f4a3c2", "#f4d35e", "#9ad7c4"];
+  FILLINGS.forEach((dollop, index) => {
+    const cx = dollop.x + dollop.w / 2;
+    const cy = dollop.y + dollop.h / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, cx, cy, 9, 5);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    oval(ctx, cx - 2, cy - 1, 2, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Fillings", FILLING_ZONE.x + 18, FILLING_ZONE.y - 8);
+}
+
+function drawWhisks(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, WHISK_ZONE.x, WHISK_ZONE.y, WHISK_ZONE.w, WHISK_ZONE.h, 12);
+  ctx.fill();
+  WHISK_BLOCKS.forEach((whisk) => {
+    const cx = whisk.x + whisk.w / 2;
+    ctx.strokeStyle = "#c45c26";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(cx, whisk.y + 2);
+    ctx.lineTo(cx, whisk.y + whisk.h - 4);
+    ctx.stroke();
+    ctx.strokeStyle = "#e7b15a";
+    for (let i = 0; i < 3; i += 1) {
+      ctx.beginPath();
+      ctx.moveTo(cx, whisk.y + 8);
+      ctx.quadraticCurveTo(cx + (i - 1) * 4, whisk.y + 18, cx, whisk.y + 28);
+      ctx.stroke();
+    }
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Whisks", WHISK_ZONE.x + 24, WHISK_ZONE.y - 8);
+}
+
+function drawSharedMacaron(ctx, carried) {
+  if (!carried) {
+    paintMacaron(ctx, 2280, 418, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Macaron", 2248, 390);
+  }
+  ctx.fillStyle = "#fff0f4";
+  roundRect(ctx, MACARON_SPOT.x - 22, MACARON_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#f4a3c2";
+  roundRect(ctx, MACARON_SPOT.x - 20, MACARON_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, MACARON_SPOT.x - 16, MACARON_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, MACARON_SPOT.x + 10, MACARON_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintMacaron(ctx, MACARON_SPOT.x, MACARON_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Macaron", MACARON_SPOT.x - 24, MACARON_SPOT.y - 16);
+}
+
 function drawSharedPretzel(ctx, carried) {
   if (!carried) {
     paintPretzel(ctx, 1978, 388, 0.9);
@@ -11058,6 +11233,12 @@ export function drawTown(ctx, player, time) {
   drawSesames(ctx);
   drawDips(ctx);
   drawSharedPretzel(ctx, player.carry === "pretzel");
+  drawMacaronTowers(ctx);
+  drawAlmonds(ctx);
+  drawDoily(ctx);
+  drawFillings(ctx);
+  drawWhisks(ctx);
+  drawSharedMacaron(ctx, player.carry === "macaron");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);

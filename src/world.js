@@ -1,4 +1,4 @@
-import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOOKMARK_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, CROWN_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, GLOBE_SPOT, DOLLAR_SPOT, FLAKE_SPOT, AMBER_SPOT, POPSICLE_SPOT, BANANA_SPOT, FLAG_SPOT, SCONE_SPOT, HEART_SPOT, BREAD_SPOT, DONUT_SPOT, SMOOTHIE_SPOT, PRETZEL_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, KAZOO_SPOT, MARIGOLD_SPOT, MOON_SPOT, MUFFIN_SPOT, MUM_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
+import { ACORN_SPOT, APPLE_SPOT, applyCrossingProgress, BALLOON_SPOT, BAND_SPOT, blockedByCrossing, BOOK_SPOT, BOAT_SPOT, BOOKMARK_SPOT, BOW_SPOT, BUBBLE_SPOT, BUTTERFLY_SPOT, CART, CART_ASIDE, CLOVER_SPOT, COCOA_SPOT, COOKIE_SPOT, CRAYON_SPOT, CROWN_SPOT, DAISY_SPOT, FEATHER_SPOT, FLOWER_SPOT, GLOBE_SPOT, DOLLAR_SPOT, FLAKE_SPOT, AMBER_SPOT, POPSICLE_SPOT, BANANA_SPOT, FLAG_SPOT, SCONE_SPOT, HEART_SPOT, BREAD_SPOT, DONUT_SPOT, SMOOTHIE_SPOT, PRETZEL_SPOT, MACARON_SPOT, HONEY_SPOT, KIND_SPOT, LEAF_SPOT, MAIL_SPOT, MAPLE_SPOT, KAZOO_SPOT, MARIGOLD_SPOT, MOON_SPOT, MUFFIN_SPOT, MUM_SPOT, PEAR_SPOT, PICNIC_SPOT, PINWHEEL_SPOT, PLANE_SPOT, PLUM_SPOT, SHELL_SPOT, SNACK_SPOT, STAR_SPOT, SUNFLOWER_SPOT } from "./crossings.js";
 import { isUsaBlocked, isUsaRoom, MAP_STAND, capitalAt, CAPITAL_REACH, usaActions, usaPlaceName } from "./usa.js";
 
 export const TOWN = {
@@ -171,6 +171,8 @@ export const ACTIONS = {
     { id: "share-smoothie", label: "Share smoothie", x: SMOOTHIE_SPOT.x, y: SMOOTHIE_SPOT.y },
     { id: "take-pretzel", label: "Take pretzel", x: 1978, y: 410 },
     { id: "share-pretzel", label: "Share pretzel", x: PRETZEL_SPOT.x, y: PRETZEL_SPOT.y },
+    { id: "take-macaron", label: "Take macaron", x: 2280, y: 440 },
+    { id: "share-macaron", label: "Share macaron", x: MACARON_SPOT.x, y: MACARON_SPOT.y },
     { id: "stickers", label: "My stickers", x: 1180, y: 1280, anywhere: true },
   ],
   living: [
@@ -439,6 +441,8 @@ export function visibleActions(player) {
     if (action.id === "share-smoothie" && player.carry !== "smoothie") return false;
     if (action.id === "take-pretzel" && player.carry) return false;
     if (action.id === "share-pretzel" && player.carry !== "pretzel") return false;
+    if (action.id === "take-macaron" && player.carry) return false;
+    if (action.id === "share-macaron" && player.carry !== "macaron") return false;
     if (action.anywhere) return true;
     return dist(player.x, player.y, action.x, action.y) <= REACH;
   });

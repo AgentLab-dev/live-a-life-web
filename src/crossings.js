@@ -2631,6 +2631,56 @@ export const DIP_BLOCKS = [
 
 export const PRETZEL_SPOT = { x: 486, y: 1984 };
 
+export const MACARON_ZONE = { x: 1180, y: 524, w: 52, h: 92 };
+
+export const MACARON_BLOCKS = [
+  { x: 1180, y: 536, w: 24, h: 14 },
+  { x: 1208, y: 568, w: 24, h: 14 },
+  { x: 1180, y: 600, w: 24, h: 14 },
+];
+
+export const ALMOND_BED = { x: 60, y: 732, w: 76, h: 48 };
+
+export const ALMOND_PADS = [
+  { x: 76, y: 740 },
+  { x: 94, y: 756 },
+  { x: 76, y: 766 },
+];
+
+export const ALMOND_RADIUS = 14;
+
+export const DOILY_POSTS = [
+  { x: 348, y: 732, w: 12, h: 48 },
+  { x: 416, y: 732, w: 12, h: 48 },
+];
+
+export const DOILY_WALLS = [
+  { x: 360, y: 748, w: 22, h: 12 },
+  { x: 394, y: 748, w: 22, h: 12 },
+];
+
+export const DOILY_GAP = { x: 382, y: 734, w: 12, h: 44 };
+
+export const DOILY_BAND = { x: 360, y: 748, w: 56, h: 12 };
+
+export const FILLING_ZONE = { x: 1740, y: 252, w: 100, h: 40 };
+
+export const FILLINGS = [
+  { x: 1742, y: 250, w: 46, h: 26 },
+  { x: 1776, y: 264, w: 46, h: 26 },
+  { x: 1804, y: 250, w: 36, h: 26 },
+];
+
+export const WHISK_ZONE = { x: 1564, y: 460, w: 100, h: 36 };
+
+export const WHISK_BLOCKS = [
+  { x: 1572, y: 460, w: 14, h: 36 },
+  { x: 1608, y: 460, w: 14, h: 36 },
+  { x: 1644, y: 460, w: 14, h: 36 },
+];
+
+export const MACARON_SPOT = { x: 1360, y: 1988 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2932,6 +2982,12 @@ export const STICKERS = [
   { id: "sesames", name: "Sesame tip-toer", hint: "You tip-toed across the sesame seeds." },
   { id: "dips", name: "Dip weaver", hint: "You weaved between the dip cups." },
   { id: "pretzel", name: "Pretzel friend", hint: "You shared a kind pretzel." },
+  { id: "macarons", name: "Macaron-tower weaver", hint: "You bobbed between the macaron towers." },
+  { id: "almonds", name: "Almond hopper", hint: "You zigzagged the almond pads." },
+  { id: "doily", name: "Doily ducker", hint: "You ducked under the paper doily." },
+  { id: "fillings", name: "Filling tip-toer", hint: "You tip-toed across the sweet fillings." },
+  { id: "whisks", name: "Whisk weaver", hint: "You weaved between the whisks." },
+  { id: "macaron", name: "Macaron friend", hint: "You shared a kind macaron." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -3237,12 +3293,18 @@ export const CHEERS = {
   sesames: "Tip-toe across the sesame seeds!",
   dips: "Little dip cups said hello!",
   pretzel: "A kind pretzel to share. Kind!",
+  macarons: "Friendly macaron towers said hello!",
+  almonds: "Boing! Zigzag hops on the almonds!",
+  doily: "Duck under the paper doily!",
+  fillings: "Tip-toe across the sweet fillings!",
+  whisks: "Little whisks said hello!",
+  macaron: "A kind macaron to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread", "donut", "smoothie", "pretzel"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread", "donut", "smoothie", "pretzel", "macaron"];
 
 export function defaultStickers() {
   return {
@@ -3546,6 +3608,12 @@ export function defaultStickers() {
     sesames: false,
     dips: false,
     pretzel: false,
+    macarons: false,
+    almonds: false,
+    doily: false,
+    fillings: false,
+    whisks: false,
+    macaron: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -4568,6 +4636,26 @@ export function onDipLane(x, y) {
   return inRect(x, y, DIP_ZONE) && !DIP_BLOCKS.some((cup) => inRect(x, y, cup));
 }
 
+export function onMacaronLane(x, y) {
+  return inRect(x, y, MACARON_ZONE) && !MACARON_BLOCKS.some((tower) => inRect(x, y, tower));
+}
+
+export function onAlmondPad(x, y) {
+  return ALMOND_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= ALMOND_RADIUS);
+}
+
+export function onDoilyGap(x, y) {
+  return inRect(x, y, DOILY_GAP);
+}
+
+export function onFilling(x, y) {
+  return FILLINGS.some((dollop) => inRect(x, y, dollop));
+}
+
+export function onWhiskLane(x, y) {
+  return inRect(x, y, WHISK_ZONE) && !WHISK_BLOCKS.some((whisk) => inRect(x, y, whisk));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -4814,6 +4902,11 @@ export function townPathAt(x, y) {
   if (onMustardGap(x, y)) return "mustard";
   if (onSesame(x, y)) return "sesames";
   if (onDipLane(x, y)) return "dips";
+  if (onMacaronLane(x, y)) return "macarons";
+  if (onAlmondPad(x, y)) return "almonds";
+  if (onDoilyGap(x, y)) return "doily";
+  if (onFilling(x, y)) return "fillings";
+  if (onWhiskLane(x, y)) return "whisks";
   return "";
 }
 
@@ -5881,6 +5974,27 @@ export function blockedByDips(x, y) {
   return DIP_BLOCKS.some((cup) => inRect(x, y, cup));
 }
 
+export function blockedByMacarons(x, y) {
+  return MACARON_BLOCKS.some((tower) => inRect(x, y, tower));
+}
+
+export function blockedByAlmonds(x, y) {
+  return inRect(x, y, ALMOND_BED) && !onAlmondPad(x, y);
+}
+
+export function blockedByDoily(x, y) {
+  if (onDoilyGap(x, y)) return false;
+  return DOILY_POSTS.some((post) => inRect(x, y, post)) || DOILY_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByFillings(x, y) {
+  return inRect(x, y, FILLING_ZONE) && !onFilling(x, y);
+}
+
+export function blockedByWhisks(x, y) {
+  return WHISK_BLOCKS.some((whisk) => inRect(x, y, whisk));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -6131,7 +6245,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedBySalts(x, y) ||
     blockedByMustard(x, y) ||
     blockedBySesames(x, y) ||
-    blockedByDips(x, y)
+    blockedByDips(x, y) ||
+    blockedByMacarons(x, y) ||
+    blockedByAlmonds(x, y) ||
+    blockedByDoily(x, y) ||
+    blockedByFillings(x, y) ||
+    blockedByWhisks(x, y)
   );
 }
 
@@ -6431,6 +6550,11 @@ export function applyCrossingProgress(prev, next) {
     ["mustard", MUSTARD_BAND, "y"],
     ["sesames", SESAME_ZONE, "x"],
     ["dips", DIP_ZONE, "y"],
+    ["macarons", MACARON_ZONE, "y"],
+    ["almonds", ALMOND_BED, "y"],
+    ["doily", DOILY_BAND, "y"],
+    ["fillings", FILLING_ZONE, "x"],
+    ["whisks", WHISK_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -6555,7 +6679,9 @@ export function applyCrossingProgress(prev, next) {
       onMangoPad(next.x, next.y) ||
       onCitrus(next.x, next.y) ||
       onSaltPad(next.x, next.y) ||
-      onSesame(next.x, next.y),
+      onSesame(next.x, next.y) ||
+      onAlmondPad(next.x, next.y) ||
+      onFilling(next.x, next.y),
   };
 }
 
@@ -7197,6 +7323,22 @@ export function sharePretzel(player) {
   });
 }
 
+export function takeMacaron(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "macaron", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareMacaron(player) {
+  if (player.carry !== "macaron") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), macaron: true },
+  });
+}
+
 export function takeDonut(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "donut", pose: "idle", actionBeatMs: 0 });
@@ -7472,5 +7614,6 @@ export function carryLabel(value) {
   if (value === "donut") return "Donut";
   if (value === "smoothie") return "Smoothie";
   if (value === "pretzel") return "Pretzel";
+  if (value === "macaron") return "Macaron";
   return "";
 }
