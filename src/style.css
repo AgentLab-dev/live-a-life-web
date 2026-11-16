@@ -19,15 +19,38 @@ body,
   height: 100%;
   margin: 0;
   overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  background: #8ecae6;
 }
 
 body {
-  min-height: 100dvh;
+  position: fixed;
+  inset: 0;
+}
+
+input,
+textarea,
+select {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
 }
 
 .title-screen {
-  min-height: 100dvh;
-  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  height: 100%;
+  padding:
+    calc(24px + env(safe-area-inset-top, 0px))
+    calc(20px + env(safe-area-inset-right, 0px))
+    calc(24px + env(safe-area-inset-bottom, 0px))
+    calc(20px + env(safe-area-inset-left, 0px));
   text-align: center;
   background: radial-gradient(circle at 20% 20%, #fff7, #0000 28%),
     linear-gradient(#8ecae6 0% 38%, #7ec850 38%, #6bb33d 100%);
@@ -127,12 +150,17 @@ h1 {
 .game-root {
   background: #8ecae6;
   width: 100%;
-  height: 100dvh;
+  height: 100%;
   position: relative;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 #game-canvas {
   touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
   width: 100%;
   height: 100%;
   display: block;
@@ -159,8 +187,9 @@ h1 {
 }
 
 .beat-caption {
-  left: 50%;
-  top: calc(58px + env(safe-area-inset-top));
+  left: calc(50% + (env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
+  top: calc(58px + env(safe-area-inset-top, 0px));
+  max-width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 24px);
   pointer-events: none;
   background: #fff8e6f0;
   border-radius: 999px;
@@ -176,14 +205,15 @@ h1 {
 }
 
 .hud-top {
-  top: calc(10px + env(safe-area-inset-top));
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  max-width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 24px);
   pointer-events: none;
   background: #fff8e6eb;
   border-radius: 999px;
   padding: 8px 18px;
   font-weight: 700;
   position: absolute;
-  left: 50%;
+  left: calc(50% + (env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
   transform: translate(-50%);
 }
 
@@ -250,10 +280,10 @@ h1 {
 
 .install-tip {
   z-index: 4;
-  left: 50%;
-  top: calc(72px + env(safe-area-inset-top));
+  left: calc(50% + (env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
+  top: calc(72px + env(safe-area-inset-top, 0px));
   text-align: center;
-  width: min(320px, calc(100% - 24px));
+  width: min(320px, calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 24px));
   padding: 14px 14px 12px;
   background: #fff8e7;
   border-radius: 20px;
@@ -284,9 +314,9 @@ h1 {
 }
 
 .hud-actions {
-  left: 0;
-  right: 0;
-  bottom: calc(14px + env(safe-area-inset-bottom));
+  left: env(safe-area-inset-left, 0px);
+  right: env(safe-area-inset-right, 0px);
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
@@ -299,8 +329,8 @@ h1 {
   display: none;
   width: 132px;
   height: 132px;
-  left: calc(10px + env(safe-area-inset-left));
-  bottom: calc(14px + env(safe-area-inset-bottom));
+  left: calc(10px + env(safe-area-inset-left, 0px));
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
   place-items: center;
@@ -359,7 +389,8 @@ h1 {
   }
 
   .hud-actions {
-    left: calc(148px + env(safe-area-inset-left));
+    left: calc(148px + env(safe-area-inset-left, 0px));
+    right: env(safe-area-inset-right, 0px);
     padding: 0 10px;
   }
 }
@@ -373,7 +404,11 @@ h1 {
   background: #28180c59;
   justify-content: center;
   align-items: flex-end;
-  padding: 12px;
+  padding:
+    calc(12px + env(safe-area-inset-top, 0px))
+    calc(12px + env(safe-area-inset-right, 0px))
+    calc(12px + env(safe-area-inset-bottom, 0px))
+    calc(12px + env(safe-area-inset-left, 0px));
   display: flex;
   position: absolute;
   inset: 0;
@@ -386,10 +421,13 @@ h1 {
 .sheet {
   width: min(520px, 100%);
   max-height: min(78dvh, 720px);
-  padding: 18px 16px calc(16px + env(safe-area-inset-bottom));
+  padding: 18px 16px calc(16px + env(safe-area-inset-bottom, 0px));
   background: #fff8e7;
   border-radius: 24px 24px 16px 16px;
   overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 -8px 30px #00000026;
 }
 
@@ -494,5 +532,133 @@ h1 {
   .sheet {
     border-radius: 24px;
     margin-bottom: 28px;
+  }
+}
+
+.ios-install-card {
+  position: fixed;
+  z-index: 8;
+  left: calc(env(safe-area-inset-left, 0px) + (100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  width: min(420px, calc(100% - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 14px 14px 12px;
+  background: #fff8e7;
+  color: #3d2a1a;
+  border-radius: 22px;
+  box-shadow: 0 8px #3d2a1a33;
+}
+
+.ios-install-card[hidden] {
+  display: none !important;
+}
+
+.ios-install-card p {
+  margin: 0;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.ios-install-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 2px 0 4px;
+}
+
+.ios-install-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 88px;
+  color: #355c7d;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.ios-glyph {
+  color: #c45c26;
+  background: #fff;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 2px #d4c49a;
+}
+
+.ios-install-then {
+  color: #7a5a3a;
+  font-weight: 700;
+}
+
+.ios-install-card .hud-btn {
+  min-width: 120px;
+  min-height: 44px;
+  font-size: 18px;
+}
+
+body:has(#ios-install-card:not([hidden])) .title-screen {
+  justify-content: flex-start;
+  padding-bottom: calc(210px + env(safe-area-inset-bottom, 0px));
+}
+
+.version-banner {
+  position: fixed;
+  z-index: 9;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  left: calc(12px + env(safe-area-inset-left, 0px));
+  right: calc(12px + env(safe-area-inset-right, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #fff8e7;
+  border-radius: 18px;
+  box-shadow: 0 6px #3d2a1a2e;
+}
+
+.version-banner[hidden] {
+  display: none !important;
+}
+
+.version-banner p {
+  margin: 0;
+  font-weight: 700;
+}
+
+.version-banner .hud-btn {
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 16px;
+  font-size: 18px;
+}
+
+@media (max-height: 520px) {
+  .ios-install-card {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 8px 10px;
+  }
+
+  .ios-install-card p {
+    flex: 1 1 180px;
+    font-size: 14px;
+  }
+
+  body:has(#ios-install-card:not([hidden])) .title-screen {
+    padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+  }
+
+  body:has(#ios-install-card:not([hidden])) .title-house,
+  body:has(#ios-install-card:not([hidden])) .hint {
+    display: none;
   }
 }

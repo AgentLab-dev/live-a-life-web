@@ -1,5 +1,6 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { applyPrecache } from "../src/precache.js";
 
 const root = new URL("..", import.meta.url).pathname;
 const dist = join(root, "dist");
@@ -8,6 +9,14 @@ const assets = join(root, "assets");
 if (!existsSync(dist)) {
   throw new Error("Run vite build before publish-pages");
 }
+
+const swPath = join(dist, "sw.js");
+if (!existsSync(swPath)) {
+  throw new Error("dist/sw.js is missing");
+}
+const builtAssets = join(dist, "assets");
+const assetNames = existsSync(builtAssets) ? readdirSync(builtAssets) : [];
+writeFileSync(swPath, applyPrecache(readFileSync(swPath, "utf8"), assetNames));
 
 if (existsSync(assets)) {
   for (const name of readdirSync(assets)) {

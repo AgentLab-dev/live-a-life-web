@@ -1,6 +1,7 @@
 import { deflateSync } from "node:zlib";
-import { writeFileSync } from "node:fs";
+import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { splashVariants } from "../src/ios-splash.js";
 
 const SKY = [142, 202, 230, 255];
 const GRASS = [126, 200, 80, 255];
@@ -33,7 +34,7 @@ function chunk(type, data) {
   return out;
 }
 
-function writePng(path, width, height, pixels) {
+function writePng(path, width, height, pixels, level = 9) {
   const raw = Buffer.alloc((width * 4 + 1) * height);
   for (let y = 0; y < height; y += 1) {
     raw[y * (width * 4 + 1)] = 0;
@@ -47,7 +48,7 @@ function writePng(path, width, height, pixels) {
   const png = Buffer.concat([
     Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
     chunk("IHDR", ihdr),
-    chunk("IDAT", deflateSync(raw, { level: 9 })),
+    chunk("IDAT", deflateSync(raw, { level })),
     chunk("IEND", Buffer.alloc(0)),
   ]);
   writeFileSync(path, png);
@@ -159,6 +160,53 @@ function drawHouse(size) {
   return pixels;
 }
 
+function fillSolid(pixels, color) {
+  const r = color[0];
+  const g = color[1];
+  const b = color[2];
+  const a = color[3];
+  for (let i = 0; i < pixels.length; i += 4) {
+    pixels[i] = r;
+    pixels[i + 1] = g;
+    pixels[i + 2] = b;
+    pixels[i + 3] = a;
+  }
+}
+
+function blit(dest, destWidth, destHeight, src, srcWidth, srcHeight, destX, destY) {
+  for (let y = 0; y < srcHeight; y += 1) {
+    const ty = destY + y;
+    if (ty < 0 || ty >= destHeight) continue;
+    for (let x = 0; x < srcWidth; x += 1) {
+      const tx = destX + x;
+      if (tx < 0 || tx >= destWidth) continue;
+      const si = (y * srcWidth + x) * 4;
+      if (src[si + 3] === 0) continue;
+      const di = (ty * destWidth + tx) * 4;
+      dest[di] = src[si];
+      dest[di + 1] = src[si + 1];
+      dest[di + 2] = src[si + 2];
+      dest[di + 3] = src[si + 3];
+    }
+  }
+}
+
+function drawOnSky(width, height, icon, iconSize) {
+  const pixels = Buffer.allocUnsafe(width * height * 4);
+  fillSolid(pixels, SKY);
+  blit(
+    pixels,
+    width,
+    height,
+    icon,
+    iconSize,
+    iconSize,
+    Math.round((width - iconSize) / 2),
+    Math.round((height - iconSize) / 2),
+  );
+  return pixels;
+}
+
 const publicDir = new URL("../public", import.meta.url).pathname;
 for (const [name, size] of [
   ["icon-192.png", 192],
@@ -168,4 +216,17 @@ for (const [name, size] of [
   writePng(join(publicDir, name), size, size, drawHouse(size));
 }
 
-console.log("Wrote kid-friendly house icons to public/");
+const maskableHouse = Math.round(512 * 0.62);
+writePng(join(publicDir, "icon-maskable-512.png"), 512, 512, drawOnSky(512, 512, drawHouse(maskableHouse), maskableHouse));
+
+const splashDir = join(publicDir, "splash");
+rmSync(splashDir, { force: true, recursive: true });
+mkdirSync(splashDir, { recursive: true });
+const launchIconSize = 280;
+const launchIcon = drawHouse(launchIconSize);
+for (const variant of splashVariants()) {
+  const pixels = drawOnSky(variant.width, variant.height, launchIcon, launchIconSize);
+  writePng(join(splashDir, `apple-splash-${variant.width}x${variant.height}.png`), variant.width, variant.height, pixels, 1);
+}
+
+console.log("Wrote kid-friendly house icons and iPhone launch splashes to public/");
