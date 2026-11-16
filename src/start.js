@@ -1,4 +1,4 @@
-import { createHold, dirFromKey, heldWalkTarget, isTypingTarget } from "./controls.js";
+import { createHold, dirFromKey, heldWalkTarget, isTypingTarget, isUsaMapKey } from "./controls.js";
 import {
   cheerCrossing,
   closeParkGate,
@@ -117,7 +117,18 @@ import { setJob, startWork } from "./jobs.js";
 import { createPeople, listenTo, stepPeople } from "./people.js";
 import { drawKid, drawPlayerMarker, drawRoom } from "./draw.js";
 import { beatLabel, enterRoom, moveToAction, spawnFor, startFurniture, stepToward, tickAction } from "./world.js";
-import { closetSheet, doorSheet, gameMarkup, hudKey, jobSheet, paintSheet, renderHud, stickerSheet } from "./hud.js";
+import {
+  bindUsaMapButton,
+  closetSheet,
+  doorSheet,
+  gameMarkup,
+  hudKey,
+  jobSheet,
+  paintSheet,
+  renderHud,
+  stickerSheet,
+  usaMapButtonState,
+} from "./hud.js";
 import { mountInstallTip } from "./pwa.js";
 import { loadSave, spawnPlayer, writeSave } from "./save.js";
 import {
@@ -1063,8 +1074,27 @@ export function startGame(root) {
   dpad.addEventListener("lostpointercapture", releasePad);
   dpad.addEventListener("contextmenu", (event) => event.preventDefault());
 
+  function activateUsaMapButton() {
+    if (sheet) return;
+    const mode = usaMapButtonState(player.room);
+    if (!mode.visible) return;
+    hold.clear();
+    game.querySelectorAll("#dpad .held").forEach((pad) => pad.classList.remove("held"));
+    runAction(mode.action);
+    lastHud = "";
+    refreshHud();
+  }
+
+  bindUsaMapButton(game.querySelector("#usa-map-btn"), activateUsaMapButton);
+
   function onKeyDown(event) {
     if (isTypingTarget(event.target)) return;
+    if (isUsaMapKey(event.code, event.key)) {
+      if (event.repeat) return;
+      event.preventDefault();
+      activateUsaMapButton();
+      return;
+    }
     const dir = dirFromKey(event.code, event.key);
     if (!dir) return;
     event.preventDefault();

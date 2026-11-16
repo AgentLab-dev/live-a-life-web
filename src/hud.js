@@ -14,6 +14,15 @@ export function gameMarkup() {
         <p id="place-name">Sunny Plaza</p>
         <div id="sticker-row" class="sticker-row" aria-label="Stickers"></div>
       </div>
+      <button type="button" id="usa-map-btn" class="usa-map-btn" data-action="enter-usa" aria-keyshortcuts="M" aria-label="USA map">
+        <svg class="usa-map-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="M3.5 6.2 8.5 4.2l7 2.2 5-2v13.4l-5 2-7-2.2-5 2V6.2z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+          <path d="M8.5 4.2v13.2M15.5 6.4v13.2" fill="none" stroke="currentColor" stroke-width="1.8"></path>
+          <circle cx="12" cy="11" r="1.6" fill="currentColor"></circle>
+        </svg>
+        <span class="usa-map-label">USA map</span>
+        <span class="usa-map-key" aria-hidden="true">M</span>
+      </button>
       <div id="dpad" class="dpad" aria-label="Walk">
         <button type="button" class="dpad-btn dpad-up" data-dir="up" aria-label="Walk up" tabindex="-1">▲</button>
         <button type="button" class="dpad-btn dpad-left" data-dir="left" aria-label="Walk left" tabindex="-1">◀</button>
@@ -57,6 +66,76 @@ export function renderHud(root, player, people = []) {
   actions.innerHTML = buttons
     .map((action) => `<button type="button" class="hud-btn" data-action="${action.id}">${action.label}</button>`)
     .join("");
+  applyUsaMapButton(root.querySelector("#usa-map-btn"), player.room);
+}
+
+export function usaMapButtonState(room) {
+  if (room === "town") return { visible: true, label: "USA map", action: "enter-usa" };
+  if (room === "usa" || room === "state") return { visible: true, label: "Back to town", action: "leave-usa" };
+  return { visible: false, label: "USA map", action: "enter-usa" };
+}
+
+export function applyUsaMapButton(button, room) {
+  const mode = usaMapButtonState(room);
+  if (!button) return mode;
+  button.hidden = !mode.visible;
+  if (button.dataset) button.dataset.action = mode.action;
+  button.setAttribute?.("aria-label", mode.label);
+  const label = button.querySelector?.(".usa-map-label");
+  if (label) label.textContent = mode.label;
+  return mode;
+}
+
+function pointInButton(button, event) {
+  if (!button?.getBoundingClientRect || event?.clientX == null || event?.clientY == null) return true;
+  const box = button.getBoundingClientRect();
+  return event.clientX >= box.left && event.clientX <= box.right && event.clientY >= box.top && event.clientY <= box.bottom;
+}
+
+export function bindUsaMapButton(button, onActivate) {
+  if (!button?.addEventListener || typeof onActivate !== "function") return false;
+  let pointerId = null;
+  let skipClick = false;
+  const stop = (event) => {
+    event?.stopPropagation?.();
+  };
+  button.addEventListener("pointerdown", (event) => {
+    stop(event);
+    event.preventDefault?.();
+    skipClick = false;
+    pointerId = event.pointerId ?? "mouse";
+    try {
+      button.setPointerCapture?.(event.pointerId);
+    } catch {
+      // Capture is optional; pointerup still sees the tap.
+    }
+  });
+  button.addEventListener("pointerup", (event) => {
+    stop(event);
+    event.preventDefault?.();
+    const id = event.pointerId ?? "mouse";
+    if (pointerId !== id) return;
+    pointerId = null;
+    skipClick = true;
+    if (!pointInButton(button, event)) return;
+    onActivate();
+  });
+  button.addEventListener("pointercancel", (event) => {
+    stop(event);
+    pointerId = null;
+    skipClick = true;
+  });
+  button.addEventListener("click", (event) => {
+    stop(event);
+    event.preventDefault?.();
+    if (event.detail !== 0 && skipClick) {
+      skipClick = false;
+      return;
+    }
+    skipClick = false;
+    onActivate();
+  });
+  return true;
 }
 
 export function paintSheet(selected) {

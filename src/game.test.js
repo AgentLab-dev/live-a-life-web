@@ -681,8 +681,9 @@ import {
 import { canWorkHere, setJob, startWork } from "./jobs.js";
 import { sanitizeDoorLabel, setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { createPeople, listenTo, nearbyPerson, stepPeople } from "./people.js";
+import { applyUsaMapButton, bindUsaMapButton, gameMarkup, renderHud, usaMapButtonState } from "./hud.js";
 import { loadSave, sanitizeSave, spawnPlayer, writeSave } from "./save.js";
-import { createHold, dirFromKey, heldWalkTarget, isTypingTarget } from "./controls.js";
+import { createHold, dirFromKey, heldWalkTarget, isTypingTarget, isUsaMapKey } from "./controls.js";
 import {
   canEnter,
   enterRoom,
@@ -824,6 +825,10 @@ describe("movement controls", () => {
     expect(dirFromKey("KeyS", "s")).toBe("down");
     expect(dirFromKey("KeyD", "d")).toBe("right");
     expect(dirFromKey("KeyQ", "q")).toBeNull();
+    expect(isUsaMapKey("KeyM", "m")).toBe(true);
+    expect(isUsaMapKey("KeyM", "M")).toBe(true);
+    expect(isUsaMapKey("KeyW", "w")).toBe(false);
+    expect(dirFromKey("KeyM", "m")).toBeNull();
   });
 
   it("does not steal keys from the door name field", () => {
@@ -11886,6 +11891,140 @@ describe("USA capitals hop", () => {
     expect(STATES.every((state) => capitalLabel(state).includes(",") && state.capital && state.name)).toBe(true);
     expect(STATES.some((state) => state.id === "ak" && state.capital === "Juneau")).toBe(true);
     expect(STATES.some((state) => state.id === "hi" && state.capital === "Honolulu")).toBe(true);
+  });
+
+  function hudHarness() {
+    const place = { textContent: "" };
+    const actions = { innerHTML: "" };
+    const stickers = { innerHTML: "" };
+    const label = { textContent: "" };
+    const mapBtn = {
+      hidden: true,
+      dataset: {},
+      attrs: {},
+      setAttribute(name, value) {
+        this.attrs[name] = value;
+      },
+      querySelector(sel) {
+        return sel === ".usa-map-label" ? label : null;
+      },
+    };
+    return {
+      label,
+      mapBtn,
+      querySelector(sel) {
+        if (sel === "#place-name") return place;
+        if (sel === "#hud-actions") return actions;
+        if (sel === "#sticker-row") return stickers;
+        if (sel === "#usa-map-btn") return mapBtn;
+        return null;
+      },
+    };
+  }
+
+  function mapPlayer(room, extra = {}) {
+    return {
+      room,
+      pose: "idle",
+      actionBeatMs: 0,
+      hopMs: 0,
+      x: 10,
+      y: 10,
+      job: "none",
+      stickers: defaultStickers(),
+      ...extra,
+    };
+  }
+
+  it("shows the corner USA map button in town and back to town on the map", () => {
+    expect(gameMarkup()).toContain('id="usa-map-btn"');
+    expect(gameMarkup()).toContain("USA map");
+    expect(usaMapButtonState("town")).toEqual({ visible: true, label: "USA map", action: "enter-usa" });
+    expect(usaMapButtonState("usa")).toEqual({ visible: true, label: "Back to town", action: "leave-usa" });
+    expect(usaMapButtonState("state")).toEqual({ visible: true, label: "Back to town", action: "leave-usa" });
+    for (const room of ["living", "kitchen", "bedroom", "cafe", "bakery", "library"]) {
+      expect(usaMapButtonState(room).visible).toBe(false);
+    }
+    const root = hudHarness();
+    renderHud(root, mapPlayer("town"), []);
+    expect(root.mapBtn.hidden).toBe(false);
+    expect(root.label.textContent).toBe("USA map");
+    expect(root.mapBtn.dataset.action).toBe("enter-usa");
+    expect(root.mapBtn.attrs["aria-label"]).toBe("USA map");
+    renderHud(root, mapPlayer("living"), []);
+    expect(root.mapBtn.hidden).toBe(true);
+    const onState = enterStateMap(enterUsaMap(mapPlayer("town")), "tx");
+    renderHud(root, { ...onState, pose: "idle", actionBeatMs: 0 }, []);
+    expect(root.mapBtn.hidden).toBe(false);
+    expect(root.label.textContent).toBe("Back to town");
+    expect(root.mapBtn.dataset.action).toBe("leave-usa");
+    const back = leaveUsaMap(onState);
+    expect(back.room).toBe("town");
+    expect(back.jumper).toBe(false);
+    expect(back.x).toBe(MAP_STAND.x);
+    expect(back.y).toBe(MAP_STAND.y + 36);
+    expect(back.stickers.usaMap).toBe(true);
+    expect(back.stickers.usaState).toBe(true);
+  });
+
+  it("lets one USA map tap through and blocks the duplicate click from walking", () => {
+    const calls = [];
+    let parentWalks = 0;
+    const parent = {
+      listeners: {},
+      addEventListener(type, fn) {
+        this.listeners[type] = fn;
+      },
+    };
+    const button = {
+      listeners: {},
+      addEventListener(type, fn) {
+        this.listeners[type] = fn;
+      },
+      getBoundingClientRect() {
+        return { left: 0, top: 0, right: 180, bottom: 44 };
+      },
+      setPointerCapture() {},
+    };
+    parent.addEventListener("pointerdown", (event) => {
+      if (!event.propagationStopped) parentWalks += 1;
+    });
+    expect(bindUsaMapButton(button, () => calls.push("go"))).toBe(true);
+    const dispatch = (type, extra) => {
+      const event = {
+        type,
+        pointerId: 7,
+        clientX: 20,
+        clientY: 20,
+        detail: 1,
+        propagationStopped: false,
+        defaultPrevented: false,
+        preventDefault() {
+          this.defaultPrevented = true;
+        },
+        stopPropagation() {
+          this.propagationStopped = true;
+        },
+        ...extra,
+      };
+      button.listeners[type]?.(event);
+      if (!event.propagationStopped) parent.listeners[type]?.(event);
+      return event;
+    };
+    const down = dispatch("pointerdown");
+    expect(down.propagationStopped).toBe(true);
+    expect(down.defaultPrevented).toBe(true);
+    expect(parentWalks).toBe(0);
+    dispatch("pointerup");
+    dispatch("click");
+    expect(calls).toEqual(["go"]);
+    dispatch("pointerdown");
+    dispatch("pointerup", { clientX: 400, clientY: 400 });
+    dispatch("click");
+    expect(calls).toEqual(["go"]);
+    dispatch("click", { detail: 0 });
+    expect(calls).toEqual(["go", "go"]);
+    expect(applyUsaMapButton(null, "town").action).toBe("enter-usa");
   });
 
   it("opens the USA map from town and returns to the plaza stand", () => {

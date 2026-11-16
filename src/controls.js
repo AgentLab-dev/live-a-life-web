@@ -28,6 +28,10 @@ export function dirFromKey(code, key) {
   return KEY_TO_DIR[code] ?? KEY_TO_DIR[key] ?? null;
 }
 
+export function isUsaMapKey(code, key) {
+  return code === "KeyM" || key === "m" || key === "M";
+}
+
 export function isTypingTarget(target) {
   if (!target || typeof target !== "object") return false;
   const tag = String(target.tagName || "").toUpperCase();

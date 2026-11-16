@@ -148,6 +148,9 @@ h1 {
 }
 
 .game-root {
+  --map-btn-top: calc(8px + env(safe-area-inset-top, 0px));
+  --map-btn-size: 44px;
+  --map-btn-slot: 230px;
   background: #8ecae6;
   width: 100%;
   height: 100%;
@@ -219,6 +222,109 @@ h1 {
 
 .hud-top p {
   margin: 0;
+}
+
+.usa-map-btn {
+  position: absolute;
+  top: var(--map-btn-top, calc(8px + env(safe-area-inset-top, 0px)));
+  right: calc(8px + env(safe-area-inset-right, 0px));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--map-btn-size);
+  min-height: 44px;
+  min-width: 44px;
+  max-width: calc(100% - 16px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+  max-height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 16px);
+  margin: 0;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff8ee;
+  background: #ff8c42;
+  box-shadow: 0 4px #c45c26;
+  font: 700 16px/1 Fredoka, sans-serif;
+  white-space: nowrap;
+  touch-action: manipulation;
+  pointer-events: auto;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.usa-map-btn[hidden] {
+  display: none !important;
+}
+
+.usa-map-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px #c45c26;
+}
+
+.usa-map-btn:focus-visible {
+  outline: 3px solid #fff8e7;
+  outline-offset: 2px;
+}
+
+.usa-map-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  display: block;
+}
+
+.usa-map-key {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .usa-map-key {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    margin-left: 2px;
+    padding: 0 4px;
+    border-radius: 6px;
+    background: #fff8e6e6;
+    color: #c45c26;
+    font-size: 12px;
+    line-height: 1;
+  }
+}
+
+.game-root:has(#usa-map-btn:not([hidden])) .hud-top {
+  overflow: hidden;
+  max-width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - var(--map-btn-slot) - 24px);
+  left: calc(50% + (env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2 - (var(--map-btn-slot) / 2));
+}
+
+.game-root:has(#usa-map-btn:not([hidden])) #place-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body:has(#version-banner:not([hidden])) .game-root {
+  --map-btn-top: calc(78px + env(safe-area-inset-top, 0px));
+}
+
+@media (max-width: 560px) {
+  .game-root:has(#usa-map-btn:not([hidden])) .hud-top {
+    top: calc(var(--map-btn-top) + var(--map-btn-size) + 8px);
+    left: calc(50% + (env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
+    max-width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px) - 24px);
+  }
+
+  .game-root:has(#usa-map-btn:not([hidden])) .beat-caption {
+    top: calc(var(--map-btn-top) + var(--map-btn-size) + 78px);
+  }
+
+  .game-root:has(#usa-map-btn:not([hidden])) .install-tip {
+    top: calc(var(--map-btn-top) + var(--map-btn-size) + 168px);
+  }
 }
 
 .sticker-row {
