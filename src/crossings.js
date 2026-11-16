@@ -2681,6 +2681,56 @@ export const WHISK_BLOCKS = [
 
 export const MACARON_SPOT = { x: 1360, y: 1988 };
 
+export const CRANE_ZONE = { x: 788, y: 900, w: 52, h: 92 };
+
+export const CRANE_BLOCKS = [
+  { x: 788, y: 912, w: 24, h: 14 },
+  { x: 816, y: 944, w: 24, h: 14 },
+  { x: 788, y: 976, w: 24, h: 14 },
+];
+
+export const FOLD_BED = { x: 900, y: 964, w: 76, h: 48 };
+
+export const FOLD_PADS = [
+  { x: 916, y: 972 },
+  { x: 934, y: 988 },
+  { x: 916, y: 998 },
+];
+
+export const FOLD_RADIUS = 14;
+
+export const FAN_POSTS = [
+  { x: 724, y: 1036, w: 12, h: 48 },
+  { x: 792, y: 1036, w: 12, h: 48 },
+];
+
+export const FAN_WALLS = [
+  { x: 736, y: 1052, w: 22, h: 12 },
+  { x: 770, y: 1052, w: 22, h: 12 },
+];
+
+export const FAN_GAP = { x: 758, y: 1038, w: 12, h: 44 };
+
+export const FAN_BAND = { x: 736, y: 1052, w: 56, h: 12 };
+
+export const INK_ZONE = { x: 1768, y: 572, w: 100, h: 40 };
+
+export const INKS = [
+  { x: 1770, y: 570, w: 46, h: 26 },
+  { x: 1804, y: 584, w: 46, h: 26 },
+  { x: 1832, y: 570, w: 36, h: 26 },
+];
+
+export const WASHI_ZONE = { x: 1028, y: 1372, w: 100, h: 36 };
+
+export const WASHI_BLOCKS = [
+  { x: 1036, y: 1372, w: 14, h: 36 },
+  { x: 1072, y: 1372, w: 14, h: 36 },
+  { x: 1108, y: 1372, w: 14, h: 36 },
+];
+
+export const CRANE_SPOT = { x: 1900, y: 2000 };
+
 export const STICKERS = [
   { id: "gate", name: "Gate helper", hint: "You opened the park gate." },
   { id: "bridge", name: "Bridge walker", hint: "You crossed the garden bridge." },
@@ -2988,6 +3038,12 @@ export const STICKERS = [
   { id: "fillings", name: "Filling tip-toer", hint: "You tip-toed across the sweet fillings." },
   { id: "whisks", name: "Whisk weaver", hint: "You weaved between the whisks." },
   { id: "macaron", name: "Macaron friend", hint: "You shared a kind macaron." },
+  { id: "cranes", name: "Crane weaver", hint: "You bobbed between the paper cranes." },
+  { id: "folds", name: "Fold hopper", hint: "You zigzagged the origami folds." },
+  { id: "fan", name: "Fan ducker", hint: "You ducked under the paper fan." },
+  { id: "inks", name: "Ink tip-toer", hint: "You tip-toed across the ink stamps." },
+  { id: "washi", name: "Washi weaver", hint: "You weaved between the washi tapes." },
+  { id: "crane", name: "Crane friend", hint: "You shared a kind paper crane." },
   { id: "usaMap", name: "Map explorer", hint: "You opened the big USA map." },
   { id: "usaHop", name: "Capital hopper", hint: "You hopped from one capital to another." },
   { id: "usaState", name: "State visitor", hint: "You peeked at a state-wide map." },
@@ -3299,12 +3355,18 @@ export const CHEERS = {
   fillings: "Tip-toe across the sweet fillings!",
   whisks: "Little whisks said hello!",
   macaron: "A kind macaron to share. Kind!",
+  cranes: "Friendly paper cranes said hello!",
+  folds: "Boing! Zigzag hops on the origami folds!",
+  fan: "Duck under the paper fan!",
+  inks: "Tip-toe across the ink stamps!",
+  washi: "Little washi tapes said hello!",
+  crane: "A kind paper crane to share. Kind!",
   usaMap: "A whole country to hop!",
   usaHop: "Capital to capital. Boing!",
   usaState: "A whole state to visit!",
 };
 
-export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread", "donut", "smoothie", "pretzel", "macaron"];
+export const CARRY_KINDS = ["picnic", "book", "card", "snack", "flower", "leaf", "balloon", "pinwheel", "bubble", "bracelet", "sticker", "plane", "shell", "crayon", "ribbon", "acorn", "sunflower", "butterfly", "feather", "boat", "apple", "maple", "pear", "plum", "honeyjar", "mug", "cookie", "muffin", "star", "daisy", "clover", "mum", "marigold", "kazoo", "crown", "bookmark", "moon", "globe", "dollar", "flake", "amber", "popsicle", "banana", "flag", "scone", "heart", "bread", "donut", "smoothie", "pretzel", "macaron", "crane"];
 
 export function defaultStickers() {
   return {
@@ -3614,6 +3676,12 @@ export function defaultStickers() {
     fillings: false,
     whisks: false,
     macaron: false,
+    cranes: false,
+    folds: false,
+    fan: false,
+    inks: false,
+    washi: false,
+    crane: false,
     usaMap: false,
     usaHop: false,
     usaState: false,
@@ -4656,6 +4724,26 @@ export function onWhiskLane(x, y) {
   return inRect(x, y, WHISK_ZONE) && !WHISK_BLOCKS.some((whisk) => inRect(x, y, whisk));
 }
 
+export function onCraneLane(x, y) {
+  return inRect(x, y, CRANE_ZONE) && !CRANE_BLOCKS.some((bird) => inRect(x, y, bird));
+}
+
+export function onFoldPad(x, y) {
+  return FOLD_PADS.some((pad) => Math.hypot(x - pad.x, y - pad.y) <= FOLD_RADIUS);
+}
+
+export function onFanGap(x, y) {
+  return inRect(x, y, FAN_GAP);
+}
+
+export function onInk(x, y) {
+  return INKS.some((stamp) => inRect(x, y, stamp));
+}
+
+export function onWashiLane(x, y) {
+  return inRect(x, y, WASHI_ZONE) && !WASHI_BLOCKS.some((tape) => inRect(x, y, tape));
+}
+
 export function townPathAt(x, y) {
   if (onHedgeArch(x, y)) return "hedge";
   if (onFlowerPad(x, y)) return "flowers";
@@ -4907,6 +4995,11 @@ export function townPathAt(x, y) {
   if (onDoilyGap(x, y)) return "doily";
   if (onFilling(x, y)) return "fillings";
   if (onWhiskLane(x, y)) return "whisks";
+  if (onCraneLane(x, y)) return "cranes";
+  if (onFoldPad(x, y)) return "folds";
+  if (onFanGap(x, y)) return "fan";
+  if (onInk(x, y)) return "inks";
+  if (onWashiLane(x, y)) return "washi";
   return "";
 }
 
@@ -5995,6 +6088,27 @@ export function blockedByWhisks(x, y) {
   return WHISK_BLOCKS.some((whisk) => inRect(x, y, whisk));
 }
 
+export function blockedByCranes(x, y) {
+  return CRANE_BLOCKS.some((bird) => inRect(x, y, bird));
+}
+
+export function blockedByFolds(x, y) {
+  return inRect(x, y, FOLD_BED) && !onFoldPad(x, y);
+}
+
+export function blockedByFan(x, y) {
+  if (onFanGap(x, y)) return false;
+  return FAN_POSTS.some((post) => inRect(x, y, post)) || FAN_WALLS.some((wall) => inRect(x, y, wall));
+}
+
+export function blockedByInks(x, y) {
+  return inRect(x, y, INK_ZONE) && !onInk(x, y);
+}
+
+export function blockedByWashi(x, y) {
+  return WASHI_BLOCKS.some((tape) => inRect(x, y, tape));
+}
+
 export function blockedByCrossing(x, y, extras = {}) {
   return (
     blockedByWater(x, y) ||
@@ -6250,7 +6364,12 @@ export function blockedByCrossing(x, y, extras = {}) {
     blockedByAlmonds(x, y) ||
     blockedByDoily(x, y) ||
     blockedByFillings(x, y) ||
-    blockedByWhisks(x, y)
+    blockedByWhisks(x, y) ||
+    blockedByCranes(x, y) ||
+    blockedByFolds(x, y) ||
+    blockedByFan(x, y) ||
+    blockedByInks(x, y) ||
+    blockedByWashi(x, y)
   );
 }
 
@@ -6555,6 +6674,11 @@ export function applyCrossingProgress(prev, next) {
     ["doily", DOILY_BAND, "y"],
     ["fillings", FILLING_ZONE, "x"],
     ["whisks", WHISK_ZONE, "y"],
+    ["cranes", CRANE_ZONE, "y"],
+    ["folds", FOLD_BED, "y"],
+    ["fan", FAN_BAND, "y"],
+    ["inks", INK_ZONE, "x"],
+    ["washi", WASHI_ZONE, "y"],
   ];
   for (const [id, band, axis] of ways) {
     const tracked = trackWay(prev, next, id, band, axis);
@@ -6681,7 +6805,9 @@ export function applyCrossingProgress(prev, next) {
       onSaltPad(next.x, next.y) ||
       onSesame(next.x, next.y) ||
       onAlmondPad(next.x, next.y) ||
-      onFilling(next.x, next.y),
+      onFilling(next.x, next.y) ||
+      onFoldPad(next.x, next.y) ||
+      onInk(next.x, next.y),
   };
 }
 
@@ -7323,6 +7449,22 @@ export function sharePretzel(player) {
   });
 }
 
+export function takeCrane(player) {
+  if (player.carry) return player;
+  return clearPay({ ...player, carry: "crane", pose: "idle", actionBeatMs: 0 });
+}
+
+export function shareCrane(player) {
+  if (player.carry !== "crane") return player;
+  return clearPay({
+    ...player,
+    carry: "",
+    pose: "look",
+    actionBeatMs: 1100,
+    stickers: { ...sanitizeStickers(player.stickers), crane: true },
+  });
+}
+
 export function takeMacaron(player) {
   if (player.carry) return player;
   return clearPay({ ...player, carry: "macaron", pose: "idle", actionBeatMs: 0 });
@@ -7615,5 +7757,6 @@ export function carryLabel(value) {
   if (value === "smoothie") return "Smoothie";
   if (value === "pretzel") return "Pretzel";
   if (value === "macaron") return "Macaron";
+  if (value === "crane") return "Paper crane";
   return "";
 }
