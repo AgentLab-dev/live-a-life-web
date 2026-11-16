@@ -4,6 +4,8 @@ Public HTTPS play host for the Live a Life kids game.
 
 Play: **https://agentlab-dev.github.io/live-a-life-web/**
 
+Install steps for parents are in [INSTALL.md](./INSTALL.md). The home-screen QR code is [qr-play.png](./qr-play.png).
+
 GitHub Pages is served from branch `main`, folder `/` (root). No Actions deploy is required.
 
 If that URL 404s, a repo owner must enable Pages at
