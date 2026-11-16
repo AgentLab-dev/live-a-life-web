@@ -27,6 +27,36 @@ describe("Play boot", () => {
     expect(start).toContain("walkTarget");
   });
 
+  it("keeps an always-visible USA map button wired to the map stand path", () => {
+    const hud = readFileSync(new URL("./hud.js", import.meta.url), "utf8");
+    const start = readFileSync(new URL("./start.js", import.meta.url), "utf8");
+    const css = readFileSync(new URL("./style.css", import.meta.url), "utf8");
+    const world = readFileSync(new URL("./world.js", import.meta.url), "utf8");
+    expect(hud).toContain('id="usa-map-btn"');
+    expect(hud).toContain("USA map");
+    expect(hud).toContain("usa-map-icon");
+    expect(hud).toContain('aria-keyshortcuts="M"');
+    expect(hud).toContain("bindUsaMapButton");
+    expect(hud).toContain("stopPropagation");
+    expect(start).toContain("bindUsaMapButton");
+    expect(start).toContain("isUsaMapKey");
+    expect(start).toContain("activateUsaMapButton");
+    expect(start).toContain('if (id === "enter-usa")');
+    expect(start).toContain("enterUsaMap");
+    expect(start).toContain('if (id === "leave-usa")');
+    expect(start).toContain("leaveUsaMap");
+    expect(world).toContain('id: "enter-usa"');
+    expect(css).toContain(".usa-map-btn");
+    expect(css).toContain("min-height: 44px");
+    expect(css).toContain(".usa-map-btn[hidden]");
+    const buttonRule = css.slice(css.indexOf(".usa-map-btn {"), css.indexOf(".usa-map-btn[hidden]"));
+    expect(buttonRule).toContain("env(safe-area-inset-top");
+    expect(buttonRule).toContain("env(safe-area-inset-right");
+    expect(buttonRule).toContain("env(safe-area-inset-bottom");
+    expect(buttonRule).toContain("env(safe-area-inset-left");
+    expect(buttonRule).toContain("touch-action: manipulation");
+  });
+
   it("keeps the home-screen tip ready after Play", () => {
     const hud = readFileSync(new URL("./hud.js", import.meta.url), "utf8");
     const start = readFileSync(new URL("./start.js", import.meta.url), "utf8");
