@@ -1,4 +1,4 @@
-const CACHE = "live-a-life-shell-2a1185fb";
+const CACHE = "live-a-life-shell-67128a60";
 const SHELL = [
   "./",
   "./index.html",
@@ -29,9 +29,9 @@ const SHELL = [
   "./splash/apple-splash-2622x1206.png",
   "./splash/apple-splash-1320x2868.png",
   "./splash/apple-splash-2868x1320.png",
-  "./assets/index-CMe1Nn6j.js",
+  "./assets/index-CZqH4-d5.js",
   "./assets/index-Dd4j7Gnc.css",
-  "./assets/start-Ch6HknWo.js",
+  "./assets/start-e-W6tKN1.js",
   /*__PRECACHE__*/
 ];
 

@@ -109,6 +109,8 @@ import {
   sharePretzel,
   takeMacaron,
   shareMacaron,
+  takeCrane,
+  shareCrane,
 } from "./crossings.js";
 import { setDoorLabel, setHair, setHouseColor, setOutfit, setSkin } from "./looks.js";
 import { setJob, startWork } from "./jobs.js";
@@ -887,6 +889,18 @@ export function startGame(root) {
     if (id === "share-macaron") {
       const before = player.stickers;
       player = shareMacaron(moveToAction(player, id));
+      noteCheer(before, player.stickers);
+      walkTarget = null;
+      persist();
+    }
+    if (id === "take-crane") {
+      player = takeCrane(moveToAction(player, id));
+      walkTarget = null;
+      persist();
+    }
+    if (id === "share-crane") {
+      const before = player.stickers;
+      player = shareCrane(moveToAction(player, id));
       noteCheer(before, player.stickers);
       walkTarget = null;
       persist();

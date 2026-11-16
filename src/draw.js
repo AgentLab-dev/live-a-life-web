@@ -612,6 +612,18 @@ import {
   WHISK_ZONE,
   WHISK_BLOCKS,
   MACARON_SPOT,
+  CRANE_ZONE,
+  CRANE_BLOCKS,
+  FOLD_BED,
+  FOLD_PADS,
+  FAN_POSTS,
+  FAN_WALLS,
+  FAN_GAP,
+  INK_ZONE,
+  INKS,
+  WASHI_ZONE,
+  WASHI_BLOCKS,
+  CRANE_SPOT,
 } from "./crossings.js";
 import { houseLook, skinFill, hairFill } from "./looks.js";
 import { jobLook } from "./jobs.js";
@@ -1607,6 +1619,29 @@ export function drawKid(ctx, x, y, look, time, pose, facing = 1) {
     ctx.fill();
     ctx.fillStyle = "#9ad7c4";
     oval(ctx, 30, 14, 6, 3);
+    ctx.fill();
+  }
+  if (look.carry === "crane" && !sleeping) {
+    ctx.fillStyle = "#f4a3c2";
+    ctx.beginPath();
+    ctx.moveTo(24, 16);
+    ctx.lineTo(32, 6);
+    ctx.lineTo(36, 14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#9ad7c4";
+    ctx.beginPath();
+    ctx.moveTo(32, 6);
+    ctx.lineTo(40, 12);
+    ctx.lineTo(34, 14);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = "#f4d35e";
+    ctx.beginPath();
+    ctx.moveTo(30, 14);
+    ctx.lineTo(36, 20);
+    ctx.lineTo(28, 18);
+    ctx.closePath();
     ctx.fill();
   }
   ctx.restore();
@@ -10594,6 +10629,170 @@ function drawWhisks(ctx) {
   ctx.fillText("Whisks", WHISK_ZONE.x + 24, WHISK_ZONE.y - 8);
 }
 
+function paintCrane(ctx, x, y, scale = 1) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = "#f4a3c2";
+  ctx.beginPath();
+  ctx.moveTo(-8, 4);
+  ctx.lineTo(0, -8);
+  ctx.lineTo(4, 2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#9ad7c4";
+  ctx.beginPath();
+  ctx.moveTo(0, -8);
+  ctx.lineTo(10, -2);
+  ctx.lineTo(3, 2);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#fff";
+  ctx.beginPath();
+  ctx.moveTo(-2, 2);
+  ctx.lineTo(4, 8);
+  ctx.lineTo(-4, 6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  oval(ctx, 1, -4, 0.8, 0.8);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawPaperCranes(ctx) {
+  ctx.fillStyle = "#fff0f4";
+  roundRect(ctx, CRANE_ZONE.x, CRANE_ZONE.y, CRANE_ZONE.w, CRANE_ZONE.h, 12);
+  ctx.fill();
+  const papers = ["#f4a3c2", "#9ad7c4", "#f4d35e"];
+  CRANE_BLOCKS.forEach((bird, index) => {
+    paintCrane(ctx, bird.x + bird.w / 2, bird.y + 7, 0.7);
+    ctx.fillStyle = papers[index % papers.length];
+    oval(ctx, bird.x + 4, bird.y + 11, 2, 1);
+    ctx.fill();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Cranes", CRANE_ZONE.x - 4, CRANE_ZONE.y - 8);
+}
+
+function drawFolds(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, FOLD_BED.x, FOLD_BED.y, FOLD_BED.w, FOLD_BED.h, 12);
+  ctx.fill();
+  const papers = ["#d6ecff", "#f4a3c2", "#9ad7c4"];
+  FOLD_PADS.forEach((pad, index) => {
+    ctx.fillStyle = papers[index % papers.length];
+    ctx.beginPath();
+    ctx.moveTo(pad.x, pad.y - 7);
+    ctx.lineTo(pad.x + 8, pad.y);
+    ctx.lineTo(pad.x, pad.y + 7);
+    ctx.lineTo(pad.x - 8, pad.y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(pad.x - 8, pad.y);
+    ctx.lineTo(pad.x + 8, pad.y);
+    ctx.moveTo(pad.x, pad.y - 7);
+    ctx.lineTo(pad.x, pad.y + 7);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Folds", FOLD_BED.x + 16, FOLD_BED.y - 8);
+}
+
+function drawPaperFan(ctx) {
+  for (const post of FAN_POSTS) {
+    ctx.fillStyle = "#f4a3c2";
+    roundRect(ctx, post.x, post.y + 8, post.w, post.h - 8, 4);
+    ctx.fill();
+  }
+  FAN_WALLS.forEach((wall, index) => {
+    ctx.fillStyle = index === 0 ? "#9ad7c4" : "#f4d35e";
+    ctx.beginPath();
+    ctx.moveTo(wall.x, wall.y + wall.h);
+    ctx.lineTo(wall.x + wall.w / 2, wall.y - 8);
+    ctx.lineTo(wall.x + wall.w, wall.y + wall.h);
+    ctx.closePath();
+    ctx.fill();
+  });
+  ctx.fillStyle = "#fff";
+  roundRect(ctx, FAN_GAP.x, FAN_GAP.y + 16, FAN_GAP.w, 6, 2);
+  ctx.fill();
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Fan", FAN_POSTS[0].x - 2, FAN_POSTS[0].y - 8);
+}
+
+function drawInkStamps(ctx) {
+  ctx.fillStyle = "#fff0f4";
+  roundRect(ctx, INK_ZONE.x, INK_ZONE.y, INK_ZONE.w, INK_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#7eb6ff", "#f4a3c2", "#f4d35e"];
+  INKS.forEach((stamp, index) => {
+    const cx = stamp.x + stamp.w / 2;
+    const cy = stamp.y + stamp.h / 2;
+    ctx.fillStyle = colors[index % colors.length];
+    oval(ctx, cx, cy, 9, 5);
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Ink stamps", INK_ZONE.x + 8, INK_ZONE.y - 8);
+}
+
+function drawWashi(ctx) {
+  ctx.fillStyle = "#fff6ea";
+  roundRect(ctx, WASHI_ZONE.x, WASHI_ZONE.y, WASHI_ZONE.w, WASHI_ZONE.h, 12);
+  ctx.fill();
+  const colors = ["#f4a3c2", "#9ad7c4", "#7eb6ff"];
+  WASHI_BLOCKS.forEach((tape, index) => {
+    ctx.fillStyle = colors[index % colors.length];
+    roundRect(ctx, tape.x, tape.y + 2, tape.w, tape.h - 4, 3);
+    ctx.fill();
+    ctx.fillStyle = "#fff";
+    for (let i = 0; i < 3; i += 1) {
+      oval(ctx, tape.x + tape.w / 2, tape.y + 8 + i * 8, 1.4, 1.4);
+      ctx.fill();
+    }
+  });
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Washi", WASHI_ZONE.x + 28, WASHI_ZONE.y - 8);
+}
+
+function drawSharedCrane(ctx, carried) {
+  if (!carried) {
+    paintCrane(ctx, 2360, 258, 0.9);
+    ctx.fillStyle = "#5a3820";
+    ctx.font = "700 14px Fredoka, sans-serif";
+    ctx.fillText("Crane", 2334, 236);
+  }
+  ctx.fillStyle = "#fff0f4";
+  roundRect(ctx, CRANE_SPOT.x - 22, CRANE_SPOT.y - 8, 44, 22, 8);
+  ctx.fill();
+  ctx.fillStyle = "#f4a3c2";
+  roundRect(ctx, CRANE_SPOT.x - 20, CRANE_SPOT.y + 10, 40, 8, 3);
+  ctx.fill();
+  ctx.fillStyle = "#6d5a4a";
+  roundRect(ctx, CRANE_SPOT.x - 16, CRANE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  roundRect(ctx, CRANE_SPOT.x + 10, CRANE_SPOT.y + 16, 6, 10, 2);
+  ctx.fill();
+  if (!carried) paintCrane(ctx, CRANE_SPOT.x, CRANE_SPOT.y, 0.55);
+  ctx.fillStyle = "#5a3820";
+  ctx.font = "700 14px Fredoka, sans-serif";
+  ctx.fillText("Crane", CRANE_SPOT.x - 18, CRANE_SPOT.y - 16);
+}
+
 function drawSharedMacaron(ctx, carried) {
   if (!carried) {
     paintMacaron(ctx, 2280, 418, 0.9);
@@ -11239,6 +11438,12 @@ export function drawTown(ctx, player, time) {
   drawFillings(ctx);
   drawWhisks(ctx);
   drawSharedMacaron(ctx, player.carry === "macaron");
+  drawPaperCranes(ctx);
+  drawFolds(ctx);
+  drawPaperFan(ctx);
+  drawInkStamps(ctx);
+  drawWashi(ctx);
+  drawSharedCrane(ctx, player.carry === "crane");
   if (player.carry !== "picnic") {
     ctx.fillStyle = "#c45c26";
     roundRect(ctx, 488, 1006, 24, 14, 4);
